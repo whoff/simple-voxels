@@ -1,10 +1,11 @@
 #summary definition of simple voxels
 
 == Simple Voxels ==
-Consider a 3D shape composed of (26-connected) foreground voxels.
+Consider a 3D shape composed of foreground voxels.
 When the removal of a voxel does not change the topology of the 3D shape, the voxel is called "simple". For example,
-  * if a voxel is on a 1-voxel-wide line, it is not simple because its removal divides the line into two shorter lines.
-  * similarly, if a voxel is on a 1-voxel-thick surface, it is not simple either because its remove makes a hole in the surface.
+  * Sphere of radius 100 voxels: its surface voxels are all simple because their removal makes only a tiny dent on the surface and is never earth-shattering as to change the topology.
+  * Line of 1-voxel width: its two end voxels are simple, but the internal voxels are not because their removal divides the line into two shorter lines.
+  * Square plane of 1-voxel thickness: its border voxels are simple, but the internal voxles are not because their remove makes a hole in the plane.
 
 == Neighbors ==
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-bits.png]
