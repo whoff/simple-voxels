@@ -3,8 +3,26 @@
 == Voxel Neighbors ==
 In the implementation of this project, the 3x3x3 neighborhood situation of a voxel is represented by a 32-bit integer whose lower 27 bits show whether the corresponding position is foreground (black) or background (white) by the bit '1' or '0', respectively.
 
-The neighboring points are assigned to the lower 27 bits as follows:
+The assignment of the neighboring points to the bit positions is as follows:
+
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-bits.png]
+
+== Helper Macro ==
+There are defined macro functions to make an integer from the bit patterns:
+
+{{{
+    const int bits = BV( BP(0,0,0), BP(0,2,0), BP(0,0,0) );
+}}}
+
+BV and BP means "bit volume" and "bit plane", respectively.
+The numbers in BP represents the consecutive 3 bits on each line.
+Therefore, in the above example, bits represents a situation
+where the center voxel is the only voxel that is in the foreground (black, 1) while all its 26 neighbors are background (white, 0) ones.
+
+
+== Examples ==
+
+
 
 == Directions ==
 [http://simple-voxels.googlecode.com/svn/wiki/images/6directions.png]
