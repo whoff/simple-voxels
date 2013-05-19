@@ -19,6 +19,8 @@ The numbers in BP represents the consecutive 3 bits on each line.
 Therefore, in the above example, bits represents a situation
 where the center voxel is the only voxel that is in the foreground (black, 1) while all its 26 neighbors are background (white, 0) ones.
 
+The first BP() corresponds to the top plane in red,
+and the second and the third BP() correspond to the mid and the bottom plane in green and blue, respectively.
 
 == Examples ==
 
