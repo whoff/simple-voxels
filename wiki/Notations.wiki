@@ -1,0 +1,7 @@
+#summary notations used in this project
+= Notations =
+== Voxel Neighbors ==
+[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-bits.png]
+
+== Directions ==
+[http://simple-voxels.googlecode.com/svn/wiki/images/6directions.png]
