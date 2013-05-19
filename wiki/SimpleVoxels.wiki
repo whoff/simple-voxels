@@ -1,13 +1,10 @@
-#summary project wiki top
+#summary definition of simple voxels
 
-= Introduction =
+== Simple Voxels ==
+Consider a 3D shape composed of (26-connected) foreground voxels.
+When the removal of a voxel does not change the topology of the 3D shape, the voxel is called "simple". For example,
+  * if a voxel is on a 1-voxel-wide line, it is not simple because its removal divides the line into two shorter lines.
+  * similarly, if a voxel is on a 1-voxel-thick surface, it is not simple either because its remove makes a hole in the surface.
 
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+== Neighbors ==
+[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-bits.png]
