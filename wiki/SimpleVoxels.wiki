@@ -1,4 +1,11 @@
 #summary definition of simple voxels
+= Notations =
+== Voxel Neighbors ==
+[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-bits.png]
+
+== Directions ==
+[http://simple-voxels.googlecode.com/svn/wiki/images/6directions.png]
+
 = Simple Voxels =
 == Example ==
 Consider a 3D shape composed of foreground voxels.
@@ -14,9 +21,3 @@ For the (26, 6) connectivity, a voxel is simple if the following two conditions 
   * the number of 6-connected background (or white) components in its 18-neighborhood that appear in the 6-neighborhood is 1.
 
 
-
-= Neighbors =
-[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-bits.png]
-
-= Directions =
-[http://simple-voxels.googlecode.com/svn/wiki/images/6directions.png]
