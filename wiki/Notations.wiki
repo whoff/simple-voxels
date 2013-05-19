@@ -7,17 +7,18 @@ The assignment of the neighboring points to the bit positions is as follows:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-bits.png]
 
-== Helper Macro ==
-There are defined macro functions to make an integer from the bit patterns:
+== Implementation ==
+A set of macro functions is defined to make an integer from the bit patterns of a 3x3x3 configuration:
 
 {{{
     const int bits = BV( BP(0,0,0), BP(0,2,0), BP(0,0,0) );
 }}}
 
-BV and BP means "bit volume" and "bit plane", respectively.
-The numbers in BP represents the consecutive 3 bits on each line.
-Therefore, in the above example, bits represents a situation
-where the center voxel is the only voxel that is in the foreground (black, 1) while all its 26 neighbors are background (white, 0) ones.
+where BV and BP means "bit volume" and "bit plane", respectively.
+The numbers in BP() represents the consecutive three bits of each line in the plane.
+
+For example, the "bits" in the above represents the configuration
+where the center voxel is the only voxel that is in the foreground (black, 1) while all the other voxels are in the background (white, 0).
 
 The first BP() corresponds to the top plane in red,
 and the second and the third BP() correspond to the mid and the bottom plane in green and blue, respectively.
