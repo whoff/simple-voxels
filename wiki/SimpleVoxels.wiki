@@ -1,4 +1,4 @@
-#summary project home
+#summary project wiki top
 
 = Introduction =
 
