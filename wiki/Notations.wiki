@@ -36,8 +36,8 @@ Also, DumpBits() function can be used to print the configuration on the console.
 }}}
 [http://simple-voxels.googlecode.com/svn/wiki/images/cout-neighbor-hihumi.png]
 
-As can be seen, the configuration is printed plane-by-plane from the top to the bottom.
-
+The foreground voxels are printed as 'o', and the background voxels as '.'.
+As can be seen, configurations are printed plane-by-plane from the top to the bottom.
 
 == Directions ==
 [http://simple-voxels.googlecode.com/svn/wiki/images/6directions.png]
