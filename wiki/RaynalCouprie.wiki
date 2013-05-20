@@ -1,4 +1,7 @@
 #summary Palagyi and Kuba 6-subiteration thinning
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/isthmus-masks.png]
+
 {{{
 namespace NRaynal {
 
@@ -13,7 +16,6 @@ namespace NRaynal {
     };
 }
 }}}
-
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-templates.png]
 
