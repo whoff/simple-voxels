@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Mask.h"
+
 // 6-subiteration directions
 enum EDir6 {
     ED_U,   // Up
@@ -45,4 +47,11 @@ namespace NSymmetry6 {
 
     void CreatePrimaryTable( std::vector<std::uint8_t>& table );
     void CreatePredicateTable( std::vector<std::uint8_t>& table, bool (*predicate)( int, EDir6 ) );
+
+    // mask creation
+    void GenerateDirHeader( const std::vector<std::vector<Mask>>& table, const std::string& path );
+    void GenerateOmniDirHeader( const std::vector<std::vector<Mask>>& table, const std::string& path );
+
+    void InstantiateUDirMasks( const Mask* templates, size_t num_templates, std::vector<std::vector<Mask>>& table );
+    void InstantiateOmniDirMasks( const Mask* templates, size_t num_templates, std::vector<std::vector<Mask>>& table );
 }

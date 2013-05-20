@@ -149,7 +149,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Isthmus.cpp" />
-    <ClCompile Include="Mask.cpp" />
     <ClCompile Include="Neighbors.cpp" />
     <ClCompile Include="Palagyi.cpp" />
     <ClCompile Include="PxSimple.cpp" />

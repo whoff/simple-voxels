@@ -2,7 +2,7 @@
 
 #include "Mask.h"
 
-const Mask raynal_tables[6][25] = {
+const Mask raynal_tables[][25] = {
     {// dir = 0
         // M1
         Mask( 0x04021ff, 0x0402000 ),

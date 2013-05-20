@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Neighbors.h"
 #include "SimpleDefs.h"
+#include "Util.h"
 
 #include "PxSimple_table.h"
 
@@ -157,9 +158,9 @@ namespace NPxSimple {// P2x-simple
     //    Mask( BV( BP(0,0,0), BP(2,2,0), BP(2,2,0) ), BV( BP(0,0,0), BP(0,2,0), BP(0,0,0) ) ),
     //};
 
-    const MaskZero TemplatesT26Rx[2] = {
-        MaskZero( BV( BP(0,0,0), BP(2,0,2), BP(2,2,2) ), BV( BP(0,0,0), BP(1,1,1), BP(1,1,1) ), BV( BP(0,0,0), BP(4,4,4), BP(4,4,4) ) ),
-        MaskZero( BV( BP(0,0,0), BP(2,1,0), BP(2,3,0) ), BV( BP(0,0,0), BP(1,0,0), BP(1,0,0) ), BV( BP(0,0,0), BP(4,4,7), BP(4,4,7) ) ),
+    const Mask TemplatesT26Rx[2] = {
+        Mask( BV( BP(0,0,0), BP(2,0,2), BP(2,2,2) ), 0, BV( BP(0,0,0), BP(1,1,1), BP(1,1,1) ), BV( BP(0,0,0), BP(4,4,4), BP(4,4,4) ) ),
+        Mask( BV( BP(0,0,0), BP(2,1,0), BP(2,3,0) ), 0, BV( BP(0,0,0), BP(1,0,0), BP(1,0,0) ), BV( BP(0,0,0), BP(4,4,7), BP(4,4,7) ) ),
     };
 
     bool IsP2xSimpleU_ref( int bits ) {
@@ -187,7 +188,7 @@ namespace NPxSimple {// P2x-simple
             if (WhiteBottom) {
                 int syms[NSymmetry6::NUM_SYM_XY];
                 NSymmetry6::MakeSymsXY( rx, syms );
-                for each (const MaskZero& mask in TemplatesT26Rx) {
+                for each (const Mask& mask in TemplatesT26Rx) {
                     for each (int sym in syms) {
                         if (mask.Match( sym )) return false;
                     }
@@ -219,7 +220,7 @@ namespace NPxSimple {// P2x-simple
             {// T26
                 int syms[NSymmetry6::NUM_ROTATE_XY];
                 NSymmetry6::MakeSymsRotateXY( rx, syms );
-                for each (const MaskZero& mask in TemplatesT26Rx) {
+                for each (const Mask& mask in TemplatesT26Rx) {
                     for each (int sym in syms) {
                         if (mask.Match( sym )) return false;
                     }
@@ -295,7 +296,7 @@ namespace NPxSimple {// P2x-simple
                 if ((n4 & maskT6N4) == 0) return false;
             }
             {// T26
-                for each (const MaskZero& mask in pxsimple_T26Rx_tables[dir]) {
+                for each (const Mask& mask in pxsimple_T26Rx_tables[dir]) {
                     if (mask.Match( rx )) return false;
                 }
             }

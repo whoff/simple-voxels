@@ -9,6 +9,7 @@ inline void printd( int value ) { fprintd( stdout, value ); }
 
 // dump bits / mask
 void DumpMask( int mask, int value, int nzero1 = 0, int nzero2 = 0 );
+void DumpMask( const struct Mask& mask );
 inline void DumpBits( int bits ) { DumpMask( -1, bits ); }
 
 // table utility

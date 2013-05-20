@@ -151,7 +151,7 @@ namespace NSymmetry6 {
         for (int bits = 0; bits < (1 << 27); ++bits) {
             int val = table[bits];
             if (val & EP_XYZ) {
-                NSymmetry6::MakeSymsXYZ( bits, syms_xyz );
+                MakeSymsXYZ( bits, syms_xyz );
                 for each (int sym in syms_xyz) {
                     if (sym > bits) {
                         table[sym] &= ~EP_XYZ;
@@ -159,7 +159,7 @@ namespace NSymmetry6 {
                 }
             }
             if (val & EP_XY) {
-                NSymmetry6::MakeSymsXY( bits, syms_xy );
+                MakeSymsXY( bits, syms_xy );
                 for each (int sym in syms_xy) {
                     if (sym > bits) {
                         table[sym] &= ~EP_XY;
@@ -187,5 +187,113 @@ namespace NSymmetry6 {
 
     void Initialize() {
         NPerm::InitTables();
+    }
+}
+
+namespace NSymmetry6 {
+
+    void makeSymMasks( const Mask& tmpl, vector<Mask>& syms, function<void ( int, int* )> make_syms, size_t num_syms ) {
+        syms.clear();
+        vector<int> masks( num_syms );
+        vector<int> values( num_syms );
+        vector<int> nzeros1( num_syms );
+        vector<int> nzeros2( num_syms );
+        make_syms( tmpl.mask, &masks[0] );
+        make_syms( tmpl.value, &values[0] );
+        make_syms( tmpl.nzero1, &nzeros1[0] );
+        make_syms( tmpl.nzero2, &nzeros2[0] );
+        for (size_t n = 0; n < num_syms; ++n) {
+            syms.push_back( Mask( masks[n], values[n], nzeros1[n], nzeros2[n] ) );
+        }
+    }
+
+    Mask makeSymDirectZ( const Mask& tmpl, EDir6 dir ) {
+        return Mask(
+            MakeSymDirectZ( tmpl.mask, dir ),
+            MakeSymDirectZ( tmpl.value, dir ),
+            MakeSymDirectZ( tmpl.nzero1, dir ),
+            MakeSymDirectZ( tmpl.nzero2, dir )
+            );
+    }
+
+    // collect symmetries
+    void instantiateMasks( const Mask* templates, size_t num_templates, vector<vector<Mask>>& table, function<void ( int, int* )> make_syms, size_t num_syms ) {
+        table.clear();
+        for (size_t n = 0; n < num_templates; ++n) {
+            vector<Mask> masks;
+            vector<Mask> syms;
+            makeSymMasks( templates[n], syms, make_syms, num_syms );
+            for each (const Mask& sym in syms) {
+                if (find( masks.begin(), masks.end(), sym ) == masks.end()) {
+                    masks.push_back( sym );
+                }
+            }
+            table.push_back( masks );
+        }
+    }
+
+    void InstantiateUDirMasks( const Mask* templates, size_t num_templates, vector<vector<Mask>>& table ) {
+        instantiateMasks( templates, num_templates, table, MakeSymsXY, NUM_SYM_XY );
+    }
+
+    void InstantiateOmniDirMasks( const Mask* templates, size_t num_templates, vector<vector<Mask>>& table ) {
+        instantiateMasks( templates, num_templates, table, MakeSymsXYZ, NUM_SYM_XYZ );
+    }
+
+    void fprint_mask( FILE* fp, const Mask& mask ) {
+        fprintf( fp, "Mask( 0x%07x", mask.mask );
+        fprintf( fp, (mask.value) ? ", 0x%07x" : ", %d", mask.value );
+        if (mask.nzero1) fprintf( fp, ", 0x%07x", mask.nzero1 );
+        if (mask.nzero2) fprintf( fp, ", 0x%07x", mask.nzero2 );
+        fprintf( fp, " )" );
+    }
+
+    void GenerateDirHeader( const vector<vector<Mask>>& table, const string& path ) {
+        FILE* fp = fopen( path.c_str(), "w" );
+        if (fp == NULL) return;
+        size_t cnt = 0;
+        for each (const vector<Mask>& syms in table) {
+            cnt += syms.size();
+        }
+        fprintf( fp, "#include \"stdafx.h\"\n\n" );
+        fprintf( fp, "#include \"Mask.h\"\n\n" );
+        fprintf( fp, "const Mask mask_tables[][%d] = {\n", cnt );
+        for (int i = 0; i < ED_NUM; ++i) {
+            EDir6 dir = (EDir6) i;
+            fprintf( fp, "    {// dir = %d\n", i );
+            for (size_t m = 0; m < table.size(); ++m) {
+                fprintf( fp, "        // M%d\n", m+1 );
+                for each (const Mask& sym in table[m]) {
+                    fprintf( fp, "        " );
+                    fprint_mask( fp, makeSymDirectZ( sym, dir ) );
+                    fprintf( fp, ",\n" );
+                }
+            }
+            fprintf( fp, "    },\n" );
+        }
+        fprintf( fp, "};\n" );
+        fclose( fp );
+    }
+
+    void GenerateOmniDirHeader( const vector<vector<Mask>>& table, const string& path ) {
+        FILE* fp = fopen( path.c_str(), "w" );
+        if (fp == NULL) return;
+        size_t cnt = 0;
+        for each (const vector<Mask>& syms in table) {
+            cnt += syms.size();
+        }
+        fprintf( fp, "#include \"stdafx.h\"\n\n" );
+        fprintf( fp, "#include \"Mask.h\"\n\n" );
+        fprintf( fp, "const Mask mask_table[%d] = {\n", cnt );
+        for (size_t m = 0; m < table.size(); ++m) {
+            fprintf( fp, "    // M%d\n", m+1 );
+            for each (const Mask& sym in table[m]) {
+                fprintf( fp, "    " );
+                fprint_mask( fp, sym );
+                fprintf( fp, ",\n" );
+            }
+        }
+        fprintf( fp, "};\n" );
+        fclose( fp );
     }
 }

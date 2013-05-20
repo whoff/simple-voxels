@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Coord.h"
+#include "Mask.h"
 #include "Symmetry.h"
 
 #include "Util.h"
@@ -78,6 +79,10 @@ void DumpMask( int mask, int value, int nzero1, int nzero2 ) {
     dumpLine( '_', &value );
     dumpMask( mask, value, nzero1, nzero2 );
     dumpLine( '-' );
+}
+
+void DumpMask( const Mask& mask ) {
+    DumpMask( mask.mask, mask.value, mask.nzero1, mask.nzero2 );
 }
 
 namespace NByteTable {

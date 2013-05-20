@@ -73,8 +73,5 @@
     <ClCompile Include="Symmetry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Mask.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Neighbors.h"
 #include "SimpleDefs.h"
+#include "Util.h"
 
 #include "Raynal_table.h"
 #include "Isthmus_table.h"
@@ -11,11 +12,11 @@ namespace NRaynal {
 
     const Mask Templates[7] = {
         Mask( BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ), BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) ) ),   // M1'
-        Mask( BV( BP(7,7,0), BP(0,2,2), BP(0,2,0) ), BV( BP(0,0,0), BP(0,2,2), BP(0,2,0) ) ),   // M2'
-        Mask( BV( BP(6,6,0), BP(0,3,2), BP(0,2,0) ), BV( BP(0,0,0), BP(0,3,2), BP(0,2,0) ) ),   // M3'
-        Mask( BV( BP(7,7,7), BP(0,2,1), BP(0,2,0) ), BV( BP(0,0,1), BP(0,2,1), BP(0,2,0) ) ),   // M4'
-        Mask( BV( BP(7,7,7), BP(7,2,0), BP(7,2,2) ), BV( BP(0,0,0), BP(0,2,0), BP(0,0,2) ) ),   // M5'
-        Mask( BV( BP(7,7,7), BP(6,6,0), BP(6,7,2) ), BV( BP(0,0,0), BP(0,2,0), BP(0,1,2) ) ),   // M6'
+        Mask( BV( BP(0,7,7), BP(2,2,0), BP(0,2,0) ), BV( BP(0,0,0), BP(2,2,0), BP(0,2,0) ) ),   // M2'
+        Mask( BV( BP(0,3,3), BP(2,6,0), BP(0,2,0) ), BV( BP(0,0,0), BP(2,6,0), BP(0,2,0) ) ),   // M3'
+        Mask( BV( BP(7,7,7), BP(4,2,0), BP(0,2,0) ), BV( BP(4,0,0), BP(4,2,0), BP(0,2,0) ) ),   // M4'
+        Mask( BV( BP(7,7,7), BP(0,2,7), BP(2,2,7) ), BV( BP(0,0,0), BP(0,2,0), BP(2,0,0) ) ),   // M5'
+        Mask( BV( BP(7,7,7), BP(0,3,3), BP(2,7,3) ), BV( BP(0,0,0), BP(0,2,0), BP(2,4,0) ) ),   // M6'
         Mask( BV( BP(7,7,7), BP(7,7,7), BP(7,7,7) ), BV( BP(0,0,0), BP(0,2,0), BP(0,0,1) ) ),   // M7'
     };
 
@@ -31,17 +32,17 @@ namespace NRaynal {
 
 namespace NIsthmus {
 
-    const MaskZero Templates[6] = {
-        MaskZero( BV( BP(0,0,0), BP(7,5,7), BP(0,0,0) ), BV( BP(7,7,7), BP(0,0,0), BP(0,0,0) ), BV( BP(0,0,0), BP(0,0,0), BP(7,7,7) ) ),
-        MaskZero( BV( BP(0,7,0), BP(7,5,0), BP(0,0,0) ), BV( BP(7,0,0), BP(0,0,0), BP(0,0,0) ), BV( BP(0,0,7), BP(0,0,7), BP(7,7,7) ) ),
-        MaskZero( BV( BP(2,6,0), BP(6,4,0), BP(0,0,0) ), BV( BP(4,0,0), BP(0,0,0), BP(0,0,0) ), BV( BP(1,1,7), BP(1,1,7), BP(7,7,7) ) ),
-        MaskZero( BV( BP(2,6,0), BP(3,5,7), BP(0,0,0) ), BV( BP(4,0,0), BP(4,0,0), BP(7,7,7) ), BV( BP(1,1,7), BP(0,0,0), BP(0,0,0) ) ),
-        MaskZero( BV( BP(2,6,0), BP(3,5,6), BP(0,3,2) ), BV( BP(4,0,0), BP(4,0,0), BP(7,4,4) ), BV( BP(1,1,7), BP(0,0,1), BP(0,0,1) ) ),
-        MaskZero( BV( BP(2,6,0), BP(2,5,7), BP(2,3,0) ), BV( BP(4,0,0), BP(4,0,0), BP(4,4,7) ), BV( BP(1,1,7), BP(1,0,0), BP(1,0,0) ) ),
+    const Mask Templates[6] = {
+        Mask( BV( BP(0,0,0), BP(7,5,7), BP(0,0,0) ), 0, BV( BP(7,7,7), BP(0,0,0), BP(0,0,0) ), BV( BP(0,0,0), BP(0,0,0), BP(7,7,7) ) ),
+        Mask( BV( BP(0,7,0), BP(7,5,0), BP(0,0,0) ), 0, BV( BP(7,0,0), BP(0,0,0), BP(0,0,0) ), BV( BP(0,0,7), BP(0,0,7), BP(7,7,7) ) ),
+        Mask( BV( BP(2,6,0), BP(6,4,0), BP(0,0,0) ), 0, BV( BP(4,0,0), BP(0,0,0), BP(0,0,0) ), BV( BP(1,1,7), BP(1,1,7), BP(7,7,7) ) ),
+        Mask( BV( BP(2,6,0), BP(3,5,7), BP(0,0,0) ), 0, BV( BP(4,0,0), BP(4,0,0), BP(7,7,7) ), BV( BP(1,1,7), BP(0,0,0), BP(0,0,0) ) ),
+        Mask( BV( BP(2,6,0), BP(3,5,6), BP(0,3,2) ), 0, BV( BP(4,0,0), BP(4,0,0), BP(7,4,4) ), BV( BP(1,1,7), BP(0,0,1), BP(0,0,1) ) ),
+        Mask( BV( BP(2,6,0), BP(2,5,7), BP(2,3,0) ), 0, BV( BP(4,0,0), BP(4,0,0), BP(4,4,7) ), BV( BP(1,1,7), BP(1,0,0), BP(1,0,0) ) ),
     };
 
     bool IsIsthmus( int bits ) {
-        for each (const MaskZero& mask in isthmus_tables) {
+        for each (const Mask& mask in isthmus_table) {
             if (mask.Match( bits )) {
                 return true;
             }
@@ -52,7 +53,7 @@ namespace NIsthmus {
     void VerifyTemplates( const vector<uint8_t>& primary, const vector<uint8_t>& isthmus ) {
         int cnt_hit = 0;
         int cnt_miss = 0;
-        int syms[48];
+        int syms[NSymmetry6::NUM_SYM_XYZ];
         int max_bits = 0;
         int max_numbits = 0;
         for (int bits = 0; bits < (1 << 27); ++bits) {
