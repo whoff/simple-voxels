@@ -1,4 +1,7 @@
 #summary Lohou and Bertrand P2x-simple thinning algorithm
+[http://simple-voxels.googlecode.com/svn/wiki/images/pxcondition-stat.png]
+
+
 {{{
 namespace NPxSimple {// P2x-simple
     const Mask TemplatesT26Rx[2] = {
