@@ -1,0 +1,1 @@
+#summary Lohou and Bertrand P2x-simple thinning algorithm
