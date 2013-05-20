@@ -13,6 +13,7 @@ For the (26, 6) connectivity, a voxel is simple if the following two conditions 
   * the number of 6-connected background components in its 18-neighborhood that appear in the 6-neighborhood is 1.
 Note that in the above conditions the center voxel to be tested is excluded from the components.
 
-== Components Count ==
+= Components Count =
+[http://simple-voxels.googlecode.com/svn/wiki/images/cout-components-count.png]
 
 http://www-sop.inria.fr/members/Gregoire.Malandain/topology/tables.html#BINARY3
