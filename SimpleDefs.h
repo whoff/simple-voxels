@@ -14,7 +14,7 @@ namespace NRaynal {
 }
 
 namespace NIsthmus {// Raynal
-    extern const MaskZero Templates[6];
+    extern const Mask Templates[6];
     bool IsIsthmus( int bits );
     void Veryfy_IsIsthmus( const std::vector<std::uint8_t>& isthmus );
     void VerifyTemplates( const std::vector<std::uint8_t>& primary, const std::vector<std::uint8_t>& isthmus );
@@ -35,7 +35,7 @@ namespace NPxSimple {// Lohou
         ELC_C6     = 0x20,
     };
 
-    extern const MaskZero TemplatesT26Rx[2];
+    extern const Mask TemplatesT26Rx[2];
 
     void CheckConditionsUDir( std::vector<std::uint8_t>& pxcond );
     bool IsP2xSimple( int bits, EDir6 dir );
