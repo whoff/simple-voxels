@@ -1,0 +1,1 @@
+#summary Raynal and Couprie isthmus based thinning algorithm
