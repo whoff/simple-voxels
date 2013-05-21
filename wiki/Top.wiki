@@ -10,6 +10,7 @@ The current scope of this project is 3D parallel thinning algorithms that are ch
 
 = Contents =
   # [Notations]
+  # [SimpleVoxels]
   # [PalagyiKuba]
   # [RaynalCouprie]
   # [LohouBertrand]
