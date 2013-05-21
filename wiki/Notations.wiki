@@ -41,7 +41,7 @@ As can be seen, configurations are printed plane-by-plane from the top to the bo
 = Template Mask =
 To check if a voxel is deletable or not in actual implementations,
 3x3x3 template matching is one of the most commonly employed method.
-In this project, _Mask_ structure defined in _Mask.h_ is used to define such template masks.
+In this project, [http://code.google.com/p/simple-voxels/source/browse/trunk/Mask.h Mask] structure is used to define such template masks.
 {{{
 struct Mask {
     Mask( int _mask, int _value, int _nzero1 = 0, int _nzero2 = 0 );
