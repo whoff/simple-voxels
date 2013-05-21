@@ -24,6 +24,8 @@ As for the notations, see also [http://code.google.com/p/simple-voxels/wiki/Nota
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/palagyi-templates.png]
 
+Please note that their templates are designed not to remove the end points of line structures: a black point is deletable only when it has more than or equal to two adjacent black points.
+
 = Implementation =
 By enumerating all the symmetric configurations of each template within the NSEW plane (there are eight of them) and removing redundant ones,
 one can obtain the [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi_table.h list]
