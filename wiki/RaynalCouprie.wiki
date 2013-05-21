@@ -1,7 +1,6 @@
-#summary Palagyi and Kuba 6-subiteration thinning
-
-[http://simple-voxels.googlecode.com/svn/wiki/images/isthmus-masks.png]
-
+#summary Raynal and Couprie isthmus-based 6-subiteration thinning
+= Summary =
+= Palagyi Variant to Delete End Points =
 {{{
 namespace NRaynal {
 
@@ -23,6 +22,8 @@ namespace NRaynal {
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-palagyi.png]
 
+= Isthmus Determination by Matching Templates =
+[http://simple-voxels.googlecode.com/svn/wiki/images/isthmus-masks.png]
 {{{
 namespace NIsthmus {
 
