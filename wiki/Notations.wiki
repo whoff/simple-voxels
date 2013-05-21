@@ -78,11 +78,11 @@ By using DumpMask() function, the mask can be output to the console window.
 }}}
 [http://simple-voxels.googlecode.com/svn/wiki/images/cout-template-masks.png]
 || *Character* || *Mask member* || *Description* ||
-|| 'o' || mask & value || black point ||
-|| '.' || mask & ~value || white point ||
+|| o || mask & value || black point ||
+|| . || mask & ~value || white point ||
 || ' ' ||  || don't care ||
-|| 'x' || nzero1 || at least one x position should be black ||
-|| '+' || nzero2 || at least one + position should be black ||
+|| x || nzero1 || at least one x position should be black ||
+|| + || nzero2 || at least one + position should be black ||
 
 
 = Directions =
