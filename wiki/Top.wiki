@@ -1,0 +1,20 @@
+#summary Project Wiki Top
+= Summary =
+This project is intended to help implement 3D parallel curve thinning algorithms in the literature by providing working C++ codes that can be used to determine whether a voxel is deletable or not. In doing so, new template masks or new implementation were devised for some of the algorithms.
+
+The current scope of this project is 3D parallel thinning algorithms that are characterized by:
+  * (26, 6) foreground and background connectivity
+  * Curve thinning
+  * Parallel thinning with 6 subiterations
+  * Deletability of a voxel can be determined locally with its 3x3x3 neighborhood
+
+= Contents =
+  # [Notations]
+  # [PalagyiKuba]
+  # [RaynalCouprie]
+  # [LohouBertrand]
+
+= References =
+  * [http://www.sciencedirect.com/science/article/pii/S0167865598000312 [1]]. Palagyi, Kuba, A 3D 6-subiteration thinning algorithm for extracting medial lines, 1998.
+  * [http://link.springer.com/chapter/10.1007/978-3-642-19867-0_15 [2]]. Raynal, Couprie, Isthmus-Based 6-Directional Parallel Thinning Algorithms, 2011.
+  * [http://www.sciencedirect.com/science/article/pii/S0166218X05001319 [3]]. Lohou, Bertrand, A 3D 6-subiteration curve thinning algorithm based on P-simple points, 2005.
