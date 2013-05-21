@@ -1,6 +1,5 @@
 #summary notations used in this project
-= Notations =
-== Voxel Neighbors ==
+= Voxel Neighbors =
 In the implementation of this project, the 3x3x3 neighborhood situation of a voxel is represented by a 32-bit integer whose lower 27 bits show whether the corresponding position is foreground (black) or background (white) by the bit '1' or '0', respectively.
 
 The assignment of the neighboring points to the bit positions is as follows:
@@ -39,5 +38,50 @@ Also, DumpBits() function can be used to print the configuration on the console.
 The foreground voxels are printed as 'o', and the background voxels as '.'.
 As can be seen, configurations are printed plane-by-plane from the top to the bottom.
 
-== Directions ==
+= Template Mask =
+To check if a voxel is deletable or not in actual implementations,
+3x3x3 template matching is one of the most commonly employed method.
+In this project, _Mask_ structure defined in _Mask.h_ is used to define such template masks.
+{{{
+struct Mask {
+    Mask( int _mask, int _value, int _nzero1 = 0, int _nzero2 = 0 );
+    int mask;
+    int value;
+    int nzero1, nzero2;
+    bool Match( int bits ) const {
+        return (mask & bits) == value
+            && (nzero1 == 0 || (bits & nzero1) != 0)
+            && (nzero2 == 0 || (bits & nzero2) != 0);
+    }
+};
+}}}
+In this structure,
+  * _mask_ defines the mask of interested bits that will be compared with _value_.
+  * _nzero1_ and _nzero2_ are the masks that, if not zero, will be used to check whether at least one of the masked bits is 1 or not.
+
+For example, the code below defines Palagyi's M1 mask and its variant by Raynal.
+{{{
+    const Mask Palagyi_M1(
+        BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ),
+        BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) ),
+        BV( BP(0,0,0), BP(7,5,7), BP(7,5,7) ) );
+    const Mask Raynal_M1(
+        BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ),
+        BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) ) );
+}}}
+By using DumpMask() function, the mask can be output to the console window.
+{{{
+    DumpMask( Palagyi_M1 );
+    DumpMask( Raynal_M1 );
+}}}
+[http://simple-voxels.googlecode.com/svn/wiki/images/cout-template-masks.png]
+|| *Character* || *Mask member* || *Description* ||
+|| 'o' || mask & value || black point ||
+|| '.' || mask & ~value || white point ||
+|| ' ' ||  || don't care ||
+|| 'X' || nzero1 || at least one X position should be black ||
+|| '+' || nzero2 || at least one + position should be black ||
+
+
+= Directions =
 [http://simple-voxels.googlecode.com/svn/wiki/images/6directions.png]
