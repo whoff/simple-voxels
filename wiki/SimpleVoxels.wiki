@@ -14,7 +14,7 @@ For the (26, 6) connectivity, a voxel is simple if the following two conditions 
 Note that, in these conditions, the center voxel to be tested is excluded and does not belong to any foreground / background components.
 
 == Implementation ==
-The following functions defined in _Neighbors.cpp_ calculates the number of foreground / background components given a 3x3x3 configuration as a 32-bit integer _bits_:
+The following functions defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Neighbors.cpp#82 Neighbors.cpp] calculates the number of foreground / background components given a 3x3x3 configuration as a 32-bit integer _bits_:
 {{{
 namespace NComponent {
     int CountForeCompsN26( int bits );
