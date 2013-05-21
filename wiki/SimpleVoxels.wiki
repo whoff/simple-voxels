@@ -29,13 +29,13 @@ Then, the frequencies of each pair of the number of foreground and background co
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/cout-components-count.png]
 
-The implementation is verified by the fact that this output reproduces the same component counts exactly as in
-[http://www-sop.inria.fr/members/Gregoire.Malandain/topology/tables.html#BINARY3 3D binary topological numbers].
-
-== Note ==
 Because both of the functions return zero when the center voxel is white, the first (0,0) count is equal to the number of configurations where the center voxel is white.
 In fact, if the center voxel is black, at least one of the functions returns non-zero value. The (0, 0) count therefore is equal to 2^26 = 67,108,864.
 
+The implementation is verified by the fact that this output reproduces the same component counts exactly as in
+[http://www-sop.inria.fr/members/Gregoire.Malandain/topology/tables.html#BINARY3 3D binary topological numbers].
+
+== Simple Configurations ==
 According to the above definition of simple voxels, the (1, 1) pair corresponds to the simple voxels.
 Hence, there are 25,985,144 configurations out of 67,108,864, where the center (black) voxel is simple.
 
