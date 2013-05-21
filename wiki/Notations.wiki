@@ -62,12 +62,14 @@ In this structure,
 For example, the code below defines Palagyi's M1 mask and its variant by Raynal.
 {{{
     const Mask Palagyi_M1(
-        BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ),
-        BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) ),
-        BV( BP(0,0,0), BP(7,5,7), BP(7,5,7) ) );
+        BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ),    // mask
+        BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) ),    // value
+        BV( BP(0,0,0), BP(7,5,7), BP(7,5,7) )     // nzero1
+    );
     const Mask Raynal_M1(
-        BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ),
-        BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) ) );
+        BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ),    // mask
+        BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) )     // value
+    );
 }}}
 By using DumpMask() function, the mask can be output to the console window.
 {{{
