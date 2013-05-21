@@ -81,7 +81,7 @@ By using DumpMask() function, the mask can be output to the console window.
 || 'o' || mask & value || black point ||
 || '.' || mask & ~value || white point ||
 || ' ' ||  || don't care ||
-|| 'X' || nzero1 || at least one X position should be black ||
+|| 'x' || nzero1 || at least one x position should be black ||
 || '+' || nzero2 || at least one + position should be black ||
 
 
