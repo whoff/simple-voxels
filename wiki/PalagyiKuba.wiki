@@ -106,6 +106,6 @@ where bit0 - bit5 denotes the direction as
 || bit5 || W ||
 
 As it can be seen,
-  * As a whole, 9,916,926 out of 25,985,144 [http://code.google.com/p/simple-voxels/wiki/SimpleVoxels#Note simple] configurations are deleted.
+  * As a whole, 9,916,926 out of 25,985,144 [http://code.google.com/p/simple-voxels/wiki/SimpleVoxels#Simple_Configurations simple] configurations are deleted.
   * For each direction, 2,124,283 configurations are deleted.
   * 279,655 configurations are shared by between any two directions.
