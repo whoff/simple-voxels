@@ -1,4 +1,11 @@
 #summary Palagyi and Kuba 6-subiteration thinning
+= Matching Templates =
+In [http://code.google.com/p/simple-voxels/wiki/Top#References [1]],
+Palagyi and Kuba proposed a 6-subiteration thinning algorithm that was based on a set of six 3x3x3 matching templates.
+Please refer to the paper for the definition of the matching templates.
+
+The following is their base templates for the U direction
+translated into [http://code.google.com/p/simple-voxels/wiki/Notations#Template_Mask Mask] structure.
 {{{
 namespace NPalagyi {
 
@@ -13,7 +20,89 @@ namespace NPalagyi {
 }
 }}}
 
+As for the notations, see also [http://code.google.com/p/simple-voxels/wiki/Notations#Template_Mask].
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/palagyi-templates.png]
 
+= Implementation =
+By enumerating all the symmetric configurations of each template within the NSEW plane (there are eight of them) and removing redundant ones,
+one can obtain the [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi_table.h list]
+of matching templates for the U direction:
+{{{
+const Mask palagyi_tables[][21] = {
+    {// dir = 0
+        // M1
+        Mask( 0x04021ff, 0x0402000, 0x7bfde00 ),
+        // M2
+        Mask( 0x041203f, 0x0412000 ),
+        Mask( 0x04031b6, 0x0403000 ),
+        Mask( 0x04025f8, 0x0402400 ),
+        Mask( 0x04060db, 0x0406000 ),
+        // M3
+        Mask( 0x0413036, 0x0413000 ),
+        Mask( 0x041601b, 0x0416000 ),
+        Mask( 0x04035b0, 0x0403400 ),
+        Mask( 0x04064d8, 0x0406400 ),
+        // M4
+        Mask( 0x040a1ff, 0x040a040 ),
+        Mask( 0x04221ff, 0x0422100 ),
+        Mask( 0x04023ff, 0x0402201 ),
+        Mask( 0x04029ff, 0x0402804 ),
+        // M5
+        Mask( 0x25c2fff, 0x2002000, 0x5a3d000 ),
+        Mask( 0x4f269ff, 0x0202000, 0x30d9600 ),
+        Mask( 0x74ba1ff, 0x0082000, 0x0b45e00 ),
+        Mask( 0x1e4b3ff, 0x0802000, 0x61b4c00 ),
+        // M6
+        Mask( 0x2f86dff, 0x2202000 ),
+        Mask( 0x2ec37ff, 0x2802000 ),
+        Mask( 0x6eb61ff, 0x0282000 ),
+        Mask( 0x3e9b1ff, 0x0882000 ),
+    },
+    {// dir = 1
+        // M1
+        Mask( 0x7fc2010, 0x0002010, 0x003dfef ),
+        // M2
+        Mask( 0x7e02410, 0x0002410 ),
+        Mask( 0x6d83010, 0x0003010 ),
+        Mask( 0x0fd2010, 0x0012010 ),
+        Mask( 0x36c6010, 0x0006010 ),
+        // M3
+//...
+    },
+};
+}}}
+
+By using this list, one can see if a voxel is deletable or not by
+{{{
+namespace NPalagyi {
+    bool IsDeletable( int bits, EDir6 dir ) {
+        for each (const Mask& mask in palagyi_tables[(int)dir]) {
+            if (mask.Match( bits )) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+}}}
+This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi_table.h Palagyi_table.h].
+
+= Statistics =
+The following table shows how many simple configuration can be deleted by their templates:
+
 [http://simple-voxels.googlecode.com/svn/wiki/images/palagyi-stat.png]
+
+where bit0 - bit5 denotes the direction as
+|| *Bit* || *Direction* ||
+|| bit0 || U ||
+|| bit1 || D ||
+|| bit2 || N ||
+|| bit3 || S ||
+|| bit4 || E ||
+|| bit5 || W ||
+
+As it can be seen,
+  * As a whole, 9,916,926 out of 25,985,144 [http://code.google.com/p/simple-voxels/wiki/SimpleVoxels#Note simple] configurations are deleted.
+  * For each direction, 2,124,283 configurations are deleted.
+  * 279,655 configurations are shared by between any two directions.
