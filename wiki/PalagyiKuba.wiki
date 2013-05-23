@@ -90,7 +90,7 @@ By using this list, one can see if a voxel is deletable or not by
 This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi_table.h Palagyi_table.h].
 
 = Statistics =
-The following table shows how many simple configuration can be deleted by their templates:
+The following table shows how many simple configurations can be deleted by their templates:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/palagyi-stat.png]
 
@@ -105,6 +105,6 @@ where bit0 - bit5 denotes the direction as
 
 As it can be seen,
   * As a whole, 9,916,926 out of 25,985,144 [http://code.google.com/p/simple-voxels/wiki/SimpleVoxels#Simple_Configurations simple] configurations are deleted.
-  * For each direction, 2,124,283 configurations are deleted.
-  * 279,655 configurations are shared by between any two directions.
+  * For each direction, 2,124,283 configurations are deletable.
   * No common deletable configurations between U and D. (Likewise, between N and S or between W and E.)
+  * Between other pairs of directions, 279,655 configurations are deletable in common.
