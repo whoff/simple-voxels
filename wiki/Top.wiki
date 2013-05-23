@@ -19,3 +19,4 @@ The current scope of this project is 3D parallel thinning algorithms that are ch
   * [http://www.sciencedirect.com/science/article/pii/S0167865598000312 [1]]. Palagyi, Kuba, A 3D 6-subiteration thinning algorithm for extracting medial lines, 1998.
   * [http://link.springer.com/chapter/10.1007/978-3-642-19867-0_15 [2]]. Raynal, Couprie, Isthmus-Based 6-Directional Parallel Thinning Algorithms, 2011.
   * [http://www.sciencedirect.com/science/article/pii/S0166218X05001319 [3]]. Lohou, Bertrand, A 3D 6-subiteration curve thinning algorithm based on P-simple points, 2005.
+  * [http://www.sciencedirect.com/science/article/pii/S1524070311000063 [4]]. Nemeth, Kardos, Palaghi, Thinning combined with iteration-by-iteration smoothing for 3D binary images, 2011.
