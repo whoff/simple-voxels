@@ -1,6 +1,24 @@
 #summary Raynal and Couprie isthmus-based 6-subiteration thinning
-= Summary =
-= Palagyi Variant to Delete End Points =
+With Palagyi and Kuba's thinning algorithm, it is often the case that
+one ends up with numerous spurious branches as well as object skeletons.
+One of the reasons of the spurious branches is the fact that their
+matching templates do not match to linear end points.
+Although this condition was employed to leave the object skeleton,
+it worked to leave more spurious branches.
+
+In order to address this issue, Raynal and Couprie proposed an isthmus based 6-subiteration thinning algorithm [http://code.google.com/p/simple-voxels/wiki/Top#References [2]], where the authors;
+  # loosened Palagyi and Kuba's matching templates to further delete end points, too
+  # instead defined isthmus points and prohibited removal of the isthmus points during the thinning process
+
+The isthmus points are defined by:
+  * The number of 26-adjacent foreground components >= 2.
+
+
+I found a set of 6 matching templates for the isthmus points.
+
+
+
+= Matching Templates for Deletable Voxels =
 {{{
 namespace NRaynal {
 
@@ -22,7 +40,7 @@ namespace NRaynal {
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-palagyi.png]
 
-= Isthmus Determination by Matching Templates =
+= Matching Templates for Isthmus Points =
 [http://simple-voxels.googlecode.com/svn/wiki/images/isthmus-masks.png]
 {{{
 namespace NIsthmus {
