@@ -1,6 +1,6 @@
 #summary Palagyi and Kuba 6-subiteration thinning
 *Contents*
-<wiki:toc max_depth="1" />
+<wiki:toc max_depth="2" />
 
 = Matching Templates =
 In [http://code.google.com/p/simple-voxels/wiki/Top#References [1]],
@@ -25,9 +25,11 @@ namespace NPalagyi {
 
 As for the notations, see also [http://code.google.com/p/simple-voxels/wiki/Notations#Template_Mask].
 
-[http://simple-voxels.googlecode.com/svn/wiki/images/palagyi-templates.png]
-
 It should be noted that their templates are carefully designed not to remove end points of curvilinear structures for the skeletonization purpose.
+
+Here is the console dump of the above templates:
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/palagyi-templates.png]
 
 = Implementation =
 By enumerating all the symmetric configurations of each template within the NSWE plane (there are eight of them) and removing redundant ones,
@@ -77,8 +79,9 @@ const Mask palagyi_tables[][21] = {
 };
 }}}
 
-By using this list, one can see if a voxel is deletable or not by
+By using this list, one can check if a voxel is deletable by
 {{{
+namespace NPalagyi {
     bool IsDeletable( int bits, EFaceDir dir ) {
         for each (const Mask& mask in palagyi_tables[(int)dir]) {
             if (mask.Match( bits )) {
@@ -87,12 +90,12 @@ By using this list, one can see if a voxel is deletable or not by
         }
         return false;
     }
-
+}
 }}}
-This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi_table.h Palagyi_table.h].
+This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi.cpp Palagyi.cpp].
 
 = Statistics =
-The following table shows how many simple configurations can be deleted by their templates:
+The table below shows how many simple configurations can be deleted by the above templates for each of the six directions:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/palagyi-stat.png]
 
