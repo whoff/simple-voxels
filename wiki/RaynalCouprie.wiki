@@ -1,27 +1,25 @@
 #summary Raynal and Couprie isthmus-based 6-subiteration thinning
 = Introduction =
-With the [http://code.google.com/p/simple-voxels/wiki/PalagyiKuba Palagyi and Kuba]'s deletable conditions being used for thinning implementation,
-one finds that numerous spurious branches will be generated
-along with object skeletons especially when the object size
-is large such as 512x512x1024, which is however typical with medical imaging applications these days.
+When the [http://code.google.com/p/simple-voxels/wiki/PalagyiKuba Palagyi and Kuba]'s deletable conditions is used for thinning implementation,
+one finds that numerous spurious branches are often generated
+along with object skeletons.
+This is the case especially when the object dimension is large such as 512x512x1024, which is however typical these days with medical imaging applications, for example.
 
 The spurious branches are generated partly due to
-the topology preserving nature that
-[http://code.google.com/p/simple-voxels/wiki/PalagyiKuba#Matching_Templates the matching templates]
-are designed to keep end points of
-linear structures.
+the skeleton extraction nature of the
+[http://code.google.com/p/simple-voxels/wiki/PalagyiKuba#Matching_Templates matching templates]
+that are designed to keep end points of curvilinear structures.
 In order to address this issue, Raynal and Couprie proposed an isthmus based 6-subiteration thinning algorithm [http://code.google.com/p/simple-voxels/wiki/Top#References [2]],
-where the authors;
+in which the authors;
   # loosened Palagyi and Kuba's deletable conditions to further delete end points, too
   # instead prohibited removal of _isthmus_ points
 The isthmus points were defined by:
-  * The number of 26-adjacent foreground components is more than or equal to two.
-The isthmus points are therefore critically connecting foreground components.
+  * The number of 26-adjacent foreground components >= 2
+The isthmus points are therefore connecting foreground components.
 For example, the points on a curve are all isthmus except the end points.
-By removing branches that do not contain isthmus points,
-the spurious branches are expected to be reduced.
+The spurious branches are expected to be reduced by the removal of end points, while the major branches are remained by keeping isthmus points.
 
-= Contribution =
+= Proposed Method =
 As for the implementation of the isthmus point detection,
 the authors used "look-up table in order to use pre-computation,
 for each possible configuration of 26-neighborhood" (Section 4 [2]).
