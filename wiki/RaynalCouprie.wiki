@@ -141,7 +141,13 @@ where bit0 - bit5 denotes the following directions:
 || bit4 || W ||
 || bit5 || E ||
 
-There are
+Compared with [PalagyiKuba#Statistics],
+  * For each direction, 2,124,292 - 2,124,283 = 9 configurations are further removed.
+  * As a whole, 9,916,952 - 9,916,926 = 26 configurations are further removed.
+These numbers clearly coincide with the number of end point configurations.
+
+In the console dump below, the configurations that are removable by Raynal and Couprie's but not by Palagyi and Kuba's are dumped for the U direction.
+It is confirmed that they are all end points.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-palagyi.png]
 
