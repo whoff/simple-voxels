@@ -1,35 +1,37 @@
 #summary Raynal and Couprie isthmus-based 6-subiteration thinning
 = Introduction =
 When the [http://code.google.com/p/simple-voxels/wiki/PalagyiKuba Palagyi and Kuba]'s deletable conditions is used for thinning implementation,
-one finds that numerous spurious branches are often generated
+one finds that numerous spurious branches are generated
 along with object skeletons.
-This is the case especially when the object dimension is large such as 512x512x1024, which is however typical these days with medical imaging applications, for example.
+This is especially the case for large object dimension such as 512x512x1024, which is however typical recently with medical imaging applications, for example.
+The spurious branches are generated partly due to the skeleton preserving nature of the
+[http://code.google.com/p/simple-voxels/wiki/PalagyiKuba#Matching_Templates matching templates],
+which are designed to keep end points of curvilinear structures.
 
-The spurious branches are generated partly due to
-the skeleton extraction nature of the
-[http://code.google.com/p/simple-voxels/wiki/PalagyiKuba#Matching_Templates matching templates]
-that are designed to keep end points of curvilinear structures.
-In order to address this issue, Raynal and Couprie proposed an isthmus based 6-subiteration thinning algorithm [http://code.google.com/p/simple-voxels/wiki/Top#References [2]],
-in which the authors;
+In order to address this issue, Raynal and Couprie proposed an isthmus based 6-subiteration thinning algorithm.
+In [http://code.google.com/p/simple-voxels/wiki/Top#References [2]],
+the authors;
   # loosened Palagyi and Kuba's deletable conditions to further delete end points, too
   # instead prohibited removal of _isthmus_ points
 The isthmus points were defined by:
   * The number of 26-adjacent foreground components >= 2
-The isthmus points are therefore connecting foreground components.
-For example, the points on a curve are all isthmus except the end points.
-The spurious branches are expected to be reduced by the removal of end points, while the major branches are remained by keeping isthmus points.
+The isthmus points are therefore the points that connect foreground components. For example, the points on a curve line are all isthmus except the end points.
 
-= Proposed Method =
+The spurious branches will be reduced by the removal of end points while the skeletal branches will be remained by keeping isthmus points.
+
+= Project Proposal =
 As for the implementation of the isthmus point detection,
 the authors used "look-up table in order to use pre-computation,
 for each possible configuration of 26-neighborhood" (Section 4 [2]).
 
 In order to allow more memory efficient implementation,
-I tried to find matching templates for the isthmus detection.
+I tried to find a set of matching templates for the isthmus points.
 In the latter of this page,
 I will propose a set of 6 matching templates for the isthmus detection.
 
-= Matching Templates for Deletable Voxels =
+= Matching Templates for Deletable Points =
+The authors proposed a variant of Palagyi and Kuba's matching templates to additionally remove end points.
+The following is the matching templates for deletable points.
 {{{
 namespace NRaynal {
 
@@ -44,10 +46,23 @@ namespace NRaynal {
     };
 }
 }}}
-
+The console dump of the above masks:
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-templates.png]
 
+These are to be compared with
+http://code.google.com/p/simple-voxels/wiki/PalagyiKuba?ts=1369409695&updated=PalagyiKuba#Matching_Templates.
+
+== Statistics ==
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-stat.png]
+
+where bit0 - bit5 denotes again the following directions:
+|| *Bit* || *Direction* ||
+|| bit0 || U ||
+|| bit1 || D ||
+|| bit2 || N ||
+|| bit3 || S ||
+|| bit4 || W ||
+|| bit5 || E ||
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-palagyi.png]
 
