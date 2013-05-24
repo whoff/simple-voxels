@@ -28,7 +28,7 @@ for each possible configuration of 26-neighborhood" (Section 4 [2]).
 
 In order to allow more memory efficient implementation,
 I tried to find a set of matching templates for the isthmus points.
-In [Matching_Templates_for_Isthmus_Points],
+In [RaynalCouprie#Matching_Templates_for_Isthmus_Points],
 I will propose a set of six matching templates for the isthmus detection.
 
 = Matching Templates for Deletable Points =
