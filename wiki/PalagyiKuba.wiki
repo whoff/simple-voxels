@@ -1,4 +1,7 @@
 #summary Palagyi and Kuba 6-subiteration thinning
+*Contents*
+<wiki:toc max_depth="1" />
+
 = Matching Templates =
 In [http://code.google.com/p/simple-voxels/wiki/Top#References [1]],
 Palagyi and Kuba proposed a 6-subiteration thinning algorithm that was based on a set of six 3x3x3 matching templates.
