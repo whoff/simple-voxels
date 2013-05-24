@@ -47,12 +47,15 @@ namespace NRaynal {
 }
 }}}
 The console dump of the above masks:
+
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-templates.png]
 
-These are to be compared with
+== Statistics ==
+The above set of matching templates is to be compared with
 http://code.google.com/p/simple-voxels/wiki/PalagyiKuba?ts=1369409695&updated=PalagyiKuba#Matching_Templates.
 
-== Statistics ==
+Let's see the statistics of the matched configurations.
+
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-stat.png]
 
 where bit0 - bit5 denotes again the following directions:
@@ -63,6 +66,8 @@ where bit0 - bit5 denotes again the following directions:
 || bit3 || S ||
 || bit4 || W ||
 || bit5 || E ||
+
+There are
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-palagyi.png]
 
