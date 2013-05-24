@@ -1,6 +1,6 @@
 #summary Raynal and Couprie isthmus-based 6-subiteration thinning
 *Contents*
-<wiki:toc max_depth="1" />
+<wiki:toc max_depth="2" />
 
 = Introduction =
 When the [http://code.google.com/p/simple-voxels/wiki/PalagyiKuba#Matching_Templates deletable conditions] proposed by Palagyi and Kuba is used for thinning implementation,
@@ -28,12 +28,15 @@ for each possible configuration of 26-neighborhood" (Section 4 [2]).
 
 In order to allow more memory efficient implementation,
 I tried to find a set of matching templates for the isthmus points.
-In [RaynalCouprie#Matching_Templates_for_Isthmus_Points],
+In the [RaynalCouprie#Matching_Templates_for_Isthmus_Points latter] of this page,
 I will propose a set of six matching templates for the isthmus detection.
 
 = Matching Templates for Deletable Points =
-The authors proposed a variant of Palagyi and Kuba's matching templates to additionally remove end points.
-The following is the matching templates for deletable points.
+In [http://code.google.com/p/simple-voxels/wiki/Top#References [2]],
+the authors proposed a variant of Palagyi and Kuba's matching templates to additionally remove end points.
+
+The following is their base templates for the U direction
+translated into [http://code.google.com/p/simple-voxels/wiki/Notations#Template_Mask Mask] structure.
 {{{
 namespace NRaynal {
 
@@ -48,19 +51,90 @@ namespace NRaynal {
     };
 }
 }}}
-The console dump of the above masks:
+
+Compared with [http://code.google.com/p/simple-voxels/wiki/PalagyiKuba#Matching_Templates],
+  * M1 is loosened to M1' to include 6-adjacent end points.
+  * M5 is loosened to M5' to include 18-adjacent end points.
+  * M7' is added for 26-adjacent end points.
+  * Other templates are same.
+
+Here is the console dump of the above templates:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-templates.png]
 
-== Statistics ==
-The above set of matching templates is to be compared with
-http://code.google.com/p/simple-voxels/wiki/PalagyiKuba?ts=1369409695&updated=PalagyiKuba#Matching_Templates.
+== Implementation ==
+By enumerating all the symmetric configurations of each template within the NSWE plane (there are eight of them) and removing redundant ones,
+one can obtain the [http://code.google.com/p/simple-voxels/source/browse/trunk/Raynal_table.h list]
+of matching templates for the U direction:
+{{{
+const Mask raynal_tables[][25] = {
+    {// dir = 0
+        // M1
+        Mask( BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ), BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) ) ),
+        // M2
+        Mask( BV( BP(0,7,7), BP(2,2,0), BP(0,2,0) ), BV( BP(0,0,0), BP(2,2,0), BP(0,2,0) ) ),
+        Mask( BV( BP(3,3,3), BP(0,6,0), BP(0,2,0) ), BV( BP(0,0,0), BP(0,6,0), BP(0,2,0) ) ),
+        Mask( BV( BP(7,7,0), BP(0,2,2), BP(0,2,0) ), BV( BP(0,0,0), BP(0,2,2), BP(0,2,0) ) ),
+        Mask( BV( BP(6,6,6), BP(0,3,0), BP(0,2,0) ), BV( BP(0,0,0), BP(0,3,0), BP(0,2,0) ) ),
+        // M3
+        Mask( BV( BP(0,3,3), BP(2,6,0), BP(0,2,0) ), BV( BP(0,0,0), BP(2,6,0), BP(0,2,0) ) ),
+        Mask( BV( BP(0,6,6), BP(2,3,0), BP(0,2,0) ), BV( BP(0,0,0), BP(2,3,0), BP(0,2,0) ) ),
+        Mask( BV( BP(3,3,0), BP(0,6,2), BP(0,2,0) ), BV( BP(0,0,0), BP(0,6,2), BP(0,2,0) ) ),
+        Mask( BV( BP(6,6,0), BP(0,3,2), BP(0,2,0) ), BV( BP(0,0,0), BP(0,3,2), BP(0,2,0) ) ),
+        // M4
+        Mask( BV( BP(7,7,7), BP(4,2,0), BP(0,2,0) ), BV( BP(4,0,0), BP(4,2,0), BP(0,2,0) ) ),
+        Mask( BV( BP(7,7,7), BP(1,2,0), BP(0,2,0) ), BV( BP(1,0,0), BP(1,2,0), BP(0,2,0) ) ),
+        Mask( BV( BP(7,7,7), BP(0,2,4), BP(0,2,0) ), BV( BP(0,0,4), BP(0,2,4), BP(0,2,0) ) ),
+        Mask( BV( BP(7,7,7), BP(0,2,1), BP(0,2,0) ), BV( BP(0,0,1), BP(0,2,1), BP(0,2,0) ) ),
+        // M5
+        Mask( BV( BP(7,7,7), BP(0,2,7), BP(2,2,7) ), BV( BP(0,0,0), BP(0,2,0), BP(2,0,0) ) ),
+        Mask( BV( BP(7,7,7), BP(1,3,1), BP(1,7,1) ), BV( BP(0,0,0), BP(0,2,0), BP(0,4,0) ) ),
+        Mask( BV( BP(7,7,7), BP(7,2,0), BP(7,2,2) ), BV( BP(0,0,0), BP(0,2,0), BP(0,0,2) ) ),
+        Mask( BV( BP(7,7,7), BP(4,6,4), BP(4,7,4) ), BV( BP(0,0,0), BP(0,2,0), BP(0,1,0) ) ),
+        // M6
+        Mask( BV( BP(7,7,7), BP(0,3,3), BP(2,7,3) ), BV( BP(0,0,0), BP(0,2,0), BP(2,4,0) ) ),
+        Mask( BV( BP(7,7,7), BP(0,6,6), BP(2,7,6) ), BV( BP(0,0,0), BP(0,2,0), BP(2,1,0) ) ),
+        Mask( BV( BP(7,7,7), BP(3,3,0), BP(3,7,2) ), BV( BP(0,0,0), BP(0,2,0), BP(0,4,2) ) ),
+        Mask( BV( BP(7,7,7), BP(6,6,0), BP(6,7,2) ), BV( BP(0,0,0), BP(0,2,0), BP(0,1,2) ) ),
+        // M7
+        Mask( BV( BP(7,7,7), BP(7,7,7), BP(7,7,7) ), BV( BP(0,0,0), BP(0,2,0), BP(0,0,1) ) ),
+        Mask( BV( BP(7,7,7), BP(7,7,7), BP(7,7,7) ), BV( BP(0,0,0), BP(0,2,0), BP(0,0,4) ) ),
+        Mask( BV( BP(7,7,7), BP(7,7,7), BP(7,7,7) ), BV( BP(0,0,0), BP(0,2,0), BP(1,0,0) ) ),
+        Mask( BV( BP(7,7,7), BP(7,7,7), BP(7,7,7) ), BV( BP(0,0,0), BP(0,2,0), BP(4,0,0) ) ),
+    },
+    {// dir = 1
+        // M1
+        Mask( BV( BP(0,2,0), BP(0,2,0), BP(7,7,7) ), BV( BP(0,2,0), BP(0,2,0), BP(0,0,0) ) ),
+        // M2
+        Mask( BV( BP(0,2,0), BP(0,2,2), BP(7,7,0) ), BV( BP(0,2,0), BP(0,2,2), BP(0,0,0) ) ),
+        Mask( BV( BP(0,2,0), BP(0,6,0), BP(3,3,3) ), BV( BP(0,2,0), BP(0,6,0), BP(0,0,0) ) ),
+        Mask( BV( BP(0,2,0), BP(2,2,0), BP(0,7,7) ), BV( BP(0,2,0), BP(2,2,0), BP(0,0,0) ) ),
+        Mask( BV( BP(0,2,0), BP(0,3,0), BP(6,6,6) ), BV( BP(0,2,0), BP(0,3,0), BP(0,0,0) ) ),
+//...
+}
+}}}
 
-Let's see the statistics of the matched configurations.
+By using this list, one can check if a voxel is deletable by
+{{{
+namespace NPalagyi {
+    bool IsDeletable( int bits, EFaceDir dir ) {
+        for each (const Mask& mask in palagyi_tables[(int)dir]) {
+            if (mask.Match( bits )) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+}}}
+This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Isthmus.cpp Isthmus.cpp].
+
+== Statistics ==
+The table below shows how many simple configurations can be deleted by the above templates for each of the six directions:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-stat.png]
 
-where bit0 - bit5 denotes again the following directions:
+where bit0 - bit5 denotes the following directions:
 || *Bit* || *Direction* ||
 || bit0 || U ||
 || bit1 || D ||
