@@ -3,12 +3,12 @@
 <wiki:toc max_depth="2" />
 
 = Matching Templates =
-In [http://code.google.com/p/simple-voxels/wiki/Top#References [1]],
+In [Top#References [1]],
 Palagyi and Kuba proposed a 6-subiteration thinning algorithm that was based on a set of six 3x3x3 matching templates.
 Please refer to the paper for the definition of the matching templates.
 
 The following is their base templates for the U direction
-translated into [http://code.google.com/p/simple-voxels/wiki/Notations#Template_Mask Mask] structure.
+translated into [Notations#Template_Mask Mask] structure.
 {{{
 namespace NPalagyi {
 
@@ -23,7 +23,7 @@ namespace NPalagyi {
 }
 }}}
 
-As for the notations, see also [http://code.google.com/p/simple-voxels/wiki/Notations#Template_Mask].
+As for the notations, see also [Notations#Template_Mask].
 
 It should be noted that their templates are carefully designed not to remove end points of curvilinear structures for the skeletonization purpose.
 
@@ -109,7 +109,7 @@ where bit0 - bit5 denotes the following directions:
 || bit5 || E ||
 
 As it can be seen,
-  * As a whole, 9,916,926 out of 25,985,144 [http://code.google.com/p/simple-voxels/wiki/SimpleVoxels#Simple_Configurations simple] configurations are deleted.
+  * As a whole, 9,916,926 out of 25,985,144 [SimpleVoxels#Simple_Configurations simple] configurations are deleted.
   * For each direction, 2,124,283 configurations are deletable.
   * No common deletable configurations between U and D. (Likewise, between N and S or between W and E.)
   * Between other pairs of directions, 279,655 configurations are deletable in common.
