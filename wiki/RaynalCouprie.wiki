@@ -3,7 +3,7 @@
 <wiki:toc max_depth="2" />
 
 = Introduction =
-When the [http://code.google.com/p/simple-voxels/wiki/PalagyiKuba#Matching_Templates deletable conditions] proposed by Palagyi and Kuba is used for thinning implementation,
+When the [PalagyiKuba#Matching_Templates deletable conditions] proposed by Palagyi and Kuba is used for thinning implementation,
 one finds that numerous spurious branches are generated
 along with object skeletons.
 This is especially the case with higher object resolution such as 512x512x1024, which is however typical with, for example, recent medical imaging applications.
@@ -11,8 +11,7 @@ The spurious branches are generated partly due to the skeleton preserving nature
 which are designed to keep end points of curvilinear structures.
 
 In order to address this issue, Raynal and Couprie proposed an isthmus based 6-subiteration thinning algorithm.
-In [http://code.google.com/p/simple-voxels/wiki/Top#References [2]],
-the authors:
+In [Top#References [2]], the authors:
   # loosened Palagyi and Kuba's deletable conditions to further remove end points
   # instead prohibited removal of _isthmus_ points
 The isthmus points were defined as the points that satisfy:
@@ -32,11 +31,10 @@ In the [RaynalCouprie#Matching_Templates_for_Isthmus_Points latter] of this page
 I will propose a set of six matching templates for the isthmus detection.
 
 = Matching Templates for Deletable Points =
-In [http://code.google.com/p/simple-voxels/wiki/Top#References [2]],
-the authors proposed a variant of Palagyi and Kuba's matching templates to additionally remove end points.
+In [Top#References [2]], the authors proposed a variant of Palagyi and Kuba's matching templates to additionally remove end points.
 
 The following is their base templates for the U direction
-translated into [http://code.google.com/p/simple-voxels/wiki/Notations#Template_Mask Mask] structure.
+translated into [Notations#Template_Mask Mask] structure.
 {{{
 namespace NRaynal {
 
@@ -52,7 +50,7 @@ namespace NRaynal {
 }
 }}}
 
-Compared with [http://code.google.com/p/simple-voxels/wiki/PalagyiKuba#Matching_Templates],
+Compared with [PalagyiKuba#Matching_Templates],
   * M1 is loosened to M1' to include 6-adjacent end points.
   * M5 is loosened to M5' to include 18-adjacent end points.
   * M7' is added for 26-adjacent end points.
