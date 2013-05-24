@@ -94,7 +94,7 @@ The following table shows how many simple configurations can be deleted by their
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/palagyi-stat.png]
 
-where bit0 - bit5 denotes the direction as
+where bit0 - bit5 denotes the following directions:
 || *Bit* || *Direction* ||
 || bit0 || U ||
 || bit1 || D ||
