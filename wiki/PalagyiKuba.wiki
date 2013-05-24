@@ -30,7 +30,7 @@ As for the notations, see also [http://code.google.com/p/simple-voxels/wiki/Nota
 It should be noted that their templates are carefully designed not to remove end points of curvilinear structures for the skeletonization purpose.
 
 = Implementation =
-By enumerating all the symmetric configurations of each template within the NSEW plane (there are eight of them) and removing redundant ones,
+By enumerating all the symmetric configurations of each template within the NSWE plane (there are eight of them) and removing redundant ones,
 one can obtain the [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi_table.h list]
 of matching templates for the U direction:
 {{{
