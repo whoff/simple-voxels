@@ -24,8 +24,7 @@ As for the notations, see also [http://code.google.com/p/simple-voxels/wiki/Nota
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/palagyi-templates.png]
 
-It should be noted that their templates are carefully designed not to remove the end points of line structures for skeletonization purpose.
-Hence, a black point is deletable only when it has more than or equal to two adjacent black points.
+It should be noted that their templates are carefully designed not to remove end points of curvilinear structures for the skeletonization purpose.
 
 = Implementation =
 By enumerating all the symmetric configurations of each template within the NSEW plane (there are eight of them) and removing redundant ones,
