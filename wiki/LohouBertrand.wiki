@@ -130,6 +130,26 @@ Finally, Px is obtained by negating _rx_.
 
 The P2 condition can be checked by looking at the Px bit that corresponds to the center position.
 
+
+== C2: only 1 background components ==
+Under the condition that the x is P2-simple,
+the C2 condition turned out to be reduced to the following two templates.
+Note that because x is P2-simple, its U-neighbor, the top center point, is white for both of the templates.
+Also note that, if its N/S/W/E neighbor is white, their U-neighbor is white, too.
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t6nx-masks.png]
+
+=== Left template ===
+When the bottom center point is black, the C2 condition is always satisfied as long as x is P2-simple.
+This is because, if any N/S/W/E neighbor of x is white, its U-neighbor is also white due to the P2-simplicity of x, and thus it is 6-connected with the top center white point.
+This ensures that there is exactly one background component.
+
+=== Right template ===
+On the other hand, when the bottom center point is white, it should be connected with the top center white point because the C2 condition requires the number of background points to be one.
+Also because the component is 6-connected, there should be a white column in any of N/S/W/E neighborhood of x.
+Again due to the P2-simplicity of x, the right template is enough
+to ensure that there is exactly one background component in this case.
+
 == C3 ==
 The C3 condition requires that for any P2x simple point other than x,
 there can be found a Rx point in its 26-neighborhood.
@@ -148,27 +168,6 @@ enum {
     if (~rn & px & ~N0_bits) return false;
 //...
 }}}
-
-== C2 ==
-Under the condition that the x is P2-simple,
-the C2 condition turned out to be reduced to the following templates.
-
-[http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t6nx-masks.png]
-
-For both the templates, the top center point is white because the center point x is already known to be P2-simple.
-
-=== Left template ===
-If the bottom center point is black, it cannot be P2x simple because its U-neighbor is black and so belongs to Rx.
-Then,it covers any Px points in the middle and the bottom plane.
-From the thorough search, it turned out that
-this template covers all configurations in which the bottom center is black under the assumption that x is P2-simple.
-
-=== Right template ===
-If the bottom center point is white, it should be connected with the top center white point because the C2 condition requires the number of background points to be one with the 6-adjacency.
-Therefore, there should be a white column in any of N/S/W/E neighbor hood of x.
-Also note that from the assumption that x is P2-simple,
-if any of N/S/E/W neighbors of x is white, its U-neighbor is also white.
-The right template covers all configurations in which the bottom center is white in this way.
 
 {{{
 namespace NPxSimple {// P2x-simple
