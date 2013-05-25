@@ -9,7 +9,7 @@ The current scope of this project is 3D parallel thinning algorithms that are ch
   * Parallel thinning with 6 subiterations
   * Deletability of a voxel can be determined locally with its 3x3x3 neighborhood
 
-This Wiki content is also a footage of my trial seeking for a way to reduce spurious branches, and from some point, to obtain the ultimate thinning result.
+This Wiki content is also a footprint of my trial seeking for a way to reduce spurious branches, and from some point, to obtain the ultimate thinning result.
 
 = Contents =
   # [Notations]
