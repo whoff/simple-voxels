@@ -7,22 +7,22 @@ By using [RaynalCouprie Raynal and Couprie]'s method,
 a considerable amount of spurious brances will be reduced.
 In addition, as was suggested in [Top#References [2]],
 if the isthmus points were not preserved but removed,
-all the skeletal branches would also be removed. and result in _ultimate thinning_,
+all the skeletal branches would also be removed resulting in _ultimate thinning_,
 where no more points can be removed without breaking the topology.
-The ultimately thinned object has no branches but composed of circular curves.
+An ultimately thinned object has no branches and is composed of circular curves or cocoon like shells.
 
-However, as far as I tested, there were still some branches even when the isthmus points were removed.
-Some of the remaining branches end with specific configurations depicted in the figure below.
+However, as far as I tested, there still remained some branches even when the isthmus points were removed.
+Some of the remaining branches end with a specific configuration depicted in the figure below.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-not-removed.png]
 
-It turned out that this configuration is one of the points that are pointed out
+It turned out that this configuration is one of those that are pointed out
 to be non-deletable by [PalagyiKuba Palagyi and Kuba]'s method [Top#References [3]].
 
 In [Top#References [3]], Lohou and Bertrand proposed another
 deletable condition based on a powerful notion of _Px-simple_,
-with which one can devise a parallel thinning algorithm without checking
-whether its matching templates are consistent and allow the parallel thinning.
+with which one can devise a new parallel thinning algorithm without checking
+whether its matching templates are consistent to allow parallel removal of deletable points while preserving topology.
 
 = Definition =
 The deletable condition is given based on P2x-simplicity.
