@@ -248,4 +248,37 @@ The table below shows how many simple configurations can be deleted by the P2x-s
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-stat.png]
 
+where bit0 - bit5 denotes the following directions:
+|| *Bit* || *Direction* ||
+|| bit0 || U ||
+|| bit1 || D ||
+|| bit2 || N ||
+|| bit3 || S ||
+|| bit4 || W ||
+|| bit5 || E ||
+
+It can be observed that
+  * As a whole, 23,722,000 out of 25,985,144 [SimpleVoxels#Simple_Configurations simple] configurations are deletable.
+  * For each direction, 6,129,532 configurations are deletable.
+  * Between the opposite directions such as U and D, 641,232 configurations are deletable in common. (Likewise, between N and S or between W and E.)
+
+= Proposal for Ultimate Thinning =
+Compared with [PalagyiKuba Palagyi and Kuba]'s method and [RaynalCouprie Raynal and Couprie]'s method,
+the above deletable condition allows to remove more than twice number of simple voxels.
+However, there were found some configuration that are deletable by [RaynalCouprie Raynal and Couprie]'s method, but not by this method as follows:
+ 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-pxsimple.png]
+
+Namely, the diagonal end point depicted in the figure below is not deletable.
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-diag-end.png]
+
+One would want to delete the above configurations too if this method is to be used for the [LohouBertrand#Introduction ultimate thinning] purpose, Assume that the above template is further added to the set of deletable configuration for the U direction. If the bottom black point is not deletable in any case, this extension does not break the parallel thinning nature. 
+
+The above configuration looks like the next one when checking the deletable condition for the bottom black point.
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-diag-end-opp.png]
+
+In this configuration, because the black point at the top is P2x-simple and because there is no Rx point in its 26-neighborhood, the C3 condition does not hold.
+
+Therefore the diagonal end point can be deleted safely.
