@@ -15,13 +15,13 @@ In [Top#References [2]], the authors:
   # loosened Palagyi and Kuba's deletable conditions to further remove end points (see the figure below)
   # instead prohibited removal of _isthmus_ points
 
-[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-end-points.png]
-
 The isthmus points were defined as the points that satisfy:
   * The number of 26-adjacent foreground components >= 2
 The isthmus points are therefore the points that connect multiple foreground components. For example, the points on a curve line are all isthmus points except the two end points.
 
 It is expected that the spurious branches will be reduced by the removal of end points while the skeletal branches will remain by preserving isthmus points.
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-end-points.png]
 
 = Project Proposal =
 As for the implementation of the isthmus point detection,
