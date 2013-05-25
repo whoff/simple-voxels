@@ -24,17 +24,32 @@ deletable condition based on a powerful notion of _Px-simple_,
 with which one can devise a new parallel thinning algorithm without checking
 whether its matching templates are consistent to allow parallel removal of deletable points while preserving topology.
 
-= Definition =
-The deletable condition is given based on P2x-simplicity.
+In the rest of this page, after the deletable condition is briefly explained,
+an implementation will be proposed using direct bit operations and supplement template matching.
 
+= Definition =
 == P2-simple ==
-The P2-simplicity is defined by a point x and its 4-neighborhodd with the points above them as in:
+To begin with, a point x is called P2-simple, as regards the U direction for example, if:
+  # U neighbor is white.
+  # If N/S/W/E neighbor is white, then the point above it is also white.
+
+In the figure below, the second condition says that if a yellow point is white, then the gray point above it should be white.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-p2simple.png]
 
+== P2x-simple ==
+For points in the 26-neighborhood of x, they are called P2x-simple,
+if they may be P2-simple when looking at the 3x3x3 neighborhood of x only.
 
-  * x is P2 simple.
-  * P2x points in the 26-neighborhood of x is 
+Or in other words, a 26-neighborhood of x is not P2x-simple
+if it does not satisfy the P2-simple condition already in the 3x3x3 neighborhood of x.
+
+Here are defined following two sets of black points:
+  * Px : the set of black points in the 3x3x3 neighborhood of x that are P2x-simple
+  * Rx : the set of black points in the 3x3x3 neighborhood of x that are not P2x-simple
+
+== Deletable Condition ==
+
 
 = Project Proposal =
 
