@@ -1,8 +1,8 @@
 #summary notations used in this project
 = Voxel Neighbors =
-In the implementation of this project, the 3x3x3 neighborhood situation of a voxel is represented by a 32-bit integer whose lower 27 bits show whether the corresponding position is foreground (black) or background (white) by the bit '1' or '0', respectively.
+In the implementation of this project, 3x3x3 neighborhood configurations of a voxel are represented by 32-bit integers whose lower 27 bits show whether the corresponding position is foreground (black) or background (white) by the bit '1' or '0', respectively.
 
-The assignment of the neighboring points to the bit positions is as follows:
+The assignment of neighboring points to bit positions is as follows:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-bits.png]
 
