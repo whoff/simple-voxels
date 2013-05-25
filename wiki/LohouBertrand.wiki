@@ -62,14 +62,58 @@ When all the six directions are considered,
 23,722,000 points are deletable whereas 9,196,926 points are
 deletable with Palagyi and Kuba's condition.
 
-= Project Proposal =
-The authors in the paper proposed the use two BDD trees for the determination if a point is deletable or not with the above condition.
-However, I was again curious about the matching templates for the above deletable conditions but had a hard time in finding such a set.
+= Proposed Method =
+In [Top#References [3]], the authors proposed the use two binary decision diagrams to determine if a point is deletable or not with the above condition.
 
+I was again interested in devising matching templates for the above deletable conditions but failed to find such a single set of matching templates for the deletable condition as a whole.
+So, I decided to look into each condition of P2, C1/2/3/4 one by one.
+
+== C4 ==
+First of all, the number of configurations that satisfy each conditions was investigated.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxcondition-stat.png]
 
+where bit0 - bit5 denotes the following conditions:
+|| *Bit* || *Condition* || 
+|| bit0 || deletable ||
+|| bit1  || P2 ||
+|| bit2  || C1 ||
+|| bit3  || C2 ||
+|| bit4  || C3 ||
+|| bit5  || C4 ||
 
+From the co-occurrence table above, it can be seen that C4 is always satisfied if P2 is satisfied.
+The condition C4 can therefore be ignored.
+
+== P2 ==
+The matching templates for P2 condition are straight forward from the definition of P2 simple.
+Hence, it would be efficient to check the P2 condition first because the matching templates for other conditions would be simplified by using the configurations for which P2 fails as the _don't care_ configurations.
+
+However, even with this technique, the matching templates for C1 and C3 were still hard to find primarily because they are talking about Px and Rx whereas the matching templates are for the original x neighborhood.
+
+On the other hand, the set Px or Rx can be calculated by simple bit operations, and it can compute the P2 condition at the same time.
+With Px and Rx, the matching templates for the conditions C1 and C3 are expected to be practically simple.
+
+The code below computes the Px for the U direction given a configuration as an 32-bit integer _bits_.
+Please see [Notations] for the bit assignment of positions within _bits_.
+{{{
+enum {
+    DX = 1,
+    DY = 3,
+    DZ = 9,
+};
+
+const int MaskW = BV( BP(3,3,3), BP(3,3,3), BP(3,3,3) );    // West
+const int MaskE = BV( BP(6,6,6), BP(6,6,6), BP(6,6,6) );    // East
+const int MaskN = BV( BP(7,7,0), BP(7,7,0), BP(7,7,0) );    // North
+const int MaskS = BV( BP(0,7,7), BP(0,7,7), BP(0,7,7) );    // South
+
+int CalcP2x( int bits ) {
+    const int top = bits << DZ;
+    const int mid = top & ~bits;
+    const int rx = top | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX) | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY);
+    return bits & ~rx;
+}}}
 
 
 
