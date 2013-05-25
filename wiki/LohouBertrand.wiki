@@ -157,12 +157,12 @@ Also note that, if its N/S/W/E neighbor is white, their U-neighbor is white, too
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t6nx-masks.png]
 
-=== Left template ===
+=== When bottom center is black (left) ===
 When the bottom center point is black, the C2 condition is always satisfied as long as x is P2-simple.
 This is because, if any N/S/W/E neighbor of x is white, its U-neighbor is also white due to the P2-simplicity of x, and thus it is 6-connected with the top center white point.
 This ensures that there is exactly one background component.
 
-=== Right template ===
+=== When bottom center is white (right) ===
 On the other hand, when the bottom center point is white, it should be connected with the top center white point because the C2 condition requires the number of background points to be one.
 Also because the component is 6-connected, there should be a white column in any of N/S/W/E neighborhood of x.
 Again due to the P2-simplicity of x, the right template is enough
@@ -172,8 +172,12 @@ to ensure that there is exactly one background component in this case.
 First of all, all the black points in the top plane is P2x-simple.
 Rx points exist in the middle or the bottom planes only.
 
-The C1 condition requires that the number of 26-connected components in Rx is one.
-Similar to the [RaynalCouprie isthmus templates],
+=== When bottom center is black ===
+The C1 condition will always be satisfied because the bottom center is a Rx point and there is no Rx point on the top plane,
+all the Rx points will be 26-adjacent to the bottom center.
+
+=== When bottom center is white ===
+In this case, similar to the [RaynalCouprie isthmus templates],
 I figured out matching templates for Rx points to be divided into at least two components.
 If a configuration matches to any of the following two templates,
 the C1 condition will fail.
@@ -191,7 +195,56 @@ namespace NPxSimple {// P2x-simple
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t26rx-templates.png]
 
-== Statistics ==
+== Implementation ==
+{{{
+const Mask pxsimple_T26Rx_tables[][6] = {
+    {// dir = 0
+        // M1
+        Mask( BV( BP(0,0,0), BP(2,0,2), BP(2,2,2) ), 0, BV( BP(0,0,0), BP(1,1,1), BP(1,1,1) ), BV( BP(0,0,0), BP(4,4,4), BP(4,4,4) ) ),
+        Mask( BV( BP(0,0,0), BP(0,5,0), BP(0,7,0) ), 0, BV( BP(0,0,0), BP(7,0,0), BP(7,0,0) ), BV( BP(0,0,0), BP(0,0,7), BP(0,0,7) ) ),
+        // M2
+        Mask( BV( BP(0,0,0), BP(2,1,0), BP(2,3,0) ), 0, BV( BP(0,0,0), BP(1,0,0), BP(1,0,0) ), BV( BP(0,0,0), BP(4,4,7), BP(4,4,7) ) ),
+        Mask( BV( BP(0,0,0), BP(2,4,0), BP(2,6,0) ), 0, BV( BP(0,0,0), BP(4,0,0), BP(4,0,0) ), BV( BP(0,0,0), BP(1,1,7), BP(1,1,7) ) ),
+        Mask( BV( BP(0,0,0), BP(0,4,2), BP(0,6,2) ), 0, BV( BP(0,0,0), BP(0,0,4), BP(0,0,4) ), BV( BP(0,0,0), BP(7,1,1), BP(7,1,1) ) ),
+        Mask( BV( BP(0,0,0), BP(0,1,2), BP(0,3,2) ), 0, BV( BP(0,0,0), BP(0,0,1), BP(0,0,1) ), BV( BP(0,0,0), BP(7,4,4), BP(7,4,4) ) ),
+    },
+//...
+};
+
+const int MaskT6N4 = BV( BP(0,0,0), BP(2,5,2), BP(0,0,0) );
+const int MaskBtm  = BV( BP(0,0,0), BP(0,0,0), BP(0,2,0) );
+
+bool IsP2xSimpleU( int bits ) {
+    const int top = (bits << DZ);
+    const int mid = (bits << DZ) & ~bits;
+    const int rx = bits & (top | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX) | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY));
+    const int px = bits & ~rx;
+    if (rx == 0) return false;              // C1
+    if ((px & N0_bits) == 0) return false;  // x is P2?
+    {// C3
+        int rn = rx;    // N26(Rx)
+        rn = rn | ((rn & MaskE) >> DX) | ((rn & MaskW) << DX);
+        rn = rn | ((rn & MaskS) >> DY) | ((rn & MaskN) << DY);
+        rn = rn | (rn >> DZ) | (rn << DZ);
+        if (~rn & px & ~N0_bits) return false;
+    }
+    if ((bits & MaskBtm) == 0) {// the bottom center is white
+        {// C2
+            const int n4 = ~(bits | (bits >> DZ));
+            if ((n4 & MaskT6N4) == 0) return false;
+        }
+        {// C1
+            for each (const Mask& mask in pxsimple_T26Rx_tables[ED_U]) {
+                if (mask.Match( rx )) return false;
+            }
+        }
+    }
+    return true;
+}
+}}}
+
+= Statistics =
+The table below shows how many simple configurations can be deleted by the P2x-simple condition for each of the six directions: 
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-stat.png]
 
