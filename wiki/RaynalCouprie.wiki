@@ -180,12 +180,20 @@ the number of voxels that satisfy this condition is
 == Proposed Templates ==
 In order to detect isthmus points, one can use a look-up truth table
 for possible 2^26 = 67,108,864 configurations assuming that the center voxel is a black point.
-If a true/false value for one configurations is represented by one bit,
+If a true/false value for one configuration is represented by one bit,
 it amounts to a memory space of 8MB.
-This table size may be practical enough to be loaded onto a certain level of cached memory and randomly accessed in modern high-end computers.
-Nevertheless, I was curious about matching templates for isthmus points because it would visualize how the isthmus points look like and could lead to more efficient implementations.
+This table size may be practical enough to be loaded onto a certain level of cached memory and randomly accessed with recent high performance computers.
+Nevertheless, I was curious about the matching templates for isthmus points because it would visualize how the isthmus points look like and could lead to more efficient implementations.
 
+To the contrary to that the simple points have only single foreground component, the isthmus points have multiple foreground components.
+It is easily expected that finding matching templates separately for configurations for which the number of foreground components is 2, 3, ..., and 8 is not practical because the arrangement of black points could be highly scattered in the 3x3x3 neighborhood.
 
+Instead, if there were multiple foreground components,
+there should be a background _plane_ that completely separates the 3x3x3 neighborhood into two regions.
+In addition, because the background points are connected by merely 6-adjacency while the foreground points are connected by 26-adjacency,
+the background plane should be _firm_.
+
+Having considered this way, I could figure out the matching templates for isthmus points, and interestingly they were covered by the 6 templates as with Palagyi and Kuba's.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/isthmus-masks.png]
 
