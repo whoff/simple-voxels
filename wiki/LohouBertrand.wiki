@@ -84,15 +84,16 @@ where bit0 - bit5 denotes the following conditions:
 || bit5  || C4 ||
 
 From the co-occurrence table above, it can be seen that C4 is always satisfied if P2 is satisfied.
-The condition C4 can therefore be ignored.
+The condition C4 can therefore be omitted.
 
 == P2 ==
-The matching templates for P2 condition are straight forward from the definition of P2 simple.
-Hence, it would be efficient to check the P2 condition first because the matching templates for other conditions would be simplified by using the configurations for which P2 fails as the _don't care_ configurations.
+The matching templates for the P2 condition are straight forward from the definition of P2-simple condition.
+Hence, it would be efficient to check the P2 condition first,
+and to simplify the matching templates for other conditions by using the configurations for which P2 fails as the _don't care_ configurations.
 
-However, even with this technique, the matching templates for C1 and C3 were still hard to find primarily because they are talking about Px and Rx whereas the matching templates are for the original x neighborhood.
+However, even with this technique, the matching templates for C1 and C3 were still hard to find out primarily because they are talking about Px and Rx whereas the matching templates are tested with the original x neighborhood.
 
-On the other hand, the set Px or Rx can be calculated by simple bit operations, and it can compute the P2 condition at the same time.
+On the other hand, the set Px or Rx can be calculated by rather simple bit operations, and it can compute the P2 condition at the same time.
 With Px and Rx, the matching templates for the conditions C1 and C3 are expected to be practically simple.
 
 Given a configuration as an 32-bit integer _bits_, the following code computes the Px for the U direction.
@@ -117,20 +118,57 @@ int CalcP2x( int bits ) {
 }}}
 
 The above code first computes the set Rx. By negating the P2-simple condition, the condition for a black point to belong to Rx is obtained as:
-  # Its U-neighbor is black point.
-  # Or, any of its N/S/W/E neighbors is white, and its U-neighbor is black.
+  # Its U-neighbor is a black point.
+  # Or, any of its N/S/W/E neighbors is white, and the neighbor's U-neighbor is black.
 
-Hence,
+Now, what the code is doing is as follows:
   * _top_ holds the value of the U-neighbor of each position by shifting _bits_ by DZ = 9 bits.
   * _mid_ holds '1' bits where the corresponding points are white '0' and their U-neighbor is black '1'.
   * _rx_ then has '1' bits if the U-neighbor of the corresponding bits is black '1', or any of their N/S/W/E neighbors are white '0' and its U-neighbor is black '1'.
 
 Finally, Px is obtained by negating _rx_.
 
-The condition P2 can be checked by looking at the center position of Px.
+The P2 condition can be checked by looking at the Px bit that corresponds to the center position.
 
 == C3 ==
+The C3 condition requires that for any P2x simple point other than x,
+there can be found a Rx point in its 26-neighborhood.
+Therefore, this condition can be checked by
+  * Compute rn = 26-inflate of rx
+  * Verify that for all the positions where px has '1' bit, rn also has '1' bit
+{{{
+enum {
+    N0_bits  = BV( BP(0,0,0), BP(0,2,0), BP(0,0,0) ),
+};
+//...
+    int rn = rx;    // N26( rx )
+    rn = rn | ((rn & MaskE) >> DX) | ((rn & MaskW) << DX);
+    rn = rn | ((rn & MaskS) >> DY) | ((rn & MaskN) << DY);
+    rn = rn | (rn >> DZ) | (rn << DZ);
+    if (~rn & px & ~N0_bits) return false;
+//...
+}}}
 
+== C2 ==
+Under the condition that the x is P2-simple,
+the C2 condition turned out to be reduced to the following templates.
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t6nx-masks.png]
+
+For both the templates, the top center point is white because the center point x is already known to be P2-simple.
+
+=== Left template ===
+If the bottom center point is black, it cannot be P2x simple because its U-neighbor is black and so belongs to Rx.
+Then,it covers any Px points in the middle and the bottom plane.
+From the thorough search, it turned out that
+this template covers all configurations in which the bottom center is black under the assumption that x is P2-simple.
+
+=== Right template ===
+If the bottom center point is white, it should be connected with the top center white point because the C2 condition requires the number of background points to be one with the 6-adjacency.
+Therefore, there should be a white column in any of N/S/W/E neighbor hood of x.
+Also note that from the assumption that x is P2-simple,
+if any of N/S/E/W neighbors of x is white, its U-neighbor is also white.
+The right template covers all configurations in which the bottom center is white in this way.
 
 {{{
 namespace NPxSimple {// P2x-simple
