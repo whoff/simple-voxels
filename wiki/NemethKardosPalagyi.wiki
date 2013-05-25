@@ -1,0 +1,2 @@
+#summary Nemeth, Kardos and Palagyi's thinning algorithm with smoothing
+= Introduction =
