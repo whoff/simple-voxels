@@ -108,7 +108,7 @@ where bit0 - bit5 denotes the following directions:
 || bit4 || W ||
 || bit5 || E ||
 
-As it can be seen,
+It can be observed that:
   * As a whole, 9,916,926 out of 25,985,144 [SimpleVoxels#Simple_Configurations simple] configurations are deleted.
   * For each direction, 2,124,283 configurations are deletable.
   * No common deletable configurations between U and D. (Likewise, between N and S or between W and E.)
