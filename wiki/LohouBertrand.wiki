@@ -1,4 +1,44 @@
 #summary Lohou and Bertrand P2x-simple thinning algorithm
+*Contents*
+<wiki:toc max_depth="2" />
+
+= Introduction =
+By using [RaynalCouprie Raynal and Couprie]'s method,
+a considerable amount of spurious brances will be reduced.
+In addition, as was suggested in [Top#References [2]],
+if the isthmus points were not preserved but removed,
+all the skeletal branches would also be removed. and result in _ultimate thinning_,
+where no more points can be removed without breaking the topology.
+The ultimately thinned object has no branches but composed of circular curves.
+
+However, as far as I tested, there were still some branches even when the isthmus points were removed.
+Some of the remaining branches end with specific configurations depicted in the figure below.
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-not-removed.png]
+
+It turned out that this configuration is one of the points that are pointed out
+to be non-deletable by [PalagyiKuba Palagyi and Kuba]'s method [Top#References [3]].
+
+In [Top#References [3]], Lohou and Bertrand proposed another
+deletable condition based on a powerful notion of _Px-simple_,
+with which one can devise a parallel thinning algorithm without checking
+whether its matching templates are consistent and allow the parallel thinning.
+
+= Definition =
+The deletable condition is given based on P2x-simplicity.
+
+== P2-simple ==
+The P2-simplicity is defined by a point x and its 4-neighborhodd with the points above them as in:
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-p2simple.png]
+
+
+  * x is P2 simple.
+  * P2x points in the 26-neighborhood of x is 
+
+= Project Proposal =
+
+
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxcondition-stat.png]
 
 
@@ -11,6 +51,8 @@ namespace NPxSimple {// P2x-simple
 }
 }}}
 
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t26rx-masks.png]
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t26rx-templates.png]
 
