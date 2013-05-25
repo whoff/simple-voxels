@@ -49,12 +49,28 @@ Here are defined following two sets of black points:
   * Rx : the set of black points in the 3x3x3 neighborhood of x that are not P2x-simple
 
 == Deletable Condition ==
+A point x is deletable if the following conditions are all satisfied.
+  * (P2) x is P2-simple
+  * (C1) The number of 26-connected components in Rx is 1.
+  * (C2) The number of 6-connected white components within 18-neighborhood of x is 1.
+  * (C3) For every point y in Px, there exists z in Rx such that z is 26-adjacent to x and to y.
+  * (C4) For every point y in Px that is 6-adjacent to x, there exist white points z and t such that {x, y, z, t} forms a unit square.
 
+With this deletable condition, for the U-direction for example,
+6,129,532 points are deletable whereas 2,124,292 points are deletable with the [PalaghiKuba Palagyi and Kuba]'s condition.
+When all the six directions are considered,
+23,722,000 points are deletable whereas 9,196,926 points are
+deletable with Palagyi and Kuba's condition.
 
 = Project Proposal =
+The authors in the paper proposed the use two BDD trees for the determination if a point is deletable or not with the above condition.
+However, I was again curious about the matching templates for the above deletable conditions but had a hard time in finding such a set.
 
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxcondition-stat.png]
+
+
+
 
 
 {{{
