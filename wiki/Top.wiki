@@ -15,6 +15,7 @@ The current scope of this project is 3D parallel thinning algorithms that are ch
   # [PalagyiKuba Palagyi and Kuba's 6-subiteration curve thinning algorithm]
   # [RaynalCouprie Raynal and Couprie's isthmus based 6-subiteration curve thinning algorithm]
   # [LohouBertrand Lohou and Bertrand's Px-simple 6-subiteration curve thinning algorithm]
+  # [NemethKardosPalagyi Nemeth, Kardos and Palagyi's thinning algorithm with smoothing]
   # [RunCode Running the code]
 
 = References =
