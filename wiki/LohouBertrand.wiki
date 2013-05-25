@@ -86,7 +86,7 @@ where bit0 - bit5 denotes the following conditions:
 From the co-occurrence table above, it can be seen that C4 is always satisfied if P2 is satisfied.
 The condition C4 can therefore be omitted.
 
-== P2 ==
+== P2 : x is P2-simple ==
 The matching templates for the P2 condition are straight forward from the definition of P2-simple condition.
 Hence, it would be efficient to check the P2 condition first,
 and to simplify the matching templates for other conditions by using the configurations for which P2 fails as the _don't care_ configurations.
@@ -130,8 +130,26 @@ Finally, Px is obtained by negating _rx_.
 
 The P2 condition can be checked by looking at the Px bit that corresponds to the center position.
 
+== C3 : Px points are 26-adjacent to a Rx point ==
+The C3 condition requires that for any P2x simple point other than x,
+there can be found a Rx point in its 26-neighborhood.
+Therefore, this condition can be checked by
+  # Compute rn = 26-inflate of rx
+  # If rn has '0' bit at any position for which px has '1' bit , C3 fails.
+{{{
+enum {
+    N0_bits  = BV( BP(0,0,0), BP(0,2,0), BP(0,0,0) ),
+};
+//...
+    int rn = rx;    // N26( rx )
+    rn = rn | ((rn & MaskE) >> DX) | ((rn & MaskW) << DX);
+    rn = rn | ((rn & MaskS) >> DY) | ((rn & MaskN) << DY);
+    rn = rn | (rn >> DZ) | (rn << DZ);
+    if (~rn & px & ~N0_bits) return false;
+//...
+}}}
 
-== C2: only 1 background components ==
+== C2: only 1 background component ==
 Under the condition that the x is P2-simple,
 the C2 condition turned out to be reduced to the following two templates.
 Note that because x is P2-simple, its U-neighbor, the top center point, is white for both of the templates.
@@ -150,24 +168,17 @@ Also because the component is 6-connected, there should be a white column in any
 Again due to the P2-simplicity of x, the right template is enough
 to ensure that there is exactly one background component in this case.
 
-== C3 ==
-The C3 condition requires that for any P2x simple point other than x,
-there can be found a Rx point in its 26-neighborhood.
-Therefore, this condition can be checked by
-  * Compute rn = 26-inflate of rx
-  * Verify that for all the positions where px has '1' bit, rn also has '1' bit
-{{{
-enum {
-    N0_bits  = BV( BP(0,0,0), BP(0,2,0), BP(0,0,0) ),
-};
-//...
-    int rn = rx;    // N26( rx )
-    rn = rn | ((rn & MaskE) >> DX) | ((rn & MaskW) << DX);
-    rn = rn | ((rn & MaskS) >> DY) | ((rn & MaskN) << DY);
-    rn = rn | (rn >> DZ) | (rn << DZ);
-    if (~rn & px & ~N0_bits) return false;
-//...
-}}}
+== C1 : only 1 26-connected Rx component ==
+First of all, all the black points in the top plane is P2x-simple.
+Rx points exist in the middle or the bottom planes only.
+
+The C1 condition requires that the number of 26-connected components in Rx is one.
+Similar to the [RaynalCouprie isthmus templates],
+I figured out matching templates for Rx points to be divided into at least two components.
+If a configuration matches to any of the following two templates,
+the C1 condition will fail.
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t26rx-masks.png]
 
 {{{
 namespace NPxSimple {// P2x-simple
@@ -178,10 +189,9 @@ namespace NPxSimple {// P2x-simple
 }
 }}}
 
-
-[http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t26rx-masks.png]
-
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t26rx-templates.png]
+
+== Statistics ==
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-stat.png]
 
