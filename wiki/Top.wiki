@@ -10,10 +10,10 @@ The current scope of this project is 3D parallel thinning algorithms that are ch
 
 = Contents =
   # [Notations]
-  # [SimpleVoxels]
-  # [PalagyiKuba]
-  # [RaynalCouprie]
-  # [LohouBertrand]
+  # [SimpleVoxels Definition of simple voxels]
+  # [PalagyiKuba Palagyi and Kuba's 6-subiteration curve thinning algorithm]
+  # [RaynalCouprie Raynal and Couprie's isthmus based 6-subiteration curve thinning algorithm]
+  # [LohouBertrand Lohou and Bertrand's Px-simple 6-subiteration curve thinning algorithm]
 
 = References =
   * [http://www.sciencedirect.com/science/article/pii/S0167865598000312 [1]]. Palagyi, Kuba, A 3D 6-subiteration thinning algorithm for extracting medial lines, 1998.
