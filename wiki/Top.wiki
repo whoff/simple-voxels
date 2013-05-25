@@ -9,6 +9,8 @@ The current scope of this project is 3D parallel thinning algorithms that are ch
   * Parallel thinning with 6 subiterations
   * Deletability of a voxel can be determined locally with its 3x3x3 neighborhood
 
+This Wiki content is also a footage of my trial seeking for a way to reduce spurious branches, and from some point, to obtain the ultimate thinning result.
+
 = Contents =
   # [Notations]
   # [SimpleVoxels Definition of simple voxels]
@@ -23,3 +25,5 @@ The current scope of this project is 3D parallel thinning algorithms that are ch
   * [http://link.springer.com/chapter/10.1007/978-3-642-19867-0_15 [2]]. Raynal, Couprie, Isthmus-Based 6-Directional Parallel Thinning Algorithms, 2011.
   * [http://www.sciencedirect.com/science/article/pii/S0166218X05001319 [3]]. Lohou, Bertrand, A 3D 6-subiteration curve thinning algorithm based on P-simple points, 2005.
   * [http://www.sciencedirect.com/science/article/pii/S1524070311000063 [4]]. Nemeth, Kardos, Palagyi, Thinning combined with iteration-by-iteration smoothing for 3D binary images, 2011.
+
+I'd like to thank the authors of the above papers for their great work.
