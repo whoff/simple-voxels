@@ -31,9 +31,9 @@ an implementation will be proposed using direct bit operations and supplement te
 == P2-simple ==
 To begin with, a point x is called P2-simple, as regards the U direction for example, if:
   # U neighbor is white.
-  # If N/S/W/E neighbor is white, then the point above it is also white.
+  # If N/S/W/E neighbor is white, then its U neighbor of is also white.
 
-In the figure below, the second condition says that if a yellow point is white, then the gray point above it should be white.
+In the figure below, the second condition says that if a yellow point is white (background), then its U-neighbor gray point should be white (background).
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-p2simple.png]
 
@@ -65,7 +65,8 @@ deletable with Palagyi and Kuba's condition.
 = Proposed Method =
 In [Top#References [3]], the authors proposed the use two binary decision diagrams to determine if a point is deletable or not with the above condition.
 
-I was again interested in devising matching templates for the above deletable conditions but failed to find such a single set of matching templates for the deletable condition as a whole.
+I was again interested in devising matching templates for the above deletable conditions
+but failed to find such a single set of matching templates for the deletable condition as a whole.
 So, I decided to look into each condition of P2, C1/2/3/4 one by one.
 
 == C4 ==
@@ -94,7 +95,7 @@ However, even with this technique, the matching templates for C1 and C3 were sti
 On the other hand, the set Px or Rx can be calculated by simple bit operations, and it can compute the P2 condition at the same time.
 With Px and Rx, the matching templates for the conditions C1 and C3 are expected to be practically simple.
 
-The code below computes the Px for the U direction given a configuration as an 32-bit integer _bits_.
+Given a configuration as an 32-bit integer _bits_, the following code computes the Px for the U direction.
 Please see [Notations] for the bit assignment of positions within _bits_.
 {{{
 enum {
@@ -115,6 +116,20 @@ int CalcP2x( int bits ) {
     return bits & ~rx;
 }}}
 
+The above code first computes the set Rx. By negating the P2-simple condition, the condition for a black point to belong to Rx is obtained as:
+  # Its U-neighbor is black point.
+  # Or, any of its N/S/W/E neighbors is white, and its U-neighbor is black.
+
+Hence,
+  * _top_ holds the value of the U-neighbor of each position by shifting _bits_ by DZ = 9 bits.
+  * _mid_ holds '1' bits where the corresponding points are white '0' and their U-neighbor is black '1'.
+  * _rx_ then has '1' bits if the U-neighbor of the corresponding bits is black '1', or any of their N/S/W/E neighbors are white '0' and its U-neighbor is black '1'.
+
+Finally, Px is obtained by negating _rx_.
+
+The condition P2 can be checked by looking at the center position of Px.
+
+== C3 ==
 
 
 {{{
