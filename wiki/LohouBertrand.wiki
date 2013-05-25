@@ -149,7 +149,7 @@ enum {
 //...
 }}}
 
-== C2: only 1 background component ==
+== C2: exactly one background component ==
 Under the condition that the x is P2-simple,
 the C2 condition turned out to be reduced to the following two templates.
 Note that because x is P2-simple, its U-neighbor, the top center point, is white for both of the templates.
@@ -168,7 +168,7 @@ Also because the component is 6-connected, there should be a white column in any
 Again due to the P2-simplicity of x, the right template is enough
 to ensure that there is exactly one background component in this case.
 
-== C1 : only 1 26-connected Rx component ==
+== C1 : exactly one 26-connected Rx component ==
 First of all, all the black points in the top plane is P2x-simple.
 Rx points exist in the middle or the bottom planes only.
 
