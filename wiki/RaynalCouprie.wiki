@@ -12,8 +12,11 @@ which are designed to keep end points of curvilinear structures.
 
 In order to address this issue, Raynal and Couprie proposed an isthmus based 6-subiteration thinning algorithm.
 In [Top#References [2]], the authors:
-  # loosened Palagyi and Kuba's deletable conditions to further remove end points
+  # loosened Palagyi and Kuba's deletable conditions to further remove end points (see the figure below)
   # instead prohibited removal of _isthmus_ points
+
+[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-end-points.png]
+
 The isthmus points were defined as the points that satisfy:
   * The number of 26-adjacent foreground components >= 2
 The isthmus points are therefore the points that connect multiple foreground components. For example, the points on a curve line are all isthmus points except the two end points.
