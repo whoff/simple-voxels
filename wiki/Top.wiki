@@ -1,4 +1,5 @@
 #summary Project Wiki Top
+#labels Featured
 = Summary =
 This project is intended to help implement 3D parallel curve thinning algorithms in the literature by providing working C++ codes that can be used to determine whether a voxel is deletable or not. In doing so, new template masks or new implementation were devised for some of the algorithms.
 
