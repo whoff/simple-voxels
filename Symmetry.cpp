@@ -50,7 +50,7 @@ namespace NSymmetry {
             }
         }
 
-        // 2 flip all axis
+        // flip all axis
         void flipXYZ( Perm flp[NUM_FLIP] ) {
             for (int z = -1; z <= 1; ++z) {
                 for (int y = -1; y <= 1; ++y) {
@@ -63,7 +63,7 @@ namespace NSymmetry {
             }
         }
 
-        // 4 rotation around U direction
+        // 4 rotation around U face
         void rotateU( Perm rot[NUM_ROTATE_U] ) {
             for (int z = -1; z <= 1; ++z) {
                 for (int y = -1; y <= 1; ++y) {
@@ -73,6 +73,33 @@ namespace NSymmetry {
                         rot[1][idx] = getIndex( -y,  x, z );
                         rot[2][idx] = getIndex( -x, -y, z );
                         rot[3][idx] = getIndex(  y, -x, z );
+                    }
+                }
+            }
+        }
+
+        // 2 rotation around UN edge
+        void rotateUN( Perm rot[NUM_ROTATE_UN] ) {
+            for (int z = -1; z <= 1; ++z) {
+                for (int y = -1; y <= 1; ++y) {
+                    for (int x = -1; x <= 1; ++x) {
+                        const int idx = getIndex( x, y, z );
+                        rot[0][idx] = getIndex(  x, y, z );
+                        rot[1][idx] = getIndex( -x, z, y );
+                    }
+                }
+            }
+        }
+
+        // 3 rotation around UNW corner (x + y + z = const)
+        void rotateUNW( Perm rot[NUM_ROTATE_UNW] ) {
+            for (int z = -1; z <= 1; ++z) {
+                for (int y = -1; y <= 1; ++y) {
+                    for (int x = -1; x <= 1; ++x) {
+                        const int idx = getIndex( x, y, z );
+                        rot[0][idx] = getIndex( x, y, z );
+                        rot[1][idx] = getIndex( y, z, x );
+                        rot[2][idx] = getIndex( z, x, y );
                     }
                 }
             }
@@ -147,15 +174,35 @@ namespace NSymmetry {
             flipXY( PermFlipXY );
             flipXYZ( PermFlipXYZ );
             rotateU( PermRotateU );
+            rotateUN( PermRotateUN );
+            rotateUNW( PermRotateUNW );
             directU( PermDirectU );
             directUN( PermDirectUN );
             directUNW( PermDirectUNW );
-            // PermSymU (SymU)
+            // PermSymU
             for (size_t j = 0; j < NUM_ROTATE_U; ++j) {
                 for (size_t i = 0; i < NUM_FLIP; ++i) {
                     Perm& perm = PermSymU[j*NUM_FLIP+i];
                     for (size_t n = 0; n < 27; ++n) {
                         perm[n] = PermRotateU[j][PermFlipX[i][n]];
+                    }
+                }
+            }
+            // PermSymUN
+            for (size_t j = 0; j < NUM_ROTATE_UN; ++j) {
+                for (size_t i = 0; i < NUM_FLIP; ++i) {
+                    Perm& perm = PermSymUN[j*NUM_FLIP+i];
+                    for (size_t n = 0; n < 27; ++n) {
+                        perm[n] = PermRotateUN[j][PermFlipX[i][n]];
+                    }
+                }
+            }
+            // PermSymUNW
+            for (size_t j = 0; j < NUM_ROTATE_UNW; ++j) {
+                for (size_t i = 0; i < NUM_FLIP; ++i) {
+                    Perm& perm = PermSymUNW[j*NUM_FLIP+i];
+                    for (size_t n = 0; n < 27; ++n) {
+                        perm[n] = PermRotateUNW[j][PermFlipXY[i][n]];
                     }
                 }
             }
@@ -175,6 +222,21 @@ namespace NSymmetry {
 
     void Initialize() {
         NPerm::InitTables();
+        if (false) {
+            const int bits = BV( BP(1,0,1), BP(6,0,0), BP(0,0,0) );
+            int rot_un[NUM_ROTATE_UN];
+            int rot_unw[NUM_ROTATE_UNW];
+            int sym_un[NUM_SYM_UN];
+            int sym_unw[NUM_SYM_UNW];
+            RotateBitsUN( bits, rot_un );
+            RotateBitsUNW( bits, rot_unw );
+            TransformBitsUN( bits, sym_un );
+            TransformBitsUNW( bits, sym_unw );
+            for each (int sym in sym_unw) {
+                DumpBits( sym );
+            }
+            system( "pause" );
+        }
     }
 
     int TransformBits( int bits, const Perm& perm ) {
