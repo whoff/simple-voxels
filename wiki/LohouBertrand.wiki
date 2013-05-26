@@ -69,31 +69,28 @@ When all the six directions are considered,
 deletable with [PalagyiKuba Palagyi and Kuba]'s condition.
 
 = Proposed Method =
-In [Top#References [3]], the authors proposed the use two binary decision diagrams to determine if a point is deletable or not with the above condition.
-
-I was again interested in devising matching templates for the above deletable conditions
-but failed to find such a single set of matching templates for the deletable condition as a whole.
-So, I decided to look into each condition of P2, C1/2/3/4 one by one.
-
-== C4 ==
-First of all, the number of configurations that satisfy each conditions was investigated.
+In [Top#References [3]], the authors proposed the use two binary decision diagrams (BDD) to detect deletable points.
+I was again interested in devising a set of matching templates, but failed to find one that implements the deletable condition as a whole.
+So, I started looking at each condition P2, C1/2/3/4 one by one.
+To begin with, the number of configurations that satisfy each condition was investigated.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxcondition-stat.png]
 
 where bit0 - bit5 denotes the following conditions:
 || *Bit* || *Condition* || 
-|| bit0 || deletable ||
+|| bit0 || Deletable ||
 || bit1  || P2 ||
 || bit2  || C1 ||
 || bit3  || C2 ||
 || bit4  || C3 ||
 || bit5  || C4 ||
 
-From the co-occurrence table above, it can be seen that C4 is always satisfied if P2 is satisfied.
-The condition C4 can therefore be omitted.
+== C4 : included by P2 ==
+From the co-occurrence table above, it can be seen that the C4 condition is always satisfied if P2 is satisfied.
+The C4 condition can therefore be omitted.
 
 == P2 : x is P2-simple ==
-The matching templates for the P2 condition are straight forward from the definition of P2-simple condition.
+The matching templates for the P2 condition can be derived straightforwardly from the definition of P2-simple points.
 Hence, it would be efficient to check the P2 condition first,
 and to simplify the matching templates for other conditions by using the configurations for which P2 fails as the _don't care_ configurations.
 
