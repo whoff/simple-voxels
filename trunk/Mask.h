@@ -18,5 +18,3 @@ struct Mask {
             && ((a.nzero1 == b.nzero1 && a.nzero2 == b.nzero2) || (a.nzero1 == b.nzero2 && a.nzero2 == b.nzero1)));
     }
 };
-
-void DumpMask( const Mask& mask );

@@ -139,6 +139,7 @@
     <ClInclude Include="Isthmus_table.h" />
     <ClInclude Include="Mask.h" />
     <ClInclude Include="Neighbors.h" />
+    <ClInclude Include="Nemeth_table.h" />
     <ClInclude Include="Palagyi_table.h" />
     <ClInclude Include="PxSimple_table.h" />
     <ClInclude Include="Raynal_table.h" />
@@ -150,6 +151,7 @@
   <ItemGroup>
     <ClCompile Include="Isthmus.cpp" />
     <ClCompile Include="Neighbors.cpp" />
+    <ClCompile Include="Nemeth.cpp" />
     <ClCompile Include="Palagyi.cpp" />
     <ClCompile Include="PxSimple.cpp" />
     <ClCompile Include="SimpleVoxel.cpp" />

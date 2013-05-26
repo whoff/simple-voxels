@@ -4,18 +4,21 @@
 #include "Symmetry.h"
 
 namespace NPalagyi {
-    extern const Mask Templates[6];
-    bool IsDeletable( int bits, EDir6 dir );
+    extern const Mask TemplatesU[6];
+    bool IsDeletable( int bits, EFaceDir dir );
+    void GenerateHeader( const char* filename );
 }
 
 namespace NRaynal {
-    extern const Mask Templates[7];
-    bool IsDeletable( int bits, EDir6 dir );
+    extern const Mask TemplatesU[7];
+    bool IsDeletable( int bits, EFaceDir dir );
+    void GenerateHeader( const char* filename );
 }
 
 namespace NIsthmus {// Raynal
-    extern const Mask Templates[6];
+    extern const Mask TemplatesU[6];
     bool IsIsthmus( int bits );
+    void GenerateHeader( const char* filename );
     void Veryfy_IsIsthmus( const std::vector<std::uint8_t>& isthmus );
     void VerifyTemplates( const std::vector<std::uint8_t>& primary, const std::vector<std::uint8_t>& isthmus );
 
@@ -38,8 +41,17 @@ namespace NPxSimple {// Lohou
     extern const Mask TemplatesT26Rx[2];
 
     void CheckConditionsUDir( std::vector<std::uint8_t>& pxcond );
-    bool IsP2xSimple( int bits, EDir6 dir );
+    bool IsDeletable( int bits, EFaceDir dir );
+    void GenerateHeader( const char* filename );
 
     bool IsP2xSimpleU( int bits );
     void Verify_IsP2xSimpleU( const std::vector<std::uint8_t>& pxcond );
+}
+
+namespace NNemeth {
+    extern const Mask TemplatesU[3];
+    extern const Mask TemplatesUN[1];
+    extern const Mask TemplatesUNW[1];
+    bool IsDeletable( int bits, int idx );  // idx = 0(U/N/W), 1(D/S/E)
+    void GenerateHeader( const char* filename );
 }

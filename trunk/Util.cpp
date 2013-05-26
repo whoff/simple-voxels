@@ -73,6 +73,21 @@ namespace {
             printf( "\n" );
         }
     }
+
+    void fprint_mask_bits( FILE* fp, int bits ) {
+        if (bits == 0) {
+            fprintf( fp, "0" );
+            return;
+        }
+        fprintf( fp, "BV( " );
+        for (int j = 0; j < 3; ++j) {
+            const int v0 = bits & 7; bits >>= 3;
+            const int v1 = bits & 7; bits >>= 3;
+            const int v2 = bits & 7; bits >>= 3;
+            fprintf( fp, "BP(%d,%d,%d)", v0, v1, v2 );
+            fprintf( fp, (j < 2) ? ", " : " )" );
+        }
+    }
 }
 
 void DumpMask( int mask, int value, int nzero1, int nzero2 ) {
@@ -83,6 +98,16 @@ void DumpMask( int mask, int value, int nzero1, int nzero2 ) {
 
 void DumpMask( const Mask& mask ) {
     DumpMask( mask.mask, mask.value, mask.nzero1, mask.nzero2 );
+}
+
+void fprint_mask( FILE* fp, const Mask& mask ) {
+    fprintf( fp, "Mask( " );
+    fprint_mask_bits( fp, mask.mask );
+    fprintf( fp, ", " );
+    fprint_mask_bits( fp, mask.value );
+    if (mask.nzero1) { fprintf( fp, ", " ); fprint_mask_bits( fp, mask.nzero1 ); }
+    if (mask.nzero2) { fprintf( fp, ", " ); fprint_mask_bits( fp, mask.nzero2 ); }
+    fprintf( fp, " )" );
 }
 
 namespace NByteTable {
@@ -166,5 +191,39 @@ namespace NByteTable {
             printf( "|\n" );
         }
         printf( "\n" );
+    }
+}
+
+namespace NUtil {
+    void GenerateHeader( const std::vector<std::vector<std::vector<Mask>>>& tables, const std::string& path ) {
+        FILE* fp = fopen( path.c_str(), "w" );
+        if (fp == NULL) return;
+        const bool bMulti = (tables.size() >= 2);
+        size_t cnt = 0;
+        for each (const vector<Mask>& syms in tables.front()) {
+            cnt += syms.size();
+        }
+        fprintf( fp, "#include \"stdafx.h\"\n\n" );
+        fprintf( fp, "#include \"Mask.h\"\n\n" );
+        fprintf( fp, "const Mask mask_table%s[%d] = {\n", (bMulti) ? "[]" : "", cnt );
+        int dir = 0;
+        for each (const vector<vector<Mask>>& table in tables) {
+            if (bMulti) {
+                fprintf( fp, "    {// dir = %d\n", dir++ );
+            }
+            for (size_t m = 0; m < table.size(); ++m) {
+                fprintf( fp, "    %s// M%d\n", (bMulti) ? "    " : "", m+1 );
+                for each (const Mask& sym in table[m]) {
+                    fprintf( fp, "    %s", (bMulti) ? "    " : "" );
+                    fprint_mask( fp, sym );
+                    fprintf( fp, ",\n" );
+                }
+            }
+            if (bMulti) {
+                fprintf( fp, "    },\n" );
+            }
+        }
+        fprintf( fp, "};\n" );
+        fclose( fp );
     }
 }

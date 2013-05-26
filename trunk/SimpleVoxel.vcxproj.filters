@@ -47,6 +47,9 @@
     <ClInclude Include="PxSimple_table.h">
       <Filter>Header Files\Tables</Filter>
     </ClInclude>
+    <ClInclude Include="Nemeth_table.h">
+      <Filter>Header Files\Tables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -71,6 +74,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Symmetry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Nemeth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
