@@ -4,52 +4,53 @@
 
 = Introduction =
 By using [RaynalCouprie Raynal and Couprie]'s method,
-a considerable amount of spurious brances will be reduced.
+a considerable amount of spurious brances will be suppressed.
 In addition, as was suggested in [Top#References [2]],
-if the isthmus points were not preserved but removed,
-all the skeletal branches would also be removed resulting in _ultimate thinning_,
-where no more points can be removed without breaking the topology.
-An ultimately thinned object has no branches and is composed of circular curves or cocoon like shells.
+if the isthmus points were not preserved but deleted,
+the skeletal branches would also be removed resulting in _ultimate thinning_,
+where no more points can be removed without breaking the object topology.
+An ultimately thinned object has no branches and is composed of circular curves or cocoon like shells only.
 
-However, as far as I tested, there still remained some branches even when the isthmus points were removed.
+However, as far as I tested, there still remained some branches even when no isthmus points were preserved.
 Some of the remaining branches end with a specific configuration depicted in the figure below.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-not-removed.png]
 
-It turned out that this configuration is one of those that are pointed out
-to be non-deletable by [PalagyiKuba Palagyi and Kuba]'s method [Top#References [3]].
+It turned out that this configuration is the one that Lohou and Bertrand illustrated in [Top#References [3]]
+as an example configuration that is not removed by [PalagyiKuba Palagyi and Kuba]'s method whereas can be removed by their method.
+They derived a more-deleting deletable condition based on a powerful notion called _Px-simple_,
+which allows one to devise a new parallel thinning algorithm without verifying
+the consistency of the set of matching templates that the parallel removal does not break the object topology.
 
-In [Top#References [3]], Lohou and Bertrand proposed another
-deletable condition based on a powerful notion of _Px-simple_,
-with which one can devise a new parallel thinning algorithm without checking
-whether its matching templates are consistent to allow parallel removal of deletable points while preserving topology.
-
-In the rest of this page, after the deletable condition is briefly explained,
-an implementation will be proposed using direct bit operations and supplement template matching.
+In the rest of this page, after their deletable condition is briefly explained,
+an implementation will be proposed using direct bit operations and supplemental template matching.
 
 = Definition =
-== P2-simple ==
-To begin with, a point x is called P2-simple, as regards the U direction for example, if:
-  # U neighbor is white.
-  # If N/S/W/E neighbor is white, then its U neighbor of is also white.
+The following description is all for the U-direction.
 
-In the figure below, the second condition says that if a yellow point is white (background), then its U-neighbor gray point should be white (background).
+== P2-simple ==
+A point x is called P2-simple if:
+  # Its U-neighbor is white.
+  # If any of its N/S/W/E-neighbor is white, then the neighbor's U-neighbor is also white.
+
+In the following figure, the second condition says that if a yellow position is white,
+then its U-neighbor (the gray position above it) should be white, too.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-p2simple.png]
 
 == P2x-simple ==
-For points in the 26-neighborhood of x, they are called P2x-simple,
-if they may be P2-simple when looking at the 3x3x3 neighborhood of x only.
+Given a center point x, its 26-neighborhood points are called P2x-simple
+if it is not denied, from the 3x3x3 neighborhood of x, that they are P2-simple.
 
-Or in other words, a 26-neighborhood of x is not P2x-simple
-if it does not satisfy the P2-simple condition already in the 3x3x3 neighborhood of x.
+In other words, a 26-neighbor point of x is not P2x-simple if it disqualifies
+the P2-simple condition in the 3x3x3 neighborhood of x.
 
-Here are defined following two sets of black points:
-  * Px : the set of black points in the 3x3x3 neighborhood of x that are P2x-simple
-  * Rx : the set of black points in the 3x3x3 neighborhood of x that are not P2x-simple
+Based on the P2x-simple condition, black points in the 3x3x3 neighborhood of x are divided into the following two sets.
+  * Px : the set of black points that are P2x-simple
+  * Rx : the set of black points that are not P2x-simple
 
 == Deletable Condition ==
-A point x is deletable if the following conditions are all satisfied.
+A point x is deletable if the following conditions are fulfilled.
   * (P2) x is P2-simple
   * (C1) The number of 26-connected components in Rx is 1.
   * (C2) The number of 6-connected white components within 18-neighborhood of x is 1.
