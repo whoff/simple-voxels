@@ -69,7 +69,7 @@ When all the six directions are considered,
 deletable with [PalagyiKuba Palagyi and Kuba]'s condition.
 
 = Proposed Method =
-In [Top#References [3]], the authors proposed the use two binary decision diagrams (BDD) to detect deletable points.
+In [Top#References [3]], the authors proposed the use of two binary decision diagrams (BDD) to detect deletable points.
 I was again interested in devising a set of matching templates, but failed to find one that implements the deletable condition as a whole.
 So, I started looking at each condition P2, C1/2/3/4 one by one.
 To begin with, the number of configurations that satisfy each condition was investigated.
@@ -90,17 +90,18 @@ From the co-occurrence table above, it can be seen that the C4 condition is alwa
 The C4 condition can therefore be omitted.
 
 == P2 : x is P2-simple ==
-The matching templates for the P2 condition can be derived straightforwardly from the definition of P2-simple points.
-Hence, it would be efficient to check the P2 condition first,
-and to simplify the matching templates for other conditions by using the configurations for which P2 fails as the _don't care_ configurations.
+From the definition of P2-simple points, the P2 condition can be easily implemented by using matching templates or bit operations.
+Once the P2 condition is checked by any means, the failed configurations can be treated as _don't-care_ in the subsequent evaluation of C1, C2, and C3 conditions.
 
-However, even with this technique, the matching templates for C1 and C3 were still hard to find out primarily because they are talking about Px and Rx whereas the matching templates are tested with the original x neighborhood.
+The existence of such don't-care configurations may make it easier to find matching templates for the remaining conditions.
+However, even with this technique, the matching templates for C1 and C3 were still hard to find probably because they were talking about Px and Rx situations whereas the matching templates were defined with respect to the 3x3x3 neighborhood of x.
 
-On the other hand, the set Px or Rx can be calculated by rather simple bit operations, and it can compute the P2 condition at the same time.
-With Px and Rx, the matching templates for the conditions C1 and C3 are expected to be practically simple.
+That was when I decided to calculate Px and Rx directly by using bit operations, and to find matching templates with respect to Px or Rx instead of the x's neighborhood.
+In addition, the P2 condition will be computed as part of the calculation of P2x-simple points because x is P2-simple only when it is P2x-simple by the definition.
 
-Given a configuration as an 32-bit integer _bits_, the following code computes the Px for the U direction.
-Please see [Notations] for the bit assignment of positions within _bits_.
+=== P2x-simple Points ===
+Given a configuration as an 32-bit integer _bits_, the following code computes the Px points.
+Please see [Notations] for the bit assignment to 3x3x3 positions in _bits_.
 {{{
 enum {
     DX = 1,
@@ -118,27 +119,28 @@ int CalcP2x( int bits ) {
     const int mid = top & ~bits;
     const int rx = top | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX) | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY);
     return bits & ~rx;
+}
 }}}
 
-The above code first computes the set Rx. By negating the P2-simple condition, the condition for a black point to belong to Rx is obtained as:
-  # Its U-neighbor is a black point.
-  # Or, any of its N/S/W/E neighbors is white, and the neighbor's U-neighbor is black.
+In the above, the Rx points are computed first.
+By negating the P2x-simple condition, a black point belongs to Rx when:
+  # Its U-neighbor is black.
+  # Or, any of its N/S/W/E-neighbors is white and the neighbor's U-neighbor is black.
+Accordingly, the above code works as follows:
+  * _top_ holds the value of the U-neighbor of each position by shifting _bits_ by DZ = 9 bits, i.e. by one plane.
+  * _mid_ has '1' bits where the corresponding points are white (~bits) and (&) their U-neighbor is black (top).
+  * _rx_ then has '1' bits if the U-neighbor of the corresponding bits is black (top), or any of their N/S/W/E-neighbors are white and its U-neighbor is black (shifted mid).
+  * Finally, Px is obtained by negating rx (bits & ~rx).
 
-Now, what the code is doing is as follows:
-  * _top_ holds the value of the U-neighbor of each position by shifting _bits_ by DZ = 9 bits.
-  * _mid_ holds '1' bits where the corresponding points are white '0' and their U-neighbor is black '1'.
-  * _rx_ then has '1' bits if the U-neighbor of the corresponding bits is black '1', or any of their N/S/W/E neighbors are white '0' and its U-neighbor is black '1'.
+The P2 condition can be checked by looking at the center bit of Px.
 
-Finally, Px is obtained by negating _rx_.
+== C3 : Px points are 26-adjacent to Rx ==
+From the C3 condition, for any P2x-simple point other than x,
+there should be found a Rx point in its 26-neighborhood.
+By using bit operations, this condition can be checked as:
+  # Compute Rn = 26-inflate of Rx
+  # If Rn has a '0' bit at any position for which Px has '1' bit , C3 fails.
 
-The P2 condition can be checked by looking at the Px bit that corresponds to the center position.
-
-== C3 : Px points are 26-adjacent to a Rx point ==
-The C3 condition requires that for any P2x simple point other than x,
-there can be found a Rx point in its 26-neighborhood.
-Therefore, this condition can be checked by
-  # Compute rn = 26-inflate of rx
-  # If rn has '0' bit at any position for which px has '1' bit , C3 fails.
 {{{
 enum {
     N0_bits  = BV( BP(0,0,0), BP(0,2,0), BP(0,0,0) ),
