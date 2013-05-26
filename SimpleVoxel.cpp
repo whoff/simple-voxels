@@ -6,41 +6,48 @@
 using namespace std;
 using namespace std::placeholders;
 
-void LoadOrCreateTable( vector<uint8_t>& table, const string& name, function<void( vector<uint8_t>& )> creator ) {
-    printf( "[%s]\n", name.c_str() );
-    string path = name;
-    path.append( ".dat" );
-    if (NByteTable::LoadTable( table, path.c_str() ) == false) {
-        creator( table );
-        NByteTable::SaveTable( table, path.c_str() );
+namespace {
+    template<typename T, size_t N>
+    vector<function<bool( int )>> CreatePredicates( bool (*pred)( int, T ) ) {
+        vector<function<bool( int )>> ret;
+        for (size_t n = 0; n < N; ++n) {
+            ret.push_back( bind( pred, _1, (T) n ) );
+        }
+        return ret;
     }
-}
 
-void GenerateDirHeader( const Mask* masks, int num_masks, const char* filename ) {
-    vector<vector<Mask>> table;
-    NSymmetry6::InstantiateUDirMasks( masks, num_masks, table );
-    NSymmetry6::GenerateDirHeader( table, filename );
-}
+    void CreatePredicateTable( vector<uint8_t>& table, const vector<function<bool( int )>>& preds ) {
+        table.clear();
+        table.resize( 1 << 27, 0 );
+        const size_t num_preds = preds.size();
+        for (int bits = 0; bits < (1 << 27); ++bits) {
+            if ((bits & N0_bits) == 0) continue;
+            uint8_t val = 0;
+            for (size_t n = 0; n < num_preds; ++n) {
+                if (preds[n]( bits )) {
+                    val |= 1 << n;
+                }
+            }
+            table[bits] = val;
+        }
+    }
 
-void GenerateOmniDirHeader( const Mask* masks, int num_masks, const char* filename ) {
-    vector<vector<Mask>> table;
-    NSymmetry6::InstantiateOmniDirMasks( masks, num_masks, table );
-    NSymmetry6::GenerateOmniDirHeader( table, filename );
+    void LoadOrCreateTable( vector<uint8_t>& table, const string& name, function<void( vector<uint8_t>& )> creator ) {
+        printf( "[%s]\n", name.c_str() );
+        string path = name;
+        path.append( ".dat" );
+        if (NByteTable::LoadTable( table, path.c_str() ) == false) {
+            creator( table );
+            NByteTable::SaveTable( table, path.c_str() );
+        }
+    }
 }
 
 int _tmain( int argc, _TCHAR* argv[] )
 {
     {// initialization (should be in this order)
-        NSymmetry6::Initialize();
+        NSymmetry::Initialize();
         NNeighbors::Initialize();
-    }
-    if (false) {
-        printf( "[PxSimple Templates for T26Rx]\n" );
-        for each (const Mask& mask in NPxSimple::TemplatesT26Rx) {
-            DumpMask( mask );
-        }
-        getchar();
-        return 0;
     }
     vector<uint8_t> compcount;
     {// component count table
@@ -49,22 +56,22 @@ int _tmain( int argc, _TCHAR* argv[] )
     }
     vector<uint8_t> primary;
     {// primary bit patterns mask
-        LoadOrCreateTable( primary, "Primary", bind( &NSymmetry6::CreatePrimaryTable, _1 ) );
+        LoadOrCreateTable( primary, "Primary", bind( &NSymmetry::CreatePrimaryTable, _1 ) );
         NByteTable::ShowBitStat( primary );
     }
     vector<uint8_t> palagyi;
     if (true) {// Palagyi
-        LoadOrCreateTable( palagyi, "Palagyi", bind( &NSymmetry6::CreatePredicateTable, _1, &NPalagyi::IsDeletable ) );
+        LoadOrCreateTable( palagyi, "Palagyi", bind( &CreatePredicateTable, _1, CreatePredicates<EFaceDir, ED_NUM_FACE_DIR>( &NPalagyi::IsDeletable ) ) );
         NByteTable::ShowBitStat( palagyi );
-        GenerateDirHeader( NPalagyi::Templates, _countof( NPalagyi::Templates ), "Palagyi.h" );
+        NPalagyi::GenerateHeader( "Palagyi.h" );
     }
     vector<uint8_t> raynal;
     if (true) {// Raynal
-        LoadOrCreateTable( raynal, "Raynal", bind( &NSymmetry6::CreatePredicateTable, _1, &NRaynal::IsDeletable ) );
+        LoadOrCreateTable( raynal, "Raynal", bind( &CreatePredicateTable, _1, CreatePredicates<EFaceDir, ED_NUM_FACE_DIR>( &NRaynal::IsDeletable ) ) );
         NByteTable::ShowBitStat( raynal );
-        GenerateDirHeader( NRaynal::Templates, _countof( NRaynal::Templates ), "Raynal.h" );
+        NRaynal::GenerateHeader( "Raynal.h" );
     }
-    if (false) {// Show Raynal's U-masks that are not contained in Palagyi's
+    if (true) {// Show Raynal's U-masks that are not contained in Palagyi's
         printf( "({Raynal} - {Palagyi}) & U-direction\n" );
         if (!palagyi.empty() && !raynal.empty()) {
             const int U_bit = (1 << ED_U);
@@ -84,22 +91,22 @@ int _tmain( int argc, _TCHAR* argv[] )
         printf( "[Isthmus]\n" );
         NByteTable::ShowBitStat( isthmus );
         //NIsthmus::Veryfy_IsIsthmus( isthmus );
-        GenerateOmniDirHeader( NIsthmus::Templates, _countof( NIsthmus::Templates ), "Isthmus.h" );
+        NIsthmus::GenerateHeader( "Isthmus.h" );
     }
     vector<uint8_t> pxcond, pxsimple;
     if (true) {// Lohou, P2x simple
         LoadOrCreateTable( pxcond, "PxCondition", bind( &NPxSimple::CheckConditionsUDir, _1 ) );
         NByteTable::ShowBitStat( pxcond );
         NPxSimple::Verify_IsP2xSimpleU( pxcond );
-        LoadOrCreateTable( pxsimple, "PxSimple", bind( &NSymmetry6::CreatePredicateTable, _1, &NPxSimple::IsP2xSimple ) ); 
+        LoadOrCreateTable( pxsimple, "PxSimple", bind( &CreatePredicateTable, _1, CreatePredicates<EFaceDir, ED_NUM_FACE_DIR>( &NPxSimple::IsDeletable ) ) );
         NByteTable::ShowBitStat( pxsimple );
-        GenerateDirHeader( NPxSimple::TemplatesT26Rx, _countof( NPxSimple::TemplatesT26Rx ), "PxSimple.h" );
+        NPxSimple::GenerateHeader( "PxSimple.h" );
         //NPxSimple::Verify_CalcP2x();
         //NPxSimple::Verify_IsP2xSimple();
     }
     if (true) {// Show Raynal's U-masks that are not contained in Lohou's
-        printf( "({Raynal} - {P2xSimple}) & U-direction\n" );
         if (!raynal.empty() && !pxsimple.empty()) {
+            printf( "({Raynal} - {P2xSimple}) & U-direction\n" );
             const int U_bit = (1 << ED_U);
             int cnt = 0;
             for (int bits = 0; bits < (1 << 27); ++bits) {
@@ -110,6 +117,28 @@ int _tmain( int argc, _TCHAR* argv[] )
             }
             printf( "count = %d\n", cnt );
         }
+    }
+    if (true) {// Show PxSimple U-masks may remove upper diagonal configurations
+        if (!pxsimple.empty()) {
+            printf( "{P2xSimple} & U-direction & Upper Diag\n" );
+            const Mask diag( BV( BP(3,3,0), BP(3,3,0), BP(0,0,0) ), BV( BP(1,0,0), BP(0,2,0), BP(0,0,0) ) );
+            DumpMask( diag );
+            const int U_bit = (1 << ED_U);
+            int cnt = 0;
+            for (int bits = 0; bits < (1 << 27); ++bits) {
+                if ((pxsimple[bits] & U_bit) == U_bit && diag.Match( bits )) {
+                    DumpBits( bits );
+                    cnt++;
+                }
+            }
+            printf( "count = %d\n", cnt );
+        }
+    }
+    vector<uint8_t> nemeth;
+    if (true) {// Nemeth, smoothing
+        LoadOrCreateTable( nemeth, "Nemeth", bind( &CreatePredicateTable, _1, CreatePredicates<int, 2>( &NNemeth::IsDeletable ) ) );
+        NByteTable::ShowBitStat( nemeth );
+        NNemeth::GenerateHeader( "Nemeth.h" );
     }
     printf( "\n\n\n" );
     system( "pause" );

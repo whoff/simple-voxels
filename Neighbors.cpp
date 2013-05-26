@@ -103,23 +103,23 @@ namespace NComponent {
     }
 
     void CreateCountTable( vector<uint8_t>& table ) {
-        table.resize( 1 << 27 );
+        const uint8_t INVALID = 0xff;
+        table.resize( 1 << 27, INVALID );
+        int syms[NSymmetry::NUM_SYM_ALL];
         for (int bits = 0; bits < (1 << 27); ++bits) {
-            int num_fore = 0;
-            int num_back = 0;
-            if (bits & N0_bits) {
-                const int sym = NSymmetry6::FindSymInXYZ( bits );
-                if (sym == -1) {
-                    num_fore = NComponent::CountForeCompsN26( bits );
-                    num_back = NComponent::CountBackCompsN6( bits );
-                } else {
-                    num_fore = GetForeCount( table[sym] );
-                    num_back = GetBackCount( table[sym] );
-                }
-            }
-            table[bits] = (num_back << 4) | num_fore;
             if ((bits % (1 << 18)) == 0) {
                 printf( "creating table... %.0f%%\r", 100.0 * bits / (1 << 27) );
+            }
+            if (table[bits] != INVALID) continue;
+            int val = 0;
+            if (bits & N0_bits) {
+                const int num_fore = NComponent::CountForeCompsN26( bits );
+                const int num_back = NComponent::CountBackCompsN6( bits );
+                val = (num_back << 4) | num_fore;
+            }
+            NSymmetry::TransformBitsAll( bits, syms );
+            for each (int sym in syms) {
+                table[sym] = val;
             }
         }
         printf( "done\n" );

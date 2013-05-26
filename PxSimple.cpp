@@ -7,12 +7,12 @@
 
 using namespace std;
 
-const int MaskL = BV( BP(3,3,3), BP(3,3,3), BP(3,3,3) );    // left
-const int MaskR = BV( BP(6,6,6), BP(6,6,6), BP(6,6,6) );    // right
-const int MaskP = BV( BP(7,7,0), BP(7,7,0), BP(7,7,0) );    // posterior
-const int MaskA = BV( BP(0,7,7), BP(0,7,7), BP(0,7,7) );    // anterior
-//const int MaskH = BV( BP(7,7,7), BP(7,7,7), BP(0,0,0) );    // head
-//const int MaskF = BV( BP(0,0,0), BP(7,7,7), BP(7,7,7) );    // foot
+const int MaskW = BV( BP(3,3,3), BP(3,3,3), BP(3,3,3) );    // West
+const int MaskE = BV( BP(6,6,6), BP(6,6,6), BP(6,6,6) );    // East
+const int MaskN = BV( BP(7,7,0), BP(7,7,0), BP(7,7,0) );    // North
+const int MaskS = BV( BP(0,7,7), BP(0,7,7), BP(0,7,7) );    // South
+//const int MaskU = BV( BP(7,7,7), BP(7,7,7), BP(0,0,0) );    // Up
+//const int MaskD = BV( BP(0,0,0), BP(7,7,7), BP(7,7,7) );    // Down
 
 namespace NPxSimple {// Conditions
 
@@ -42,7 +42,7 @@ namespace NPxSimple {// Conditions
     int CalcP2x( int bits ) {
         const int top = bits << DZ;
         const int mid = top & ~bits;
-        const int rx = top | ((mid & MaskR) >> DX) | ((mid & MaskL) << DX) | ((mid & MaskA) >> DY) | ((mid & MaskP) << DY);
+        const int rx = top | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX) | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY);
         return bits & ~rx;
     }
 
@@ -135,12 +135,12 @@ namespace NPxSimple {// Conditions
 
     void CheckConditionsUDir( vector<uint8_t>& pxcond ) {
         pxcond.resize( 1 << 27, 0 );
-        int syms[NSymmetry6::NUM_SYM_XY];
+        int syms[NSymmetry::NUM_SYM_U];
         for (int bits = 0; bits < (1 << 27); ++bits) {
             if ((bits & N0_bits) == 0) continue;
             if (pxcond[bits]) continue;   // already set
             const uint8_t ret = CheckConditions( bits );
-            NSymmetry6::MakeSymsXY( bits, syms );
+            NSymmetry::TransformBitsU( bits, syms );
             for each (int sym in syms) {
                 pxcond[sym] = ret;
             }
@@ -163,6 +163,12 @@ namespace NPxSimple {// P2x-simple
         Mask( BV( BP(0,0,0), BP(2,1,0), BP(2,3,0) ), 0, BV( BP(0,0,0), BP(1,0,0), BP(1,0,0) ), BV( BP(0,0,0), BP(4,4,7), BP(4,4,7) ) ),
     };
 
+    void GenerateHeader( const char* filename ) {
+        vector<vector<vector<Mask>>> tables;
+        NSymmetry::CreateMaskTablesU( tables, TemplatesT26Rx );
+        NUtil::GenerateHeader( tables, filename );
+    }
+
     bool IsP2xSimpleU_ref( int bits ) {
         const int px = CalcP2x( bits );
         {// x is P2
@@ -178,16 +184,16 @@ namespace NPxSimple {// P2x-simple
         const int rx = bits & ~px;
         {// C26
             int rn = rx;    // N26( rx )
-            rn = rn | ((rn & MaskR) >> DX) | ((rn & MaskL) << DX);
-            rn = rn | ((rn & MaskA) >> DY) | ((rn & MaskP) << DY);
+            rn = rn | ((rn & MaskE) >> DX) | ((rn & MaskW) << DX);
+            rn = rn | ((rn & MaskS) >> DY) | ((rn & MaskN) << DY);
             rn = rn | (rn >> DZ) | (rn << DZ);
             if (~rn & px & ~N0_bits) return false;
         }
         {// T26
             if (rx == 0) return false;
             if (WhiteBottom) {
-                int syms[NSymmetry6::NUM_SYM_XY];
-                NSymmetry6::MakeSymsXY( rx, syms );
+                int syms[NSymmetry::NUM_SYM_U];
+                NSymmetry::TransformBitsU( rx, syms );
                 for each (const Mask& mask in TemplatesT26Rx) {
                     for each (int sym in syms) {
                         if (mask.Match( sym )) return false;
@@ -201,14 +207,14 @@ namespace NPxSimple {// P2x-simple
     bool IsP2xSimpleU( int bits ) {
         const int top = (bits << DZ);
         const int mid = (bits << DZ) & ~bits;
-        const int rx = bits & (top | ((mid & MaskR) >> DX) | ((mid & MaskL) << DX) | ((mid & MaskA) >> DY) | ((mid & MaskP) << DY));
+        const int rx = bits & (top | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX) | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY));
         const int px = bits & ~rx;
         if (rx == 0) return false;              // T26
         if ((px & N0_bits) == 0) return false;  // x is P2?
         {// C26
             int rn = rx;    // N26(Rx)
-            rn = rn | ((rn & MaskR) >> DX) | ((rn & MaskL) << DX);
-            rn = rn | ((rn & MaskA) >> DY) | ((rn & MaskP) << DY);
+            rn = rn | ((rn & MaskE) >> DX) | ((rn & MaskW) << DX);
+            rn = rn | ((rn & MaskS) >> DY) | ((rn & MaskN) << DY);
             rn = rn | (rn >> DZ) | (rn << DZ);
             if (~rn & px & ~N0_bits) return false;
         }
@@ -218,8 +224,8 @@ namespace NPxSimple {// P2x-simple
                 if ((n4 & MaskT6N4) == 0) return false;
             }
             {// T26
-                int syms[NSymmetry6::NUM_ROTATE_XY];
-                NSymmetry6::MakeSymsRotateXY( rx, syms );
+                int syms[NSymmetry::NUM_ROTATE_U];
+                NSymmetry::RotateBitsU( rx, syms );
                 for each (const Mask& mask in TemplatesT26Rx) {
                     for each (int sym in syms) {
                         if (mask.Match( sym )) return false;
@@ -254,7 +260,7 @@ namespace NPxSimple {// P2x-simple
         printf( "%s: PASS (count = %d)\n", __FUNCTION__, count );
     }
 
-    bool IsP2xSimple( int bits, EDir6 dir ) {
+    bool IsDeletable( int bits, EFaceDir dir ) {
         int top, btm;
         int neib;
         int maskT6N4;
@@ -262,19 +268,19 @@ namespace NPxSimple {// P2x-simple
             top = (dir == ED_U) ? (bits << DZ) : (bits >> DZ);
             btm = (dir == ED_U) ? (bits >> DZ) : (bits << DZ);
             const int mid = top & ~bits;
-            neib = top | ((mid & MaskR) >> DX) | ((mid & MaskL) << DX) | ((mid & MaskA) >> DY) | ((mid & MaskP) << DY);
+            neib = top | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX) | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY);
             maskT6N4 = BV( BP(0,0,0), BP(2,5,2), BP(0,0,0) );
         } else if (dir == ED_N || dir == ED_S) {
-            top = (dir == ED_N) ? ((bits & MaskP) << DY) : ((bits & MaskA) >> DY);
-            btm = (dir == ED_N) ? ((bits & MaskA) >> DY) : ((bits & MaskP) << DY);
+            top = (dir == ED_N) ? ((bits & MaskN) << DY) : ((bits & MaskS) >> DY);
+            btm = (dir == ED_N) ? ((bits & MaskS) >> DY) : ((bits & MaskN) << DY);
             const int mid = top & ~bits;
-            neib = top | (mid >> DZ) | (mid << DZ) | ((mid & MaskR) >> DX) | ((mid & MaskL) << DX);
+            neib = top | (mid >> DZ) | (mid << DZ) | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX);
             maskT6N4 = BV( BP(0,2,0), BP(0,5,0), BP(0,2,0) );
-        } else if (dir == ED_E || dir == ED_W) {
-            top = (dir == ED_E) ? ((bits & MaskL) << DX) : ((bits & MaskR) >> DX);
-            btm = (dir == ED_E) ? ((bits & MaskR) >> DX) : ((bits & MaskL) << DX);
+        } else if (dir == ED_W || dir == ED_E) {
+            top = (dir == ED_W) ? ((bits & MaskW) << DX) : ((bits & MaskE) >> DX);
+            btm = (dir == ED_W) ? ((bits & MaskE) >> DX) : ((bits & MaskW) << DX);
             const int mid = top & ~bits;
-            neib = top | ((mid & MaskA) >> DY) | ((mid & MaskP) << DY) | (mid >> DZ) | (mid << DZ);
+            neib = top | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY) | (mid >> DZ) | (mid << DZ);
             maskT6N4 = BV( BP(0,2,0), BP(2,0,2), BP(0,2,0) );
         } else {
             return false;
@@ -285,8 +291,8 @@ namespace NPxSimple {// P2x-simple
         if ((px & N0_bits) == 0) return false;  // x is P2?
         {// C26
             int rn = rx;    // N26(Rx)
-            rn = rn | ((rn & MaskR) >> DX) | ((rn & MaskL) << DX);
-            rn = rn | ((rn & MaskA) >> DY) | ((rn & MaskP) << DY);
+            rn = rn | ((rn & MaskE) >> DX) | ((rn & MaskW) << DX);
+            rn = rn | ((rn & MaskS) >> DY) | ((rn & MaskN) << DY);
             rn = rn | (rn >> DZ) | (rn << DZ);
             if (~rn & px & ~N0_bits) return false;
         }
