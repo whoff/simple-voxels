@@ -6,7 +6,7 @@
 By using [RaynalCouprie Raynal and Couprie]'s method,
 a considerable amount of spurious brances will be suppressed.
 In addition, as was suggested in [Top#References [2]],
-if the isthmus points were not preserved but deleted,
+if the [RaynalCouprie#Isthmus_Points isthmus points] were not preserved but deleted,
 the skeletal branches would also be removed resulting in _ultimate thinning_,
 where no more points can be removed without breaking the object topology.
 An ultimately thinned object has no branches and is composed of circular curves or cocoon like shells only.
@@ -18,50 +18,55 @@ Some of the remaining branches end with a specific configuration depicted in the
 
 It turned out that this configuration is the one that Lohou and Bertrand illustrated in [Top#References [3]]
 as an example configuration that is not removed by [PalagyiKuba Palagyi and Kuba]'s method whereas can be removed by their method.
+
 They derived a more-deleting deletable condition based on a powerful notion called _Px-simple_,
 which allows one to devise a new parallel thinning algorithm without verifying
-the consistency of the set of matching templates that the parallel removal does not break the object topology.
+the consistency of the set of matching templates one-by-one that the parallel removal does not break the object topology.
 
 In the rest of this page, after their deletable condition is briefly explained,
 an implementation will be proposed using direct bit operations and supplemental template matching.
 
-= Definition =
-The following description is all for the U-direction.
+= Deletable Condition based on P2x-simple Points =
+In the following, the description assumes the U-direction.
+For other directions, the condition will immediately follow
+by rotating the 3x3x3 neighborhood configuration.
 
 == P2-simple ==
 A point x is called P2-simple if:
   # Its U-neighbor is white.
   # If any of its N/S/W/E-neighbor is white, then the neighbor's U-neighbor is also white.
 
-In the following figure, the second condition says that if a yellow position is white,
+In the figure below, the black point denotes the point x.
+The first condition requires the point above x be white.
+The second condition says that if a yellow position is white,
 then its U-neighbor (the gray position above it) should be white, too.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-p2simple.png]
 
 == P2x-simple ==
 Given a center point x, its 26-neighborhood points are called P2x-simple
-if it is not denied, from the 3x3x3 neighborhood of x, that they are P2-simple.
-
-In other words, a 26-neighbor point of x is not P2x-simple if it disqualifies
-the P2-simple condition in the 3x3x3 neighborhood of x.
+if it is not denied that they are P2-simple within the 3x3x3 neighborhood of x.
+In other words, a 26-neighbor point of x is not P2x-simple if it disqualifies the P2-simple condition even in the 3x3x3 neighborhood of x.
 
 Based on the P2x-simple condition, black points in the 3x3x3 neighborhood of x are divided into the following two sets.
   * Px : the set of black points that are P2x-simple
   * Rx : the set of black points that are not P2x-simple
 
+Note that any black point in the top plane is always P2x-simple because
+the points above it and its N/S/W/E-neighbors are outside the 3x3x3 neighborhood of x, the P2-simple condition for the black point may not be denied.
+
 == Deletable Condition ==
-A point x is deletable if the following conditions are fulfilled.
+Now, a point x is deletable if the following conditions are fulfilled.
   * (P2) x is P2-simple
   * (C1) The number of 26-connected components in Rx is 1.
-  * (C2) The number of 6-connected white components within 18-neighborhood of x is 1.
-  * (C3) For every point y in Px, there exists z in Rx such that z is 26-adjacent to x and to y.
+  * (C2) The number of 6-connected white (background) components within the 18-neighborhood of x is 1.
+  * (C3) For every point y in Px, there exists z in Rx such that z is 26-adjacent to both x and y.
   * (C4) For every point y in Px that is 6-adjacent to x, there exist white points z and t such that {x, y, z, t} forms a unit square.
 
-With this deletable condition, for the U-direction for example,
-6,129,532 points are deletable whereas 2,124,292 points are deletable with the [PalaghiKuba Palagyi and Kuba]'s condition.
+As is shown in the next section, with this deletable condition, 6,129,532 points are deletable for one direction whereas 2,124,292 points are deletable with the [PalagyiKuba Palagyi and Kuba]'s condition.
 When all the six directions are considered,
 23,722,000 points are deletable whereas 9,196,926 points are
-deletable with Palagyi and Kuba's condition.
+deletable with [PalagyiKuba Palagyi and Kuba]'s condition.
 
 = Proposed Method =
 In [Top#References [3]], the authors proposed the use two binary decision diagrams to determine if a point is deletable or not with the above condition.
