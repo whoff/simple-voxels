@@ -163,12 +163,12 @@ Note that because x is P2-simple, its U-neighbor is white for both templates. Al
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t6nx-masks.png]
 
-=== Left Case: bottom center is black ===
+=== Case 1: bottom center is black (Left) ===
 When the bottom center point is black, the C2 condition will be always fulfilled as long as x is P2-simple.
 In fact, if any N/S/W/E-neighbor point of x is white, then its U-neighbor is also white since x is P2-simple, and thus it is 6-connected to the top center white point via the U-neighbor.
 This ensures that there is exactly one background component.
 
-=== Right Case: bottom center is white ===
+=== Case 2: bottom center is white (Right) ===
 On the other hand, when the bottom center point is white, it should be connected with the top center white point to have the C2 condition satisfied.
 Since the background component is connected with 6-adjancecy,
 there should be a white column in any of N/S/W/E-neighborhood of x.
@@ -178,11 +178,11 @@ Considering again that x is P2-simple, the right template is enough to ensure th
 First of all, all the black points in the top plane is P2x-simple.
 Rx points exist in the middle or the bottom planes only.
 
-=== When bottom center is black ===
+=== Case 1: bottom center is black ===
 The C1 condition will always be satisfied because the bottom center is a Rx point and there is no Rx point on the top plane,
 all the Rx points will be 26-adjacent to the bottom center.
 
-=== When bottom center is white ===
+=== Case 2: bottom center is white ===
 In this case, similar to the [RaynalCouprie isthmus templates],
 I figured out matching templates for Rx points to be divided into at least two components.
 If a configuration matches to any of the following two templates,
