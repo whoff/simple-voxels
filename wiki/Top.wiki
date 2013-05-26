@@ -9,7 +9,10 @@ The current scope of this project is 3D parallel thinning algorithms that are ch
   * Parallel thinning with 6 subiterations
   * Deletability of a voxel can be determined locally with its 3x3x3 neighborhood
 
-This Wiki content is also a footprint of my trial seeking for a way to reduce spurious branches, and from some point, to obtain the ultimate thinning result.
+This Wiki content is also a footprint of my trial seeking for a way to reduce spurious branches, and from some point, to obtain ultimate thinning. My current choice is the combination of:
+  * Nemeth, Kardos, and Palagyi's smoothing, followed by
+  * Raynal and Couprie's isthmus preservation, and then
+  * Lohou and Bertrand's P2x-simple condition
 
 = Contents =
   # [Notations]
@@ -26,4 +29,4 @@ This Wiki content is also a footprint of my trial seeking for a way to reduce sp
   * [http://www.sciencedirect.com/science/article/pii/S0166218X05001319 [3]]. Lohou, Bertrand, A 3D 6-subiteration curve thinning algorithm based on P-simple points, 2005.
   * [http://www.sciencedirect.com/science/article/pii/S1524070311000063 [4]]. Nemeth, Kardos, Palagyi, Thinning combined with iteration-by-iteration smoothing for 3D binary images, 2011.
 
-I'd like to thank the authors of the above papers for their great work.
+Thanks!
