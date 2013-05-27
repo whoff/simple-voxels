@@ -321,7 +321,7 @@ there is no Rx point and thus the C1 condition fails with this configuration.
 If one wants to use this method for the [LohouBertrand#Introduction ultimate thinning] purpose, the diagonal end points needs to be deletable.
 
 Suppose that the diagonal end points in the above are added to the deletable configurations for the U-direction.
-Here, if the bottom diagonal black point in the figure is not deletable during the U-direction subiteration,
+Then, if the bottom diagonal black point in the figure is not deletable during the U-direction subiteration,
 this extended deletable condition can still be used for parallel thinning.
 
 When the above configuration is viewed from the bottom diagonal black point, named y here, it looks like the next one:
