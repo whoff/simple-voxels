@@ -1,16 +1,14 @@
 #summary side bar
 [Top]
 
-[Notations]
+Preliminary
+  * [Notations]
+  * [SimpleVoxels Simple Voxels]
 
-[SimpleVoxels Simple Voxels]
-
-[PalagyiKuba Palagyi and Kuba]
-
-[RaynalCouprie Raynal and Couprie]
-
-[LohouBertrand Lohou and Bertrand]
-
-[NemethKardosPalagyi Nemeth, Kardos and Palagyi]
+Algorithms
+  * [PalagyiKuba Palagyi and Kuba]
+  * [RaynalCouprie Raynal and Couprie]
+  * [LohouBertrand Lohou and Bertrand]
+  * [NemethKardosPalagyi Nemeth, Kardos and Palagyi]
 
 [RunCode Running Code]
