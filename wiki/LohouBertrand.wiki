@@ -331,6 +331,6 @@ When the above configuration is viewed from the bottom diagonal black point, nam
 The bottom diagonal black point y is now placed at the center,
 and the original center point x is on the (opposite) top diagonal corner.
 
-In this configuration, because the top diagonal black point (x) is P2y-simple and because there is no Rx point in the 26-neighborhood of y, the C1 condition does not hold.
+In this configuration, because the top diagonal black point (x) is P2y-simple and because there is no Rt point in the 26-neighborhood of y, the C1 condition does not hold.
 
 Therefore the diagonal end points can be deleted safely in the same parallel thinning process.
