@@ -185,14 +185,14 @@ Because the bottom center is not P2x-simple, it is a Rx point.
 If there are other Rx points, since they are in the middle or in the bottom plane, they are 26-adjacent to the bottom center Rx point. 
 
 === Case 2: bottom center is white ===
-In this case, I found "mismatching" templates as below where Rx points are divided into at least two components.
+In this case, I could figure out "mismatching" templates as below where Rx points are divided into at least two components.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t26rx-masks.png]
 
 In the above, at least one blue point should be black, and similarly,
 at least one orange point should be black, too.
 Also, as the center point is excluded from Rx components,
-it is depicted as a white point although it is actually a P2-simple black point.
+it is depicted as a white point although it is actually a P2(x)-simple black point.
 
 The C1 condition will be fulfilled if the given configuration has at least one Rx point and if it does not match any of the above templates, 
 
@@ -210,7 +210,7 @@ namespace NPxSimple {// P2x-simple
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t26rx-templates.png]
 
 == Implementation ==
-The following code gives an implementation of the above described method for all the six directions.
+Now, the next code gives an implementation of the above described method that works for the specified direction out of the six directions.
 {{{
 const Mask pxsimple_T26Rx_tables[][6] = {
     {// dir = 0
@@ -278,7 +278,7 @@ bool IsDeletable( int bits, EFaceDir dir ) {
 }}}
 
 = Statistics =
-The table below shows how many simple configurations can be deleted by the P2x-simple condition for each of the six directions: 
+The next table shows how many simple configurations can be deleted by the P2x-simple condition for each of the six directions: 
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-stat.png]
 
@@ -296,26 +296,41 @@ It can be observed that
   * For each direction, 6,129,532 configurations are deletable.
   * Between the opposite directions such as U and D, 641,232 configurations are deletable in common. (Likewise, between N and S or between W and E.)
 
-= Proposal for Ultimate Thinning =
+In the original paper [Top#References [3]],
+curve ending points are not removed in the thinning process
+to preserve the object skeletons. Even when a center point is deletable,
+if there is only one black point in its 26-neighorhood,
+it will not be deleted.
+Therefore, the number of deletable configurations above is larger by 18 than that appeared in the paper 23,721,982.
+
+== Comparison ==
 Compared with [PalagyiKuba Palagyi and Kuba]'s method and [RaynalCouprie Raynal and Couprie]'s method,
 the above deletable condition allows for removal of more than twice number of simple voxels.
-However, there are several configurations that are deletable by [RaynalCouprie Raynal and Couprie]'s method, but not by this method:
- 
+However, there are several configurations that are deletable by [RaynalCouprie Raynal and Couprie]'s method, but not by this method.
+The following is the console dump of those points found by the program for the U-direction:
+
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-pxsimple.png]
 
-Namely, the diagonal end point in the figure below is not deletable.
+As it can be seen, the diagonal end point that matches the following template is not deletable.
+Because the bottom diagonal black point is P2x-simple,
+there is no Rx point and thus the C1 condition fails with this configuration.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-diag-end.png]
 
-If this method is to be used for the [LohouBertrand#Introduction ultimate thinning] purpose, one wants to delete the above configurations, too.
-Assume that the above template is further added to the set of deletable configuration for the U-direction.
-If the bottom black point in the figure is not deletable,
-this extension does not break the parallel thinning nature. 
+= Proposal for Ultimate Thinning =
+If one wants to use this method for the [LohouBertrand#Introduction ultimate thinning] purpose, the diagonal end points needs to be deletable.
 
-The above configuration looks like the next one when checking the deletable condition for the bottom black point.
+Suppose that the diagonal end points in the above are added to the deletable configurations for the U-direction.
+Here, if the bottom diagonal black point in the figure is not deletable during the U-direction subiteration,
+this extended deletable condition can still be used for parallel thinning.
+
+When the above configuration is viewed from the bottom diagonal black point, named y here, it looks like the next one:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-diag-end-opp.png]
 
-In this configuration, because the black point at the top is P2x-simple and because there is no Rx point in its 26-neighborhood, the C3 condition does not hold.
+The bottom diagonal black point y is now placed at the center,
+and the original center point x is on the (opposite) top diagonal corner.
 
-Therefore the diagonal end point can be deleted safely.
+In this configuration, because the top diagonal black point (x) is P2y-simple and because there is no Rx point in the 26-neighborhood of y, the C1 condition does not hold.
+
+Therefore the diagonal end points can be deleted safely in the same parallel thinning process.
