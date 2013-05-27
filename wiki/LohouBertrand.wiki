@@ -170,26 +170,34 @@ This ensures that there is exactly one background component.
 
 === Case 2: bottom center is white (Right) ===
 On the other hand, when the bottom center point is white, it should be connected with the top center white point to have the C2 condition satisfied.
-Since the background component is connected with 6-adjancecy,
+Since the background component needs to be 6-connected,
 there should be a white column in any of N/S/W/E-neighborhood of x.
 Considering again that x is P2-simple, the right template is enough to ensure that there is exactly one background component in this case.
 
 == C1 : exactly one 26-connected Rx component ==
-First of all, all the black points in the top plane is P2x-simple.
-Rx points exist in the middle or the bottom planes only.
+As is pointed out in [LohouBertrand#P2x-simple P2x-simple] section,
+any black point in the top plane is P2x-simple.
+The Rx points may accordingly exist in the middle or in the bottom plane only.
 
 === Case 1: bottom center is black ===
-The C1 condition will always be satisfied because the bottom center is a Rx point and there is no Rx point on the top plane,
-all the Rx points will be 26-adjacent to the bottom center.
+If the bottom center is a black point, the C1 condition is always fulfilled.
+Because the bottom center is not P2x-simple, it is a Rx point.
+If there are other Rx points, since they are in the middle or in the bottom plane, they are 26-adjacent to the bottom center Rx point. 
 
 === Case 2: bottom center is white ===
-In this case, similar to the [RaynalCouprie isthmus templates],
-I figured out matching templates for Rx points to be divided into at least two components.
-If a configuration matches to any of the following two templates,
-the C1 condition will fail.
+In this case, I found "mismatching" templates as below where Rx points are divided into at least two components.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t26rx-masks.png]
 
+In the above, at least one blue point should be black, and similarly,
+at least one orange point should be black, too.
+Also, as the center point is excluded from Rx components,
+it is depicted as a white point although it is actually a P2-simple black point.
+
+The C1 condition will be fulfilled if the given configuration has at least one Rx point and if it does not match any of the above templates, 
+
+The following is the mismatching templates translated into [Notations#Template_Mask Mask] structure,
+and their console dump.
 {{{
 namespace NPxSimple {// P2x-simple
     const Mask TemplatesT26Rx[2] = {
@@ -202,6 +210,7 @@ namespace NPxSimple {// P2x-simple
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t26rx-templates.png]
 
 == Implementation ==
+The following code gives an implementation of the above described method for all the six directions.
 {{{
 const Mask pxsimple_T26Rx_tables[][6] = {
     {// dir = 0
@@ -217,15 +226,34 @@ const Mask pxsimple_T26Rx_tables[][6] = {
 //...
 };
 
-const int MaskT6N4 = BV( BP(0,0,0), BP(2,5,2), BP(0,0,0) );
-const int MaskBtm  = BV( BP(0,0,0), BP(0,0,0), BP(0,2,0) );
-
-bool IsP2xSimpleU( int bits ) {
-    const int top = (bits << DZ);
-    const int mid = (bits << DZ) & ~bits;
-    const int rx = bits & (top | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX) | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY));
-    const int px = bits & ~rx;
+bool IsDeletable( int bits, EFaceDir dir ) {
+    int top, btm;
+    int neib;
+    int maskT6N4;
+    if (dir == ED_U || dir == ED_D) {
+        top = (dir == ED_U) ? (bits << DZ) : (bits >> DZ);
+        btm = (dir == ED_U) ? (bits >> DZ) : (bits << DZ);
+        const int mid = top & ~bits;
+        neib = top | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX) | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY);
+        maskT6N4 = BV( BP(0,0,0), BP(2,5,2), BP(0,0,0) );
+    } else if (dir == ED_N || dir == ED_S) {
+        top = (dir == ED_N) ? ((bits & MaskN) << DY) : ((bits & MaskS) >> DY);
+        btm = (dir == ED_N) ? ((bits & MaskS) >> DY) : ((bits & MaskN) << DY);
+        const int mid = top & ~bits;
+        neib = top | (mid >> DZ) | (mid << DZ) | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX);
+        maskT6N4 = BV( BP(0,2,0), BP(0,5,0), BP(0,2,0) );
+    } else if (dir == ED_W || dir == ED_E) {
+        top = (dir == ED_W) ? ((bits & MaskW) << DX) : ((bits & MaskE) >> DX);
+        btm = (dir == ED_W) ? ((bits & MaskE) >> DX) : ((bits & MaskW) << DX);
+        const int mid = top & ~bits;
+        neib = top | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY) | (mid >> DZ) | (mid << DZ);
+        maskT6N4 = BV( BP(0,2,0), BP(2,0,2), BP(0,2,0) );
+    } else {
+        return false;
+    }
+    const int rx = bits & neib;
     if (rx == 0) return false;              // C1
+    const int px = bits & ~rx;
     if ((px & N0_bits) == 0) return false;  // x is P2?
     {// C3
         int rn = rx;    // N26(Rx)
@@ -234,13 +262,13 @@ bool IsP2xSimpleU( int bits ) {
         rn = rn | (rn >> DZ) | (rn << DZ);
         if (~rn & px & ~N0_bits) return false;
     }
-    if ((bits & MaskBtm) == 0) {// the bottom center is white
+    if ((btm & N0_bits) == 0) {
         {// C2
-            const int n4 = ~(bits | (bits >> DZ));
-            if ((n4 & MaskT6N4) == 0) return false;
+            const int n4 = ~(bits | btm);
+            if ((n4 & maskT6N4) == 0) return false;
         }
         {// C1
-            for each (const Mask& mask in pxsimple_T26Rx_tables[ED_U]) {
+            for each (const Mask& mask in pxsimple_T26Rx_tables[dir]) {
                 if (mask.Match( rx )) return false;
             }
         }
@@ -270,16 +298,19 @@ It can be observed that
 
 = Proposal for Ultimate Thinning =
 Compared with [PalagyiKuba Palagyi and Kuba]'s method and [RaynalCouprie Raynal and Couprie]'s method,
-the above deletable condition allows to remove more than twice number of simple voxels.
-However, there were found some configuration that are deletable by [RaynalCouprie Raynal and Couprie]'s method, but not by this method as follows:
+the above deletable condition allows for removal of more than twice number of simple voxels.
+However, there are several configurations that are deletable by [RaynalCouprie Raynal and Couprie]'s method, but not by this method:
  
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-pxsimple.png]
 
-Namely, the diagonal end point depicted in the figure below is not deletable.
+Namely, the diagonal end point in the figure below is not deletable.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-diag-end.png]
 
-One would want to delete the above configurations too if this method is to be used for the [LohouBertrand#Introduction ultimate thinning] purpose, Assume that the above template is further added to the set of deletable configuration for the U direction. If the bottom black point is not deletable in any case, this extension does not break the parallel thinning nature. 
+If this method is to be used for the [LohouBertrand#Introduction ultimate thinning] purpose, one wants to delete the above configurations, too.
+Assume that the above template is further added to the set of deletable configuration for the U-direction.
+If the bottom black point in the figure is not deletable,
+this extension does not break the parallel thinning nature. 
 
 The above configuration looks like the next one when checking the deletable condition for the bottom black point.
 
