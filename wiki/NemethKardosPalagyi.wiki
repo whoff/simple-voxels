@@ -1,26 +1,30 @@
 #summary Nemeth, Kardos and Palagyi's thinning algorithm with smoothing
-= Introduction =
-In order to reduce spurious branches,
-we can use the last two methods
-[RaynalCouprie Raynal and Couprie] and
-[LohouBertrand Lohou and Bertrand]
-that remove more simple points at each subiteration
-that are not deleted by [PalagyiKuba Palagyi and Kuba]'s method.
-Because the spurious branches are originating from spurious end
-points that are not deletable, removing more simple voxels leads
-to the reduction of spurious branches.
+<wiki:toc max_depth="2" />
 
-The above consideration suggests that it would also be effective
-to suppress the generation of spurious end points to reduce spurious branches.
-In fact, although the 3x3x3 template matching is a very efficient technique, it is based on local information only.
-As a result, objects are not always thinned uniformly
-through iterations, and their surface will have noisy voxels.
+= Introduction =
+The spurious branches that are often observed with topological thinning algorithms are ending with "spurious" end points.
+The removal of more end points thus leads to the reduction of the spurious branches.
+In fact, with the deletable conditions proposed by
+[RaynalCouprie Raynal and Couprie] and
+[LohouBertrand Lohou and Bertrand],
+the spurious branches are considerably reduced as these methods
+remove more simple points at each subiteration than
+[PalagyiKuba Palagyi and Kuba]'s method does.
+
+Another way of reducing the spurious branches is
+to suppress the generation of the spurious end points.
+The 3x3x3 template matching is a very efficient technique,
+however, as it is based on local information only,
+objects are not always thinned uniformly through iterations
+leaving noisy voxels on the object surface.
 
 In [Top#References [4]],
-Nemeth, Kardos, and Palagyi proposed
-additional 2 subiterations for the surface noise reduction.
-They are used as a preprocessing before each major iteration.
+Nemeth, Kardos, and Palagyi proposed additional 2 subiterations
+to remove the noisy voxels and smooth the object surface,
+which are used as a preprocessing before each major iteration.
 
+The noisy voxel reduction can also improve the obtained skeletons.
+Especially for large or thick objects that needs more thinning iterations,
+the skeletons may deviate more from their medial lines because
+the object surface is fluctuated at every iteration due to the noisy voxels.
 
-obtained skeletons may deviate from the true center lines of objects.
-especially after many iterations for big or thick objects.
