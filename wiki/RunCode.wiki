@@ -3,7 +3,13 @@
 Due to the nature of this project,
 it is not necessary to build the binary and run it yourself in most cases.
 
-I attached the console output below
+Also, please be informed that, by default, the program generates huge tables of total 900MB!
+They are to cache the computed result for later execution.
+If you are going to find your own set of matching templates,
+it would be beneficial.
+
+Otherwise, it is only a waste of your disk space.
+I attach the console output below instead.
 
 = Console Output =
 <code>
@@ -150,6 +156,8 @@ bit0|    5,421,351
 ----+---------------
 bit0| 5421351 (100%)|
 
+NIsthmus::NDevelop::Veryfy_IsIsthmus: Pass!
+NIsthmus::NDevelop::Verify_Templates: hit / total = 117227 / 117227 (100.000%), miss = 0
 [PxCondition]
 Non-Zero =    67,080,304
 
@@ -171,7 +179,6 @@ bit3| 6129532 (  9%)| 8056832 ( 12%)|23988976 ( 36%)|30384128 ( 45%)|
 bit4| 6129532 (  9%)| 9295072 ( 14%)|43175100 ( 64%)|19525160 ( 29%)|49835704 ( 74%)|
 bit5| 6129532 (  9%)|10616832 ( 16%)|44014336 ( 66%)|22194944 ( 33%)|37001184 ( 55%)|52014592 ( 78%)|
 
-NPxSimple::Verify_IsP2xSimpleU: PASS (count = 6129532)
 [PxSimple]
 Non-Zero =    23,722,000
 
@@ -193,6 +200,8 @@ bit3| 1145682 (  5%)| 1145682 (  5%)|  641232 (  3%)| 6129532 ( 26%)|
 bit4| 1145682 (  5%)| 1145682 (  5%)| 1145682 (  5%)| 1145682 (  5%)| 6129532 ( 26%)|
 bit5| 1145682 (  5%)| 1145682 (  5%)| 1145682 (  5%)| 1145682 (  5%)|  641232 (  3%)| 6129532 ( 26%)|
 
+NPxSimple::NDevelop::Verify_CalcP2xU: Pass!
+NPxSimple::NDevelop::Verify_IsP2xSimpleU: Pass! (count = 6129532)
 ({Raynal} - {P2xSimple}) & U-direction
  _________    _________    _________   bits = 0042000
 | .  .  . |  | .  .  . |  | o  .  . |  
