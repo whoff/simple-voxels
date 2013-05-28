@@ -28,3 +28,8 @@ Especially for large or thick objects that needs more thinning iterations,
 the skeletons may deviate more from their medial lines because
 the object surface is fluctuated at every iteration due to the noisy voxels.
 
+= Implementation =
+In [Top#References [4]], the authors proposed the use of
+a 8MB table to detect the deletable points,
+assigning 1 bit for 1 configuration out of 2^26 = 64M configurations,
+instead using the matching templates directly.
