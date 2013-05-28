@@ -90,19 +90,23 @@ int _tmain( int argc, _TCHAR* argv[] )
         NComponent::FilterByCount( compcount, isthmus, 2, INT_MAX, 0, INT_MAX );
         printf( "[Isthmus]\n" );
         NByteTable::ShowBitStat( isthmus );
-        //NIsthmus::Veryfy_IsIsthmus( isthmus );
         NIsthmus::GenerateHeader( "Isthmus.h" );
+        if (true) {
+            NIsthmus::NDevelop::Veryfy_IsIsthmus( isthmus );
+            NIsthmus::NDevelop::Verify_Templates( primary, isthmus );
+        }
     }
     vector<uint8_t> pxcond, pxsimple;
     if (true) {// Lohou, P2x simple
-        LoadOrCreateTable( pxcond, "PxCondition", bind( &NPxSimple::CheckConditionsUDir, _1 ) );
+        LoadOrCreateTable( pxcond, "PxCondition", bind( &NPxSimple::CheckConditionsU, _1 ) );
         NByteTable::ShowBitStat( pxcond );
-        NPxSimple::Verify_IsP2xSimpleU( pxcond );
         LoadOrCreateTable( pxsimple, "PxSimple", bind( &CreatePredicateTable, _1, CreatePredicates<EFaceDir, ED_NUM_FACE_DIR>( &NPxSimple::IsDeletable ) ) );
         NByteTable::ShowBitStat( pxsimple );
         NPxSimple::GenerateHeader( "PxSimple.h" );
-        //NPxSimple::Verify_CalcP2x();
-        //NPxSimple::Verify_IsP2xSimple();
+        if (true) {
+            NPxSimple::NDevelop::Verify_CalcP2xU();
+            NPxSimple::NDevelop::Verify_IsP2xSimpleU( pxcond );
+        }
     }
     if (true) {// Show Raynal's U-masks that are not contained in Lohou's
         if (!raynal.empty() && !pxsimple.empty()) {
@@ -140,7 +144,7 @@ int _tmain( int argc, _TCHAR* argv[] )
         NByteTable::ShowBitStat( nemeth );
         NNemeth::GenerateHeader( "Nemeth.h" );
     }
-    printf( "\n\n\n" );
+    printf( "\n" );
     system( "pause" );
     return 0;
 }

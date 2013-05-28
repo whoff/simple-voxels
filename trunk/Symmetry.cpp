@@ -262,19 +262,13 @@ namespace NSymmetry {
 namespace NSymmetry {
     void CreatePrimaryTable( vector<uint8_t>& table ) {
         table.clear();
-        table.resize( 1 << 27, EP_ALL | EP_FACE_U );
-        int syms_all[NUM_SYM_ALL];
+        table.resize( 1 << 27, EP_FACE_U | EP_EDGE_UN | EP_CORNER_UNW | EP_ALL );
         int syms_u[NUM_SYM_U];
+        int syms_un[NUM_SYM_UN];
+        int syms_unw[NUM_SYM_UNW];
+        int syms_all[NUM_SYM_ALL];
         for (int bits = 0; bits < (1 << 27); ++bits) {
-            int val = table[bits];
-            if (val & EP_ALL) {
-                TransformBitsAll( bits, syms_all );
-                for each (int sym in syms_all) {
-                    if (sym > bits) {
-                        table[sym] &= ~EP_ALL;
-                    }
-                }
-            }
+            const int val = table[bits];
             if (val & EP_FACE_U) {
                 TransformBitsU( bits, syms_u );
                 for each (int sym in syms_u) {
@@ -283,7 +277,30 @@ namespace NSymmetry {
                     }
                 }
             }
-            table[bits] = val;
+            if (val & EP_EDGE_UN) {
+                TransformBitsUN( bits, syms_un );
+                for each (int sym in syms_un) {
+                    if (sym > bits) {
+                        table[sym] &= ~EP_EDGE_UN;
+                    }
+                }
+            }
+            if (val & EP_CORNER_UNW) {
+                TransformBitsUNW( bits, syms_unw );
+                for each (int sym in syms_unw) {
+                    if (sym > bits) {
+                        table[sym] &= ~EP_CORNER_UNW;
+                    }
+                }
+            }
+            if (val & EP_ALL) {
+                TransformBitsAll( bits, syms_all );
+                for each (int sym in syms_all) {
+                    if (sym > bits) {
+                        table[sym] &= ~EP_ALL;
+                    }
+                }
+            }
         }
     }
 }

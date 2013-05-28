@@ -17,7 +17,8 @@ const int MaskS = BV( BP(0,7,7), BP(0,7,7), BP(0,7,7) );    // South
 namespace NPxSimple {// Conditions
 
     // leave the foreground voxels that are P2x-simple (reference implementation)
-    Neibors CalcP2x_ref( Neibors neib ) {
+    int CalcP2xU_ref( int bits ) {
+        Neibors neib( bits );
         Neibors Px;
         for (int z = -1; z <= 1; ++z) {
             for (int y = -1; y <= 1; ++y) {
@@ -35,39 +36,40 @@ namespace NPxSimple {// Conditions
                 }
             }
         }
-        return Px;
+        return Px.bits;
     }
 
     // leave the foreground voxels that are P2x-simple
-    int CalcP2x( int bits ) {
+    int CalcP2xU( int bits ) {
         const int top = bits << DZ;
         const int mid = top & ~bits;
         const int rx = top | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX) | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY);
         return bits & ~rx;
     }
 
-    void Verify_CalcP2x() {
-        for (int bits = 0; bits < (1 << 27); ++bits) {
-            if ((bits & N0_bits) == 0) continue;
-            const int ref = CalcP2x_ref( Neibors( bits ) ).bits;
-            const int opt = CalcP2x( bits );
-            if (ref != opt) {
-                printf( "ERROR!\n" );
-                DumpBits( bits );
-                printf( "Ref P2x\n" );
-                DumpBits( ref );
-                printf( "Opt P2x\n" );
-                DumpBits( opt );
-                return;
+    namespace NDevelop {
+        void Verify_CalcP2xU() {
+            for (int bits = 0; bits < (1 << 27); ++bits) {
+                if ((bits & N0_bits) == 0) continue;
+                const int ref = CalcP2xU_ref( bits );
+                const int opt = CalcP2xU( bits );
+                if (ref != opt) {
+                    printf( "ERROR!\n" );
+                    DumpBits( bits );
+                    printf( "Ref P2x\n" );
+                    DumpBits( ref );
+                    printf( "Opt P2x\n" );
+                    DumpBits( opt );
+                    return;
+                }
             }
+            printf( __FUNCTION__ ": Pass!\n" );
         }
-        printf( "CalcP2x() is OK\n" );
     }
 
-    uint8_t CheckConditions( int bits ) {
+    uint8_t CheckConditionsU_impl( int bits ) {
         uint8_t ret = 0;
-        const Neibors neib( bits );
-        Neibors Px = CalcP2x_ref( neib );
+        Neibors Px( CalcP2xU_ref( bits ) );
         if (Px.Read( Coord( 0, 0, 0 ) )) {
             ret |= ELC_P2;
         }
@@ -105,6 +107,7 @@ namespace NPxSimple {// Conditions
         }
         {// Condition 4: For all y in N_6* & Px, there exist z and t in X~ such that {x, y, z, t} is a unit square
             bool pass = true;
+            const Neibors neib( bits );
             for each (const Coord& y in N6) {
                 if (Px.Read( y ) == false) continue;
                 bool hit = false;
@@ -133,13 +136,13 @@ namespace NPxSimple {// Conditions
         return ret;
     }
 
-    void CheckConditionsUDir( vector<uint8_t>& pxcond ) {
+    void CheckConditionsU( vector<uint8_t>& pxcond ) {
         pxcond.resize( 1 << 27, 0 );
         int syms[NSymmetry::NUM_SYM_U];
         for (int bits = 0; bits < (1 << 27); ++bits) {
             if ((bits & N0_bits) == 0) continue;
             if (pxcond[bits]) continue;   // already set
-            const uint8_t ret = CheckConditions( bits );
+            const uint8_t ret = CheckConditionsU_impl( bits );
             NSymmetry::TransformBitsU( bits, syms );
             for each (int sym in syms) {
                 pxcond[sym] = ret;
@@ -150,114 +153,20 @@ namespace NPxSimple {// Conditions
 
 namespace NPxSimple {// P2x-simple
 
-    const int MaskT6N4 = BV( BP(0,0,0), BP(2,5,2), BP(0,0,0) );
-    const int MaskBtm  = BV( BP(0,0,0), BP(0,0,0), BP(0,2,0) );
-
     //const Mask TemplatesT6[2] = {
     //    Mask( BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) ), BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) ) ),
     //    Mask( BV( BP(0,0,0), BP(2,2,0), BP(2,2,0) ), BV( BP(0,0,0), BP(0,2,0), BP(0,0,0) ) ),
     //};
 
-    const Mask TemplatesT26Rx[2] = {
+    const Mask TemplatesT26RxU[2] = {
         Mask( BV( BP(0,0,0), BP(2,0,2), BP(2,2,2) ), 0, BV( BP(0,0,0), BP(1,1,1), BP(1,1,1) ), BV( BP(0,0,0), BP(4,4,4), BP(4,4,4) ) ),
         Mask( BV( BP(0,0,0), BP(2,1,0), BP(2,3,0) ), 0, BV( BP(0,0,0), BP(1,0,0), BP(1,0,0) ), BV( BP(0,0,0), BP(4,4,7), BP(4,4,7) ) ),
     };
 
     void GenerateHeader( const char* filename ) {
         vector<vector<vector<Mask>>> tables;
-        NSymmetry::CreateMaskTablesU( tables, TemplatesT26Rx );
+        NSymmetry::CreateMaskTablesU( tables, TemplatesT26RxU );
         NUtil::GenerateHeader( tables, filename );
-    }
-
-    bool IsP2xSimpleU_ref( int bits ) {
-        const int px = CalcP2x( bits );
-        {// x is P2
-            if ((px & N0_bits) == 0) return false;
-        }
-        const bool WhiteBottom = ((bits & MaskBtm) == 0);
-        {// T6
-            if (WhiteBottom) {
-                const int n4 = ~(bits | (bits >> DZ));
-                if ((n4 & MaskT6N4) == 0) return false;
-            }
-        }
-        const int rx = bits & ~px;
-        {// C26
-            int rn = rx;    // N26( rx )
-            rn = rn | ((rn & MaskE) >> DX) | ((rn & MaskW) << DX);
-            rn = rn | ((rn & MaskS) >> DY) | ((rn & MaskN) << DY);
-            rn = rn | (rn >> DZ) | (rn << DZ);
-            if (~rn & px & ~N0_bits) return false;
-        }
-        {// T26
-            if (rx == 0) return false;
-            if (WhiteBottom) {
-                int syms[NSymmetry::NUM_SYM_U];
-                NSymmetry::TransformBitsU( rx, syms );
-                for each (const Mask& mask in TemplatesT26Rx) {
-                    for each (int sym in syms) {
-                        if (mask.Match( sym )) return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    bool IsP2xSimpleU( int bits ) {
-        const int top = (bits << DZ);
-        const int mid = (bits << DZ) & ~bits;
-        const int rx = bits & (top | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX) | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY));
-        const int px = bits & ~rx;
-        if (rx == 0) return false;              // T26
-        if ((px & N0_bits) == 0) return false;  // x is P2?
-        {// C26
-            int rn = rx;    // N26(Rx)
-            rn = rn | ((rn & MaskE) >> DX) | ((rn & MaskW) << DX);
-            rn = rn | ((rn & MaskS) >> DY) | ((rn & MaskN) << DY);
-            rn = rn | (rn >> DZ) | (rn << DZ);
-            if (~rn & px & ~N0_bits) return false;
-        }
-        if ((bits & MaskBtm) == 0) {
-            {// T6
-                const int n4 = ~(bits | (bits >> DZ));
-                if ((n4 & MaskT6N4) == 0) return false;
-            }
-            {// T26
-                int syms[NSymmetry::NUM_ROTATE_U];
-                NSymmetry::RotateBitsU( rx, syms );
-                for each (const Mask& mask in TemplatesT26Rx) {
-                    for each (int sym in syms) {
-                        if (mask.Match( sym )) return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    void Verify_IsP2xSimpleU( const vector<uint8_t>& pxcond ) {
-        int count = 0;
-        for (int bits = 0; bits < (1 << 27); ++bits) {
-            if ((bits & N0_bits) == 0) continue;
-            const uint8_t cond = pxcond[bits];
-            const bool ref = IsP2xSimpleU_ref( bits );
-            if (ref != (cond & ELC_Simple)) {
-                printf( "ERROR! cond = %d, ref = 0x%02x\n", (int) cond, ref );
-                DumpBits( bits );
-                return;
-            }
-            const bool test = IsP2xSimpleU( bits );
-            if (ref != test) {
-                printf( "ERROR! ref = %d, test = %d\n", (int) ref, (int) test );
-                DumpBits( bits );
-                return;
-            }
-            if (ref) {
-                count++;
-            }
-        }
-        printf( "%s: PASS (count = %d)\n", __FUNCTION__, count );
     }
 
     bool IsDeletable( int bits, EFaceDir dir ) {
@@ -308,5 +217,102 @@ namespace NPxSimple {// P2x-simple
             }
         }
         return true;
+    }
+
+    namespace NDevelop {
+
+        const int MaskT6N4U = BV( BP(0,0,0), BP(2,5,2), BP(0,0,0) );
+        const int MaskBtmU  = BV( BP(0,0,0), BP(0,0,0), BP(0,2,0) );
+
+        bool IsP2xSimpleU_ref( int bits ) {
+            const int px = CalcP2xU( bits );
+            {// x is P2
+                if ((px & N0_bits) == 0) return false;
+            }
+            const bool WhiteBottom = ((bits & MaskBtmU) == 0);
+            {// T6
+                if (WhiteBottom) {
+                    const int n4 = ~(bits | (bits >> DZ));
+                    if ((n4 & MaskT6N4U) == 0) return false;
+                }
+            }
+            const int rx = bits & ~px;
+            {// C26
+                int rn = rx;    // N26( rx )
+                rn = rn | ((rn & MaskE) >> DX) | ((rn & MaskW) << DX);
+                rn = rn | ((rn & MaskS) >> DY) | ((rn & MaskN) << DY);
+                rn = rn | (rn >> DZ) | (rn << DZ);
+                if (~rn & px & ~N0_bits) return false;
+            }
+            {// T26
+                if (rx == 0) return false;
+                if (WhiteBottom) {
+                    int syms[NSymmetry::NUM_SYM_U];
+                    NSymmetry::TransformBitsU( rx, syms );
+                    for each (const Mask& mask in TemplatesT26RxU) {
+                        for each (int sym in syms) {
+                            if (mask.Match( sym )) return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        bool IsP2xSimpleU( int bits ) {
+            const int top = (bits << DZ);
+            const int mid = (bits << DZ) & ~bits;
+            const int rx = bits & (top | ((mid & MaskE) >> DX) | ((mid & MaskW) << DX) | ((mid & MaskS) >> DY) | ((mid & MaskN) << DY));
+            const int px = bits & ~rx;
+            if (rx == 0) return false;              // T26
+            if ((px & N0_bits) == 0) return false;  // x is P2?
+            {// C26
+                int rn = rx;    // N26(Rx)
+                rn = rn | ((rn & MaskE) >> DX) | ((rn & MaskW) << DX);
+                rn = rn | ((rn & MaskS) >> DY) | ((rn & MaskN) << DY);
+                rn = rn | (rn >> DZ) | (rn << DZ);
+                if (~rn & px & ~N0_bits) return false;
+            }
+            if ((bits & MaskBtmU) == 0) {
+                {// T6
+                    const int n4 = ~(bits | (bits >> DZ));
+                    if ((n4 & MaskT6N4U) == 0) return false;
+                }
+                {// T26
+                    int syms[NSymmetry::NUM_ROTATE_U];
+                    NSymmetry::RotateBitsU( rx, syms );
+                    for each (const Mask& mask in TemplatesT26RxU) {
+                        for each (int sym in syms) {
+                            if (mask.Match( sym )) return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        void Verify_IsP2xSimpleU( const vector<uint8_t>& pxcond ) {
+            int count = 0;
+            for (int bits = 0; bits < (1 << 27); ++bits) {
+                if ((bits & N0_bits) == 0) continue;
+                const uint8_t cond = pxcond[bits];
+                const bool ref = IsP2xSimpleU_ref( bits );
+                if (ref != (cond & ELC_Simple)) {
+                    printf( "ERROR! cond = %d, ref = 0x%02x\n", (int) cond, ref );
+                    DumpBits( bits );
+                    return;
+                }
+                const bool test = IsP2xSimpleU( bits );
+                if (ref != test) {
+                    printf( "ERROR! ref = %d, test = %d\n", (int) ref, (int) test );
+                    DumpBits( bits );
+                    return;
+                }
+                if (ref) {
+                    count++;
+                }
+            }
+            printf( __FUNCTION__ ": Pass! (count = %d)\n", count );
+        }
     }
 }
