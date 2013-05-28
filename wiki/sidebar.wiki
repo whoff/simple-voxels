@@ -1,15 +1,15 @@
 #summary side bar
-[Top Project Top]
+* [Top Project Top]
 
-Preliminary
+* Preliminary
   * [Notations]
   * [SimpleVoxels Simple Voxels]
 
-Algorithms
+* Algorithms
   * [PalagyiKuba Palagyi and Kuba]
   * [RaynalCouprie Raynal and Couprie]
   * [LohouBertrand Lohou and Bertrand]
   * [NemethKardosPalagyi Nemeth, Kardos and Palagyi]
 
-Program
+* Program
   * [RunCode Running Code]
