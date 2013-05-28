@@ -31,8 +31,10 @@ enum ECornerDir {
 };
 
 enum EPrimary {
-    EP_ALL    = 0x01,
-    EP_FACE_U = 0x02,
+    EP_ALL          = 0x01,
+    EP_FACE_U       = 0x02,
+    EP_EDGE_UN      = 0x04,
+    EP_CORNER_UNW   = 0x08,
 };
 
 // symmetries for U-direction of 6-subiteration

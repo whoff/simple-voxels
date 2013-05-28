@@ -19,11 +19,14 @@ namespace NIsthmus {// Raynal
     extern const Mask TemplatesU[6];
     bool IsIsthmus( int bits );
     void GenerateHeader( const char* filename );
-    void Veryfy_IsIsthmus( const std::vector<std::uint8_t>& isthmus );
-    void VerifyTemplates( const std::vector<std::uint8_t>& primary, const std::vector<std::uint8_t>& isthmus );
 
-    inline bool IsIsthmusByDefinition( int bits, const std::vector<std::uint8_t>& table ) {
-        return (NComponent::GetForeCount( table[bits] ) >= 2);
+    namespace NDevelop {
+        void Veryfy_IsIsthmus( const std::vector<std::uint8_t>& isthmus );
+        void Verify_Templates( const std::vector<std::uint8_t>& primary, const std::vector<std::uint8_t>& isthmus );
+
+        inline bool IsIsthmusByDefinition( int bits, const std::vector<std::uint8_t>& table ) {
+            return (NComponent::GetForeCount( table[bits] ) >= 2);
+        }
     }
 }
 
@@ -37,15 +40,22 @@ namespace NPxSimple {// Lohou
         ELC_C26    = 0x10,
         ELC_C6     = 0x20,
     };
+    int CalcP2xU( int bits );
+    void CheckConditionsU( std::vector<std::uint8_t>& pxcond );
 
-    extern const Mask TemplatesT26Rx[2];
+    namespace NDevelop {
+        void Verify_CalcP2xU();
+    }
 
-    void CheckConditionsUDir( std::vector<std::uint8_t>& pxcond );
+    // P2x-simple
+    extern const Mask TemplatesT26RxU[2];
     bool IsDeletable( int bits, EFaceDir dir );
     void GenerateHeader( const char* filename );
 
-    bool IsP2xSimpleU( int bits );
-    void Verify_IsP2xSimpleU( const std::vector<std::uint8_t>& pxcond );
+    namespace NDevelop {
+        bool IsP2xSimpleU( int bits );
+        void Verify_IsP2xSimpleU( const std::vector<std::uint8_t>& pxcond );
+    }
 }
 
 namespace NNemeth {

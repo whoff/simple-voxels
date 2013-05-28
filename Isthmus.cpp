@@ -61,59 +61,63 @@ namespace NIsthmus {
         }
         return false;
     }
+}
 
-    void VerifyTemplates( const vector<uint8_t>& primary, const vector<uint8_t>& isthmus ) {
-        int cnt_hit = 0;
-        int cnt_miss = 0;
-        int syms[NSymmetry::NUM_SYM_ALL];
-        int max_bits = 0;
-        int max_numbits = 0;
-        for (int bits = 0; bits < (1 << 27); ++bits) {
-            if ((bits & N0_bits) == 0) continue;
-            if ((primary[bits] & EP_ALL) == 0) continue;    // only check primary configurations
-            const bool is_isthmus = (isthmus[bits] != 0);
-            NSymmetry::TransformBitsAll( bits, syms );          // generate 48 symmetries
-            bool hit = false;
-            for each (int sym in syms) {
-                hit = IsIsthmus( sym );
-                if (hit) break;
+namespace NIsthmus {
+    namespace NDevelop {
+        void Veryfy_IsIsthmus( const vector<uint8_t>& isthmus ) {
+            for (int bits = 0; bits < (1 << 27); ++bits) {
+                if ((bits & N0_bits) == 0) continue;
+                const bool is_isthmus = (isthmus[bits] & 1);
+                const bool hit = IsIsthmus( bits );
+                if (hit != is_isthmus) {
+                    printf( "ERROR!! hit = %d, is_isthmus = %d\n", (int) hit, (int) is_isthmus );
+                    DumpBits( bits );
+                    return;
+                }
             }
-            if (hit && !is_isthmus) {
-                printf( "ERROR!! hit = %d, is_isthmus = %d\n", (int) hit, (int) is_isthmus );
-                DumpBits( bits & N26_bits );
-                return;
-            }
-            if (is_isthmus) {
-                if (hit) {
-                    cnt_hit++;
-                } else {
-                    cnt_miss++;
-                    const int numbits = CountBits( bits );
-                    if (max_numbits < numbits) {
-                        max_numbits = numbits;
-                        max_bits = bits;
+            printf( __FUNCTION__ ": Pass!\n" );
+        }
+
+        void Verify_Templates( const vector<uint8_t>& primary, const vector<uint8_t>& isthmus ) {
+            int cnt_hit = 0;
+            int cnt_miss = 0;
+            int syms[NSymmetry::NUM_SYM_ALL];
+            int max_bits = 0;
+            int max_numbits = 0;
+            for (int bits = 0; bits < (1 << 27); ++bits) {
+                if ((bits & N0_bits) == 0) continue;
+                if ((primary[bits] & EP_ALL) == 0) continue;    // check only primary configurations
+                const bool is_isthmus = (isthmus[bits] & 1);
+                NSymmetry::TransformBitsAll( bits, syms );      // generate 48 symmetries
+                bool hit = false;
+                for each (int sym in syms) {
+                    hit = IsIsthmus( sym );
+                    if (hit) break;
+                }
+                if (hit && !is_isthmus) {
+                    printf( "ERROR!! hit = %d, is_isthmus = %d\n", (int) hit, (int) is_isthmus );
+                    DumpBits( bits & N26_bits );
+                    return;
+                }
+                if (is_isthmus) {
+                    if (hit) {
+                        cnt_hit++;
+                    } else {
+                        cnt_miss++;
+                        const int numbits = CountBits( bits );
+                        if (max_numbits < numbits) {
+                            max_numbits = numbits;
+                            max_bits = bits;
+                        }
                     }
                 }
             }
-        }
-        if (max_bits) {
-            DumpBits( max_bits & N26_bits );
-        }
-        const int cnt_total = cnt_hit + cnt_miss;
-        printf( "hit / total = %d / %d (%.3f%%), miss = %d\n", cnt_hit, cnt_total, 100.0 * cnt_hit / cnt_total, cnt_miss );
-    }
-
-    void Veryfy_IsIsthmus( const vector<uint8_t>& isthmus ) {
-        for (int bits = 0; bits < (1 << 27); ++bits) {
-            if ((bits & N0_bits) == 0) continue;
-            const bool is_isthmus = (isthmus[bits] != 0);
-            const bool hit = IsIsthmus( bits );
-            if (hit != is_isthmus) {
-                printf( "ERROR!! hit = %d, is_isthmus = %d\n", (int) hit, (int) is_isthmus );
-                DumpBits( bits );
-                return;
+            if (max_bits) {
+                DumpBits( max_bits );
             }
+            const int cnt_total = cnt_hit + cnt_miss;
+            printf( __FUNCTION__ ": hit / total = %d / %d (%.3f%%), miss = %d\n", cnt_hit, cnt_total, 100.0 * cnt_hit / cnt_total, cnt_miss );
         }
-        printf( __FUNCTION__ ": OK!\n" );
     }
 }
