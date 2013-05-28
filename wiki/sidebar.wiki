@@ -1,15 +1,12 @@
 #summary side bar
   * [Top Project Top]
-
   * Preliminary
     * [Notations]
     * [SimpleVoxels Simple Voxels]
-
   * Algorithms
     * [PalagyiKuba Palagyi and Kuba]
     * [RaynalCouprie Raynal and Couprie]
     * [LohouBertrand Lohou and Bertrand]
     * [NemethKardosPalagyi Nemeth, Kardos and Palagyi]
-
   * Program
     * [RunCode Running Code]
