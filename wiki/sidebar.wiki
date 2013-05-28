@@ -1,5 +1,5 @@
 #summary side bar
-[Top]
+[Top Project Top]
 
 Preliminary
   * [Notations]
@@ -11,4 +11,5 @@ Algorithms
   * [LohouBertrand Lohou and Bertrand]
   * [NemethKardosPalagyi Nemeth, Kardos and Palagyi]
 
-[RunCode Running Code]
+Program
+  * [RunCode Running Code]
