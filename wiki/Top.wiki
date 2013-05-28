@@ -14,7 +14,7 @@ This Wiki content is also a footprint of my trial seeking for a way to reduce sp
   * Raynal and Couprie's isthmus preservation, and then
   * Lohou and Bertrand's P2x-simple condition
 
-However, it is out of the scope of this project to provide an implementation of thinning algorithms using the various kinds of deletable conditions. So, there is no screenshots of objects before / after the thinning process.
+However, it is out of the scope of this project to provide an implementation of thinning algorithms using the various kinds of deletable conditions. So, there is no screenshots of objects before / after the thinning processes. Sorry for the boringness. :-)
 
 = Contents =
   # [Notations]
