@@ -10,18 +10,17 @@ Because the spurious branches are originating from spurious end
 points that are not deletable, removing more simple voxels leads
 to the reduction of spurious branches.
 
-Another way of reducing the spurious branches is to suppress the generation of spurious end points.
+The above consideration suggests that it would also be effective
+to suppress the generation of spurious end points to reduce spurious branches.
+In fact, although the 3x3x3 template matching is a very efficient technique, it is based on local information only.
+As a result, objects are not always thinned uniformly
+through iterations, and their surface will have noisy voxels.
 
-Although 3x3x3 template matching is a very efficient technique,
-because it is based on the local information,
-objects may not be thinned uniformly resulting in some noisy voxels
-on its surface after iterations.
-
-In [Top#References [4]], Nemeth, Kardos, and Palagyi proposed
+In [Top#References [4]],
+Nemeth, Kardos, and Palagyi proposed
 additional 2 subiterations for the surface noise reduction.
 They are used as a preprocessing before each major iteration.
 
 
 obtained skeletons may deviate from the true center lines of objects.
 especially after many iterations for big or thick objects.
-
