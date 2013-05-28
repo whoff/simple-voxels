@@ -1,2 +1,27 @@
 #summary Nemeth, Kardos and Palagyi's thinning algorithm with smoothing
 = Introduction =
+In order to reduce spurious branches,
+we can use the last two methods
+[RaynalCouprie Raynal and Couprie] and
+[LohouBertrand Lohou and Bertrand]
+that remove more simple points at each subiteration
+that are not deleted by [PalagyiKuba Palagyi and Kuba]'s method.
+Because the spurious branches are originating from spurious end
+points that are not deletable, removing more simple voxels leads
+to the reduction of spurious branches.
+
+Another way of reducing the spurious branches is to suppress the generation of spurious end points.
+
+Although 3x3x3 template matching is a very efficient technique,
+because it is based on the local information,
+objects may not be thinned uniformly resulting in some noisy voxels
+on its surface after iterations.
+
+In [Top#References [4]], Nemeth, Kardos, and Palagyi proposed
+additional 2 subiterations for the surface noise reduction.
+They are used as a preprocessing before each major iteration.
+
+
+obtained skeletons may deviate from the true center lines of objects.
+especially after many iterations for big or thick objects.
+
