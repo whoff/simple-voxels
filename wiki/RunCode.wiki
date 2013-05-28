@@ -10,6 +10,8 @@ it would be beneficial.
 
 Otherwise, it is only a waste of your disk space.
 I attach the console output below instead.
+Also, the generated tables are included in the solution and committed in the repository.
+Please find ~table.h files in [http://code.google.com/p/simple-voxels/source/browse/#svn%2Ftrunk trunk].
 
 = Console Output =
 <code>
