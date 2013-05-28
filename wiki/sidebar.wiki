@@ -4,9 +4,9 @@
     * [Notations]
     * [SimpleVoxels Simple Voxels]
   * Algorithms
-    * [PalagyiKuba Palagyi and Kuba]
-    * [RaynalCouprie Raynal and Couprie]
-    * [LohouBertrand Lohou and Bertrand]
-    * [NemethKardosPalagyi Nemeth, Kardos and Palagyi]
+    * [PalagyiKuba 1 Palagyi, Kuba]
+    * [RaynalCouprie 2 Raynal, Couprie]
+    * [LohouBertrand 3 Lohou, Bertrand]
+    * [NemethKardosPalagyi 4 Nemeth, Kardos, Palagyi]
   * Program
     * [RunCode Running Code]
