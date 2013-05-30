@@ -1,20 +1,22 @@
 #summary Project Wiki Top
 #labels Featured
 = Summary =
-This project is intended to help implement 3D parallel curve thinning algorithms in the literature by providing working C++ codes that can be used to determine whether a voxel is deletable or not. In doing so, new template masks or new implementation were devised for some of the algorithms.
+This project is intended to help implement 3D parallel curve thinning algorithms in the literature by providing working C++ codes that can be used to determine whether a voxel is deletable or not. In doing so, new implementations are also devised for some of the algorithms.
 
-The current scope of this project is 3D parallel thinning algorithms that are characterized by:
+The current scope of this project is the 3D parallel thinning algorithms that are characterized by:
   * (26, 6) foreground and background connectivity
   * Curve thinning
   * Parallel thinning with 6 subiterations
-  * Deletability of a voxel can be determined locally with its 3x3x3 neighborhood
+  * Deletability of a voxel can be determined locally within its 3x3x3 neighborhood
 
-This Wiki content is also a footprint of my trial seeking for a way to reduce spurious branches, and from some point, to obtain ultimate thinning. My current choice is the combination of:
-  * Nemeth, Kardos, and Palagyi's smoothing, followed by
+This Wiki content is also a footprint of my trial seeking for a way to reduce spurious branches in thinned objects, and from some point, to remove skeletal branches, too, to have ultimately thinned objects.
+
+My current choice is the combination of:
+  * Nemeth, Kardos, and Palagyi's object surface smoothing, followed by
   * Raynal and Couprie's isthmus preservation, and then
   * Lohou and Bertrand's P2x-simple condition
 
-However, it is out of the scope of this project to provide an implementation of thinning algorithms using the various kinds of deletable conditions. So, there is no screenshots of objects before / after the thinning processes. Sorry for the boringness. :-)
+However, it is out of the scope of this project to provide an implementation of thinning algorithms using the various kinds of deletable conditions. So, there is no fancy screenshots of objects before / after thinning like those in papers regarding thinning algorithms. Sorry for the boringness. :-)
 
 = Contents =
   # [Notations]
