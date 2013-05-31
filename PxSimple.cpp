@@ -4,6 +4,7 @@
 #include "Util.h"
 
 #include "PxSimple_table.h"
+#include "PxSimpleSurf_table.h"
 
 using namespace std;
 
@@ -314,5 +315,34 @@ namespace NPxSimple {// P2x-simple
             }
             printf( __FUNCTION__ ": Pass! (count = %d)\n", count );
         }
+    }
+}
+
+namespace NPxSimpleSurface {// Lohou for 12-subiteration surface thinning
+    const Mask TemplatesUN[] = {
+        Mask( BV( BP(7,2,0), BP(7,2,2), BP(7,0,0) ), BV( BP(0,2,0), BP(0,2,2), BP(0,0,0) ), BV( BP(0,0,0), BP(0,5,0), BP(0,0,0) ) ),    // L1'
+        Mask( BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ), BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) ), BV( BP(0,0,0), BP(2,0,2), BP(0,0,0) ), BV( BP(0,0,0), BP(0,5,0), BP(0,0,0) ) ), // L2'
+        Mask( BV( BP(2,2,0), BP(2,7,2), BP(0,2,0) ), BV( BP(0,0,0), BP(0,7,2), BP(0,2,0) ) ),   // L3'
+        Mask( BV( BP(2,3,0), BP(3,6,2), BP(0,2,0) ), BV( BP(0,0,0), BP(1,6,2), BP(0,2,0) ) ),   // L4'-a
+        Mask( BV( BP(2,3,0), BP(3,6,2), BP(0,2,0) ), BV( BP(0,1,0), BP(0,6,2), BP(0,2,0) ) ),   // L4'-b
+        //Mask( BV( BP(2,6,0), BP(6,3,2), BP(0,2,0) ), BV( BP(0,0,0), BP(4,3,2), BP(0,2,0) ) ),   // L5'-a
+        //Mask( BV( BP(2,6,0), BP(6,3,2), BP(0,2,0) ), BV( BP(0,4,0), BP(0,3,2), BP(0,2,0) ) ),   // L5'-b
+        Mask( BV( BP(3,3,0), BP(2,6,2), BP(0,2,0) ), BV( BP(0,0,0), BP(0,6,2), BP(0,2,0) ) ),   // L6'
+        //Mask( BV( BP(6,6,0), BP(2,3,2), BP(0,2,0) ), BV( BP(0,0,0), BP(0,3,2), BP(0,2,0) ) ),   // L7'
+    };
+
+    bool IsDeletable( int bits, EEdgeDir dir ) {
+        for each (const Mask& mask in pxsimple_surface_tables[(int)dir]) {
+            if (mask.Match( bits )) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void GenerateHeader( const char* filename ) {
+        vector<vector<vector<Mask>>> tables;
+        NSymmetry::CreateMaskTablesUN( tables, TemplatesUN );
+        NUtil::GenerateHeader( tables, filename );
     }
 }

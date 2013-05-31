@@ -19,7 +19,7 @@ namespace {
     void CreatePredicateTable( vector<uint8_t>& table, const vector<function<bool( int )>>& preds ) {
         table.clear();
         table.resize( 1 << 27, 0 );
-        const size_t num_preds = preds.size();
+        const size_t num_preds = std::min<size_t>( preds.size(), 8 );
         for (int bits = 0; bits < (1 << 27); ++bits) {
             if ((bits & N0_bits) == 0) continue;
             uint8_t val = 0;
@@ -38,7 +38,7 @@ namespace {
         path.append( ".dat" );
         if (NByteTable::LoadTable( table, path.c_str() ) == false) {
             creator( table );
-            NByteTable::SaveTable( table, path.c_str() );
+            //NByteTable::SaveTable( table, path.c_str() );
         }
     }
 }
@@ -60,18 +60,18 @@ int _tmain( int argc, _TCHAR* argv[] )
         NByteTable::ShowBitStat( primary );
     }
     vector<uint8_t> palagyi;
-    if (true) {// Palagyi
+    if (false) {// Palagyi
         LoadOrCreateTable( palagyi, "Palagyi", bind( &CreatePredicateTable, _1, CreatePredicates<EFaceDir, ED_NUM_FACE_DIR>( &NPalagyi::IsDeletable ) ) );
         NByteTable::ShowBitStat( palagyi );
         NPalagyi::GenerateHeader( "Palagyi.h" );
     }
     vector<uint8_t> raynal;
-    if (true) {// Raynal
+    if (false) {// Raynal
         LoadOrCreateTable( raynal, "Raynal", bind( &CreatePredicateTable, _1, CreatePredicates<EFaceDir, ED_NUM_FACE_DIR>( &NRaynal::IsDeletable ) ) );
         NByteTable::ShowBitStat( raynal );
         NRaynal::GenerateHeader( "Raynal.h" );
     }
-    if (true) {// Show Raynal's U-masks that are not contained in Palagyi's
+    if (false) {// Show Raynal's U-masks that are not contained in Palagyi's
         printf( "({Raynal} - {Palagyi}) & U-direction\n" );
         if (!palagyi.empty() && !raynal.empty()) {
             const int U_bit = (1 << ED_U);
@@ -85,7 +85,7 @@ int _tmain( int argc, _TCHAR* argv[] )
             printf( "count = %d\n", cnt );
         }
     }
-    if (true) {// Isthmus (also by Raynal)
+    if (false) {// Isthmus (also by Raynal)
         vector<uint8_t> isthmus;
         NComponent::FilterByCount( compcount, isthmus, 2, INT_MAX, 0, INT_MAX );
         printf( "[Isthmus]\n" );
@@ -97,7 +97,7 @@ int _tmain( int argc, _TCHAR* argv[] )
         }
     }
     vector<uint8_t> pxcond, pxsimple;
-    if (true) {// Lohou, P2x simple
+    if (false) {// Lohou, P2x simple
         LoadOrCreateTable( pxcond, "PxCondition", bind( &NPxSimple::CheckConditionsU, _1 ) );
         NByteTable::ShowBitStat( pxcond );
         LoadOrCreateTable( pxsimple, "PxSimple", bind( &CreatePredicateTable, _1, CreatePredicates<EFaceDir, ED_NUM_FACE_DIR>( &NPxSimple::IsDeletable ) ) );
@@ -108,7 +108,7 @@ int _tmain( int argc, _TCHAR* argv[] )
             NPxSimple::NDevelop::Verify_IsP2xSimpleU( pxcond );
         }
     }
-    if (true) {// Show Raynal's U-masks that are not contained in Lohou's
+    if (false) {// Show Raynal's U-masks that are not contained in Lohou's
         if (!raynal.empty() && !pxsimple.empty()) {
             printf( "({Raynal} - {P2xSimple}) & U-direction\n" );
             const int U_bit = (1 << ED_U);
@@ -122,7 +122,7 @@ int _tmain( int argc, _TCHAR* argv[] )
             printf( "count = %d\n", cnt );
         }
     }
-    if (true) {// Show PxSimple U-masks may remove upper diagonal configurations
+    if (false) {// Show PxSimple U-masks may remove upper diagonal configurations
         if (!pxsimple.empty()) {
             printf( "{P2xSimple} & U-direction & Upper Diag\n" );
             const Mask diag( BV( BP(3,3,0), BP(3,3,0), BP(0,0,0) ), BV( BP(1,0,0), BP(0,2,0), BP(0,0,0) ) );
@@ -137,6 +137,15 @@ int _tmain( int argc, _TCHAR* argv[] )
             }
             printf( "count = %d\n", cnt );
         }
+    }
+    vector<uint8_t> pxsurf;
+    if (true) {// Lohou, 12-subiteration surf
+        for each (const Mask& mask in NPxSimpleSurface::TemplatesUN) {
+            DumpMask( mask );
+        }
+        LoadOrCreateTable( pxsurf, "PxSimpleSurf", bind( &CreatePredicateTable, _1, CreatePredicates<EEdgeDir, ED_NUM_EDGE_DIR>( &NPxSimpleSurface::IsDeletable ) ) );
+        NByteTable::ShowBitStat( pxsurf );
+        NPxSimpleSurface::GenerateHeader( "PxSimpleSurf.h" );
     }
     vector<uint8_t> nemeth;
     if (true) {// Nemeth, smoothing

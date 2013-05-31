@@ -58,6 +58,13 @@ namespace NPxSimple {// Lohou
     }
 }
 
+namespace NPxSimpleSurface {// Lohou
+    // P2x-simple surface
+    extern const Mask TemplatesUN[6];
+    bool IsDeletable( int bits, EEdgeDir dir );
+    void GenerateHeader( const char* filename );
+}
+
 namespace NNemeth {
     extern const Mask TemplatesU[3];
     extern const Mask TemplatesUN[1];

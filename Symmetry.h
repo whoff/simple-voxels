@@ -10,14 +10,12 @@ enum EFaceDir {
     ED_NUM_FACE_DIR,
 };
 
-// 12 edge directions
+// 12 edge directions (in the order proposed by Palagyi)
 enum EEdgeDir {
-    ED_UN, ED_DS,
-    ED_UE, ED_DW,
-    ED_US, ED_DN,
-    ED_UW, ED_DE,
-    ED_NW, ED_SE,
-    ED_NE, ED_SW,
+    ED_UN, ED_SW, ED_DE,
+    ED_NW, ED_UE, ED_DS,
+    ED_NE, ED_US, ED_DW,
+    ED_SE, ED_UW, ED_DN,
     ED_NUM_EDGE_DIR,
 };
 
@@ -145,6 +143,11 @@ namespace NSymmetry {
     template<size_t N>
     void CreateMaskTablesU( std::vector<std::vector<std::vector<Mask>>>& tables, const Mask (&tmpls)[N] ) {
         CreateMaskTables( tables, tmpls, NPerm::PermSymU, NPerm::PermDirectU );
+    }
+
+    template<size_t N>
+    void CreateMaskTablesUN( std::vector<std::vector<std::vector<Mask>>>& tables, const Mask (&tmpls)[N] ) {
+        CreateMaskTables( tables, tmpls, NPerm::PermSymUN, NPerm::PermDirectUN );
     }
 
     template<size_t N>

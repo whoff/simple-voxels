@@ -50,6 +50,9 @@
     <ClInclude Include="Nemeth_table.h">
       <Filter>Header Files\Tables</Filter>
     </ClInclude>
+    <ClInclude Include="PxSimpleSurf_table.h">
+      <Filter>Header Files\Tables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
