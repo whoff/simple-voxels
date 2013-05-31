@@ -28,12 +28,13 @@ namespace NNemeth {
         using namespace NSymmetry;
         vector<vector<Mask>> table;
         {
+            const EFaceDir dirs[] = { ED_U, ED_N, ED_W };
             vector<vector<Mask>> _table;
             InstantiateTemplates( _table, TemplatesU, NPerm::PermSymU );
             for each (const vector<Mask>& _masks in _table) {
                 vector<Mask> masks;
                 for each (const Mask& tmpl in _masks) {
-                    for (int dir = 0; dir < ED_NUM_FACE_DIR; dir += 2) {
+                    for each (EFaceDir dir in dirs) {
                         const Mask mask = TransformMask( tmpl, NPerm::PermDirectU[dir] );
                         if (std::find( masks.begin(), masks.end(), mask ) == masks.end()) {
                             masks.push_back( mask );
@@ -44,8 +45,9 @@ namespace NNemeth {
             }
         }
         for each (const Mask& tmpl in TemplatesUN) {
+            const EEdgeDir dirs[] = { ED_UN, ED_UE, ED_US, ED_UW, ED_NW, ED_NE };
             vector<Mask> masks;
-            for (int dir = 0; dir < ED_NUM_EDGE_DIR; dir += 2) {
+            for each (EEdgeDir dir in dirs) {
                 const Mask mask = TransformMask( tmpl, NPerm::PermDirectUN[dir] );
                 if (std::find( masks.begin(), masks.end(), mask ) == masks.end()) {
                     masks.push_back( mask );
@@ -54,8 +56,9 @@ namespace NNemeth {
             table.push_back( masks );
         }
         for each (const Mask& tmpl in TemplatesUNW) {
+            const ECornerDir dirs[] = { ED_UNW, ED_UNE, ED_USE, ED_USW };
             vector<Mask> masks;
-            for (int dir = 0; dir < ED_NUM_CORNER_DIR; dir += 2) {
+            for each (ECornerDir dir in dirs) {
                 const Mask mask = TransformMask( tmpl, NPerm::PermDirectUNW[dir] );
                 if (std::find( masks.begin(), masks.end(), mask ) == masks.end()) {
                     masks.push_back( mask );

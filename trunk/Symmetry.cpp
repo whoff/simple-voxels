@@ -129,17 +129,17 @@ namespace NSymmetry {
                     for (int x = -1; x <= 1; ++x) {
                         const int idx = getIndex( x, y, z );
                         dir[ 0][idx] = getIndex(  x,  y,  z );   // UN( 0,-1,-1)
-                        dir[ 1][idx] = getIndex(  x, -y, -z );   // DS( 0, 1, 1)
-                        dir[ 2][idx] = getIndex( -y,  x,  z );   // UE( 1, 0,-1) = Rz(270)
-                        dir[ 3][idx] = getIndex(  y,  x, -z );   // DW(-1, 0, 1) + flip 'y' & 'z'
-                        dir[ 4][idx] = getIndex( -x, -y,  z );   // US( 0, 1,-1) = Rz(180)
-                        dir[ 5][idx] = getIndex( -x,  y, -z );   // DN( 0,-1, 1)
-                        dir[ 6][idx] = getIndex(  y, -x,  z );   // UW(-1, 0,-1) = Rz(90)
-                        dir[ 7][idx] = getIndex( -y, -x, -z );   // DE( 1, 0, 1)
-                        dir[ 8][idx] = getIndex(  z,  y, -x );   // NW(-1,-1, 0) = Ry(270)
+                        dir[ 1][idx] = getIndex(  z, -y,  x );   // SW(-1, 1, 0)
+                        dir[ 2][idx] = getIndex( -y, -x, -z );   // DE( 1, 0, 1)
+                        dir[ 3][idx] = getIndex(  z,  y, -x );   // NW(-1,-1, 0) = Ry(270)
+                        dir[ 4][idx] = getIndex( -y,  x,  z );   // UE( 1, 0,-1) = Rz(270)
+                        dir[ 5][idx] = getIndex(  x, -y, -z );   // DS( 0, 1, 1)
+                        dir[ 6][idx] = getIndex( -z,  y,  x );   // NE( 1,-1, 0) = Ry(90)
+                        dir[ 7][idx] = getIndex( -x, -y,  z );   // US( 0, 1,-1) = Rz(180)
+                        dir[ 8][idx] = getIndex(  y,  x, -z );   // DW(-1, 0, 1) = UE + flip 'y' & 'z'
                         dir[ 9][idx] = getIndex( -z, -y, -x );   // SE( 1, 1, 0)
-                        dir[10][idx] = getIndex( -z,  y,  x );   // NE( 1,-1, 0) = Ry(90)
-                        dir[11][idx] = getIndex(  z, -y,  x );   // SW(-1, 1, 0)
+                        dir[10][idx] = getIndex(  y, -x,  z );   // UW(-1, 0,-1) = Rz(90)
+                        dir[11][idx] = getIndex( -x,  y, -z );   // DN( 0,-1, 1)
                     }
                 }
             }
