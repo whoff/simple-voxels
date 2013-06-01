@@ -78,24 +78,31 @@ In this structure,
   * _mask_ defines the mask of interested bits that will be compared with _value_.
   * _nzero1_ and _nzero2_ are the masks that, if not zero, will be used to check whether at least one of the masked bits is 1 or not.
 
-For example, the following code snippet defines [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi.cpp#13 Palagyi's M1 mask] and its [http://code.google.com/p/simple-voxels/source/browse/trunk/Isthmus.cpp#14 variant by Raynal].
+For example, the following code snippet defines [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi.cpp#13 Palagyi's M1 and M2 masks] and [http://code.google.com/p/simple-voxels/source/browse/trunk/Isthmus.cpp#42 Isthmus M1] mask.
 {{{
     const Mask Palagyi_M1(
         BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ),    // mask
         BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) ),    // value
         BV( BP(0,0,0), BP(7,5,7), BP(7,5,7) )     // nzero1
     );
-    const Mask Raynal_M1(
-        BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ),    // mask
-        BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) )     // value
+    const Mask Palagyi_M2(
+        BV( BP(0,7,7), BP(2,2,0), BP(0,2,0) ),    // mask
+        BV( BP(0,0,0), BP(2,2,0), BP(0,2,0) )     // value
+    );
+    const Mask Isthmus_M1(
+        BV( BP(0,0,0), BP(7,5,7), BP(0,0,0) ),    // mask
+        0,                                        // value
+        BV( BP(7,7,7), BP(0,0,0), BP(0,0,0) ),    // nzero1
+        BV( BP(0,0,0), BP(0,0,0), BP(7,7,7) )     // nzero2
     );
 }}}
 
 == Dump Templates ==
 By using DumpMask() function, the matching template masks can be printed on the console window.
 {{{
-    DumpMask( Palagyi_M1 );
-    DumpMask( Raynal_M1 );
+    DumpMask( NPalagyi::TemplatesU[0] );
+    DumpMask( NPalagyi::TemplatesU[1] );
+    DumpMask( NIsthmus::TemplatesU[0] );
 }}}
 [http://simple-voxels.googlecode.com/svn/wiki/images/cout-template-masks.png]
 
