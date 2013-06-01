@@ -3,14 +3,14 @@
 Due to the nature of this project,
 it is not necessary to build the binary and run it yourself in most cases.
 
-Also, please be informed that, by default, the program generates huge tables of total 900MB!
-They are to cache the computed result for later execution.
+Also, please be informed that, by default, the program generates huge tables of total a bit larger than 1GB!
+They are to cache the computed results for later execution.
 If you are going to find your own set of matching templates,
 it would be beneficial.
 
 Otherwise, it is only a waste of your disk space.
 I attach the console output below instead.
-Also, the generated tables are included in the solution and committed in the repository.
+Also, the generated tables are committed in the repository and included in the solution.
 Please find ~table.h files in [http://code.google.com/p/simple-voxels/source/browse/#svn%2Ftrunk trunk].
 
 = Console Output =
