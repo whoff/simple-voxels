@@ -23,8 +23,7 @@ As can be seen, the integer bits from LSB to MSB
 represent the neighbor positions from UNW direction to DSE direction
 traversing x, y, and z axes in this order.
 
-= Coding Conventions =
-== Define Configurations ==
+= Define Configurations =
 A set of macro functions is defined to make an integer from the 3x3x3 neighborhood configuration. Here is an example:
 {{{
     const int bits = BV( BP(0,0,0), BP(0,2,0), BP(0,0,0) );
@@ -46,7 +45,7 @@ The following code is another example that represents the 3x3x3 configuration de
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-hihumi.png]
 
-== Dump Configurations ==
+= Dump Configurations =
 DumpBits() function can be used to print the configurations on the console as follows:
 {{{
     DumpBits( BV( BP(0,1,2), BP(3,4,5), BP(6,7,0) ) );
@@ -57,7 +56,7 @@ DumpBits() function can be used to print the configurations on the console as fo
 The foreground voxels are printed as 'o' and the background voxels as '.'.
 As in the above, configurations are printed plane-by-plane from Up to Down, from left to right on the console.
 
-== Define Matching Templates ==
+= Define Matching Templates =
 To define deletable conditions, 3x3x3 matching templates are often used.
 In this project,
 [http://code.google.com/p/simple-voxels/source/browse/trunk/Mask.h Mask]
@@ -92,7 +91,7 @@ For example, the following code snippet defines [http://code.google.com/p/simple
     );
 }}}
 
-== Dump Matching Templates ==
+= Dump Matching Templates =
 By using DumpMask() function, the matching template masks can be printed on the console window.
 {{{
     DumpMask( Palagyi_M1 );
