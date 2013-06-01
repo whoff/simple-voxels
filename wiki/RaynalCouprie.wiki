@@ -6,7 +6,7 @@
 When the [PalagyiKuba#Matching_Templates deletable conditions] proposed by Palagyi and Kuba is used for thinning implementation,
 one finds that numerous spurious branches are generated
 along with object skeletons.
-This is especially the case with higher object resolution such as 512x512x1024, which is however typical with, for example, recent medical imaging applications.
+This is especially the case when the object resolution is higher such as 512x512x1024, which is however typical in the recent medical imaging applications.
 The spurious branches are generated partly due to the skeleton preserving nature of the deletable conditions or the matching templates,
 which are designed to keep end points of curvilinear structures.
 
