@@ -8,7 +8,7 @@ Palagyi and Kuba proposed a 6-subiteration thinning algorithm that was based on 
 Please refer to the paper for the definition of the matching templates.
 
 The following is their base templates for the U direction
-translated into [Notations#Template_Mask Mask] structure.
+translated into [Notations#Matching_Templates Mask] structure.
 {{{
 namespace NPalagyi {
 
