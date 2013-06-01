@@ -64,7 +64,7 @@ However, in this project, the _old_ way of the matching templates are employed f
 
 By enumerating all the symmetric configurations of each template and removing redundant ones,
 the [http://code.google.com/p/simple-voxels/source/browse/trunk/Nemeth_table.h list]
-of matching templates can be obtained for the U-, UN- and UNW-direction as follows:
+of matching templates can be obtained for the UNW-direction as follows:
 {{{
 const Mask nemeth_tables[2][37] = {
     {// dir = 0
@@ -117,12 +117,11 @@ const Mask nemeth_tables[2][37] = {
 
 In [Top#References [4]],
 The matching templates are divided into two sets R1, R2,
-where R1 contains masks that is for and UNW direction,
-and R2 for DSE direction, respectively.
+where R1 contains masks that are for the UNW-direction,
+and R2 for the DSE-direction, respectively.
+In the above table, the table index 0 is for R1 and 1 is for R2.
 
-In the above table, the table index 0 is for R1, and 1 is for R2.
-
-By using the above list, one can check if a voxel is deletable by
+By using the above list, the deletability of a voxel can be determined by
 {{{
 namespace NNemeth {
     bool IsDeletable( int bits, int idx ) {
@@ -137,10 +136,10 @@ namespace NNemeth {
 }}}
 where idx is 0 (UNW) or 1 (DSE).
 
-This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Nemeth.cpp Nemeth.cpp].
+This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Nemeth.cpp#79 Nemeth.cpp].
 
 = Statistics =
-The table below shows how many simple configurations will be deleted by the above templates for the two indices:
+The next table shows how many simple configurations will be deleted by the above templates for the two indices:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/nemeth-stat.png]
 
@@ -156,4 +155,4 @@ it _does_ improve the obtained skeletons.
 This is also mentioned in [Top#References [4]],
 for the ultimate thinning purpose,
 one can loosen the matching templates to allow removing end points
-by not checking the at-least-one-black-point positions ('x's in the console dump).
+by not checking the at-least-one-foreground-point positions ('x's in the console dump).
