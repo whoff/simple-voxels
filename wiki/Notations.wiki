@@ -1,11 +1,24 @@
 #summary notations used in this project
 = Voxel Neighbors =
-In the implementation of this project, 3x3x3 neighborhood configurations of a voxel are represented by 32-bit integers,
-whose lower 27 bits represent whether the corresponding position is foreground (black) or background (white) by the bit '1' or '0', respectively.
+In the implementation throughout this project,
+a 3x3x3 neighborhood configuration of a voxel is represented by a 32-bit integer,
+whose lower 27 bits represent whether the corresponding position is foreground (black) or background (white) by the bit value '1' or '0', respectively.
 
-The assignment of neighboring points to bit positions is as follows:
+The left figure below illustrates the assignment of a neighboring point to the corresponding bit position.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-bits.png]
+[http://simple-voxels.googlecode.com/svn/wiki/images/6directions.png]
+
+The figure on the right shows the direction regarding the center voxel (13):
+
+|| *Directions* || *Axis* ||
+|| Up, Down || -z, +z ||
+|| North, South || -y, +y ||
+|| West, East || -x, +x ||
+
+As can be seen, the integer bits from LSB to MSB
+represent the neighbor positions from UNW direction to DSE direction
+traversing x, y, and z axes in this order.
 
 == Implementation ==
 A set of macro functions is defined to make an integer from the bit patterns of a 3x3x3 configuration:
@@ -84,7 +97,3 @@ By using DumpMask() function, the mask can be output to the console window.
 || ' ' ||  || don't care ||
 || x || nzero1 || at least one x position should be black ||
 || + || nzero2 || at least one + position should be black ||
-
-
-= Directions =
-[http://simple-voxels.googlecode.com/svn/wiki/images/6directions.png]
