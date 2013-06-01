@@ -78,7 +78,7 @@ In this structure,
   * _mask_ defines the mask of interested bits that will be compared with _value_.
   * _nzero1_ and _nzero2_ are the masks that, if not zero, will be used to check whether at least one of the masked bits is 1 or not.
 
-For example, the following code snippet defines [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi.cpp Palagyi's M1 mask] and its [http://code.google.com/p/simple-voxels/source/browse/trunk/Isthmus.cpp variant by Raynal].
+For example, the following code snippet defines [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi.cpp#13 Palagyi's M1 mask] and its [http://code.google.com/p/simple-voxels/source/browse/trunk/Isthmus.cpp#14 variant by Raynal].
 {{{
     const Mask Palagyi_M1(
         BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ),    // mask
