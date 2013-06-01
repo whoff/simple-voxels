@@ -24,7 +24,7 @@ namespace NPalagyi {
 }
 }}}
 
-As for the notations, see also [Notations#Matching_Templates Mask].
+As for the notations, see also [Notations#Matching_Templates Matching Templates].
 
 It should be noted that their templates are carefully designed not to remove end points of curvilinear structures for the skeletonization purpose.
 
