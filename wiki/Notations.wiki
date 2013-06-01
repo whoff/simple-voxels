@@ -1,4 +1,7 @@
 #summary notations used in this project
+*Contents*
+<wiki:toc max_depth="2" />
+
 = Voxel Neighbors =
 In the implementation throughout this project,
 a 3x3x3 neighborhood configuration of a voxel is represented by a 32-bit integer,
@@ -20,42 +23,45 @@ As can be seen, the integer bits from LSB to MSB
 represent the neighbor positions from UNW direction to DSE direction
 traversing x, y, and z axes in this order.
 
-== Implementation ==
-A set of macro functions is defined to make an integer from the bit patterns of a 3x3x3 configuration:
-
+= Coding Conventions =
+== Define Configurations ==
+A set of macro functions is defined to make an integer from the 3x3x3 neighborhood configuration. Here is an example:
 {{{
     const int bits = BV( BP(0,0,0), BP(0,2,0), BP(0,0,0) );
 }}}
+where BV() and BP() macro names stand for "Bit Volume" and "Bit Plane", respectively.
+In BV(), the three BP() macros define the three planes from Up to Down.
+Similarly, in BP(), the three numbers define the three lines from North to South,
+where each number is a 3-bit integer that represents, from LSB to MSB,
+the consecutive three points on each line from West to East.
 
-where BV() and BP() macro names stand for "bit volume" and "bit plane", respectively.
-The numbers in BP() represents the consecutive three bits of each line in the plane.
-
-For example, the "bits" in the above represents the configuration
+In the above example, "bits" represents the configuration
 where the center voxel is the only voxel that is in the foreground (black, 1) while all the other voxels are in the background (white, 0).
 
-The first BP() corresponds to the top plane in red,
-and the second and the third BP() correspond to the mid and the bottom plane in green and blue, respectively.
+The following code is another example that represents the 3x3x3 configuration depicted in the figure below, where the foreground points are painted, for the illustration purpose, by the same color if they are on the same plane as in the top figure. Namely Up = red, Middle = green, and Down = blue.
 
-For example, an integer defined as follows corresponds to the 3x3x3 configuration in the figure below, where the foreground voxels of the same color are on the same plane.
 {{{
     const int bits = BV( BP(0,1,2), BP(3,4,5), BP(6,7,0) );
 }}}
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-hihumi.png]
 
-Also, DumpBits() function can be used to print the configuration on the console.
+== Dump Configurations ==
+DumpBits() function can be used to print the configurations on the console as follows:
 {{{
     DumpBits( BV( BP(0,1,2), BP(3,4,5), BP(6,7,0) ) );
 }}}
+
 [http://simple-voxels.googlecode.com/svn/wiki/images/cout-neighbor-hihumi.png]
 
-The foreground voxels are printed as 'o', and the background voxels as '.'.
-As can be seen, configurations are printed plane-by-plane from the top to the bottom.
+The foreground voxels are printed as 'o' and the background voxels as '.'.
+As in the above, configurations are printed plane-by-plane from Up to Down, from left to right on the console.
 
-= Template Mask =
-To check if a voxel is deletable or not in actual implementations,
-3x3x3 template matching is one of the most commonly employed method.
-In this project, [http://code.google.com/p/simple-voxels/source/browse/trunk/Mask.h Mask] structure is used to define such template masks.
+== Define Matching Templates ==
+To define deletable conditions, 3x3x3 matching templates are often used.
+In this project,
+[http://code.google.com/p/simple-voxels/source/browse/trunk/Mask.h Mask]
+structure is used to define such matching template masks.
 {{{
 struct Mask {
     Mask( int _mask, int _value, int _nzero1 = 0, int _nzero2 = 0 );
@@ -73,7 +79,7 @@ In this structure,
   * _mask_ defines the mask of interested bits that will be compared with _value_.
   * _nzero1_ and _nzero2_ are the masks that, if not zero, will be used to check whether at least one of the masked bits is 1 or not.
 
-For example, the following code snippet defines [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi.cpp#12 Palagyi's M1 mask] and its [http://code.google.com/p/simple-voxels/source/browse/trunk/Isthmus.cpp#14 variant by Raynal].
+For example, the following code snippet defines [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi.cpp Palagyi's M1 mask] and its [http://code.google.com/p/simple-voxels/source/browse/trunk/Isthmus.cpp variant by Raynal].
 {{{
     const Mask Palagyi_M1(
         BV( BP(7,7,7), BP(0,2,0), BP(0,2,0) ),    // mask
@@ -85,15 +91,19 @@ For example, the following code snippet defines [http://code.google.com/p/simple
         BV( BP(0,0,0), BP(0,2,0), BP(0,2,0) )     // value
     );
 }}}
-By using DumpMask() function, the mask can be output to the console window.
+
+== Dump Matching Templates ==
+By using DumpMask() function, the matching template masks can be printed on the console window.
 {{{
     DumpMask( Palagyi_M1 );
     DumpMask( Raynal_M1 );
 }}}
 [http://simple-voxels.googlecode.com/svn/wiki/images/cout-template-masks.png]
-|| *Character* || *Mask member* || *Description* ||
-|| o || mask & value || black point ||
-|| . || mask & ~value || white point ||
+
+where each letter in the output denotes:
+|| *Letter* || *Mask member* || *Description* ||
+|| o || mask & value || foreground points ||
+|| . || mask & ~value || background points ||
 || ' ' ||  || don't care ||
-|| x || nzero1 || at least one x position should be black ||
-|| + || nzero2 || at least one + position should be black ||
+|| x || nzero1 || at least one x position should be foreground ||
+|| + || nzero2 || at least one + position should be foreground ||
