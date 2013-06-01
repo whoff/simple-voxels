@@ -2,14 +2,13 @@
 <wiki:toc max_depth="2" />
 
 = Introduction =
-The spurious branches that are often observed with topological thinning algorithms are ending with "spurious" end points.
-The removal of more end points thus leads to the reduction of the spurious branches.
+The spurious branches, which are often observed with topological thinning algorithms, are ending with "spurious" end points.
+The removal of "spurious" end points thus leads to the reduction of the spurious branches.
 In fact, with the deletable conditions proposed by
-[RaynalCouprie Raynal and Couprie] and
+[RaynalCouprie Raynal and Couprie] or those by
 [LohouBertrand Lohou and Bertrand],
 the spurious branches are considerably reduced as these methods
-remove more simple points at each subiteration than
-[PalagyiKuba Palagyi and Kuba]'s method does.
+remove more simple points including such spurious end points at each subiteration than [PalagyiKuba Palagyi and Kuba]'s method does.
 
 Another way of reducing the spurious branches is
 to suppress the generation of the spurious end points.
@@ -21,20 +20,19 @@ leaving noisy voxels on the object surface.
 In [Top#References [4]],
 Nemeth, Kardos, and Palagyi proposed additional 2 subiterations
 to remove the noisy voxels and smooth the object surface,
-which are used as a preprocessing before each major iteration.
+which are used as a preprocessing before the major thinning iterations.
 
-The noisy voxel reduction can also improve the obtained skeletons.
-Especially for large or thick objects that needs more thinning iterations,
+The removal of noisy voxels can also improve the obtained skeletons.
+Especially in the case with large or thick objects that needs more thinning iterations,
 the skeletons may deviate more from their medial lines because
 the object surface is fluctuated at every iteration due to the noisy voxels.
 
-In this page, I will present a straightforward implementation of the deletable condition for the smoothing.
-
 = Matching Templates =
-The following is the base templates for the U, UN, and UNW directions,
-which are translated into [Notations#Template_Mask Mask] structure.
+The following is the base templates for the U-, UN-, and UNW-directions,
+which are translated into
+[http://code.google.com/p/simple-voxels/source/browse/trunk/Mask.h Mask] structure.
 To construct a 2-subiteration smoothing,
-the appropriate rotations and reflections are generated as matching masks as in the next section.
+the appropriate rotations and reflections are generated as matching masks as shown in the next section.
 
 {{{
 namespace NNemeth {
@@ -64,7 +62,7 @@ In [Top#References [4]], the authors proposed, instead of using the matching tem
 the use of a 8MB table to detect the deletable points
 assigning 1 bit for 1 configuration out of 2^26 = 64M configurations,
 
-Here, I only enumerate the appropriate symmetric configurations of each template while removing redundant ones.
+Instead of creating the 8MB table, I enumerate all the symmetric configurations of each template without redundancy as follows:
 {{{
 const Mask nemeth_tables[2][37] = {
     {// dir = 0
