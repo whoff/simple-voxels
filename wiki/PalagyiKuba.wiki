@@ -7,7 +7,7 @@ In [Top#References [1]],
 Palagyi and Kuba proposed a 6-subiteration thinning algorithm that was based on a set of six 3x3x3 matching templates.
 Please refer to the paper for the definition of the matching templates.
 
-The following is their base templates for the U direction
+The following is their base templates for the U-direction
 translated into
 [http://code.google.com/p/simple-voxels/source/browse/trunk/Mask.h Mask] structure.
 {{{
@@ -35,7 +35,7 @@ Here is the console dump of the above templates:
 = Implementation =
 By enumerating all the symmetric configurations of each template within the NSWE plane (there are eight of them) and removing redundant ones,
 one can obtain the [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi_table.h list]
-of matching templates for the U direction:
+of matching templates for the U-direction:
 {{{
 const Mask palagyi_tables[][21] = {
     {// dir = 0
