@@ -123,7 +123,7 @@ namespace NRaynal {
     }
 }
 }}}
-This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Isthmus.cpp Isthmus.cpp].
+This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Isthmus.cpp#29 Isthmus.cpp].
 
 == Statistics ==
 The next table shows how many simple configurations can be deleted by the above templates for each of the six directions:
