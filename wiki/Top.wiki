@@ -1,12 +1,13 @@
 #summary Project Wiki Top
 #labels Featured
 = Summary =
-This project is intended to help implement 3D parallel curve thinning algorithms in the literature by providing working C++ codes that can be used to determine whether a voxel is deletable or not. In doing so, new implementations are also devised for some of the algorithms.
+This project is intended to help implement 3D parallel curve thinning algorithms by providing working C++ code that can be used to find deletable voxels according to various deletable conditions proposed in the literature.
+In doing so, new implementations are also devised for some of the deletable conditions.
 
 The current scope of this project is the 3D parallel thinning algorithms that are characterized by:
   * (26, 6) foreground and background connectivity
   * Curve thinning
-  * Parallel thinning with 6 subiterations
+  * Parallel thinning with 6 sub-iterations
   * Deletability of a voxel can be determined locally within its 3x3x3 neighborhood
 
 This Wiki content is also a footprint of my trial seeking for a way to reduce spurious branches in thinned objects, and from some point, to remove skeletal branches, too, to have ultimately thinned objects.
@@ -16,16 +17,8 @@ My current choice is the combination of:
   * Raynal and Couprie's isthmus preservation, and then
   * Lohou and Bertrand's P2x-simple condition
 
-However, it is out of the scope of this project to provide an implementation of thinning algorithms using the various kinds of deletable conditions. So, there is no fancy screenshots of objects before / after thinning like those in papers regarding thinning algorithms. Sorry for the boringness. :-)
-
-= Contents =
-  # [Notations]
-  # [SimpleVoxels Definition of simple voxels]
-  # [PalagyiKuba Palagyi and Kuba's 6-subiteration curve thinning algorithm]
-  # [RaynalCouprie Raynal and Couprie's isthmus based 6-subiteration curve thinning algorithm]
-  # [LohouBertrand Lohou and Bertrand's Px-simple 6-subiteration curve thinning algorithm]
-  # [NemethKardosPalagyi Nemeth, Kardos and Palagyi's thinning algorithm with smoothing]
-  # [RunCode Running the code]
+However, it is out of the scope to provide an implementation of whole thinning algorithms using the deletable conditions picked up in this project.
+So, there is no fancy screenshots of how objects are thinned by those deletable conditions as in papers regarding thinning algorithms. Sorry for the boringness. :-)
 
 = References =
   * [http://www.sciencedirect.com/science/article/pii/S0167865598000312 [1]]. Palagyi, Kuba, A 3D 6-subiteration thinning algorithm for extracting medial lines, 1998.
