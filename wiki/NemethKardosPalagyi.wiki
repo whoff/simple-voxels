@@ -59,13 +59,12 @@ Here is the console dump of the above templates:
 
 = Implementation =
 In [Top#References [4]], the authors proposed the use of a 8MB table
-instead of matching templates to detect the deletable points
-assigning a bit for each one of 2^26 = 64M configurations,
-However, in this project, the matching templates are employed for the illustration purpose.
+to detect the deletable points assigning a bit for each one of 2^26 = 64M configurations.
+However, in this project, the _old_ way of the matching templates are employed for the illustration purpose.
 
 By enumerating all the symmetric configurations of each template and removing redundant ones,
 the [http://code.google.com/p/simple-voxels/source/browse/trunk/Nemeth_table.h list]
-of matching templates can be obtained for the UNW-direction as follows:
+of matching templates can be obtained for the U-, UN- and UNW-direction as follows:
 {{{
 const Mask nemeth_tables[2][37] = {
     {// dir = 0
