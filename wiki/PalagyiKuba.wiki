@@ -67,6 +67,7 @@ const Mask palagyi_tables[][21] = {
         Mask( BV( BP(7,7,7), BP(3,3,0), BP(3,7,2) ), BV( BP(0,0,0), BP(0,2,0), BP(0,4,2) ) ),
         Mask( BV( BP(7,7,7), BP(6,6,0), BP(6,7,2) ), BV( BP(0,0,0), BP(0,2,0), BP(0,1,2) ) ),
     },
+//...
 };
 }}}
 
@@ -86,7 +87,7 @@ namespace NPalagyi {
 This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi.cpp Palagyi.cpp].
 
 = Statistics =
-The table below shows how many simple configurations can be deleted by the above templates for each of the six directions:
+The next table shows how many simple configurations can be deleted by the above templates for each of the six directions:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/palagyi-stat.png]
 
