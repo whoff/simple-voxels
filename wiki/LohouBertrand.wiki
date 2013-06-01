@@ -35,8 +35,8 @@ A point x is called P2-simple if:
   # Its U-neighbor is background.
   # If any of its N/S/W/E-neighbor is background, then the neighbor's U-neighbor is also background.
 
-In the figure below, the black point denotes the point x, which is foreground.
-The first condition requires the point above x being background.
+In the next figure, the black point denotes the point x, which is foreground.
+The first condition requires the point above x be background.
 The second condition says that if a yellow position is background,
 then its U-neighbor (the gray position above it) should be background, too.
 
