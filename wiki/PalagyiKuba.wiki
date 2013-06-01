@@ -8,7 +8,8 @@ Palagyi and Kuba proposed a 6-subiteration thinning algorithm that was based on 
 Please refer to the paper for the definition of the matching templates.
 
 The following is their base templates for the U direction
-translated into [Notations#Matching_Templates Mask] structure.
+translated into
+[http://code.google.com/p/simple-voxels/source/browse/trunk/Mask.h Mask] structure.
 {{{
 namespace NPalagyi {
 
@@ -23,7 +24,7 @@ namespace NPalagyi {
 }
 }}}
 
-As for the notations, see also [Notations#Template_Mask].
+As for the notations, see also [Notations#Matching_Templates Mask].
 
 It should be noted that their templates are carefully designed not to remove end points of curvilinear structures for the skeletonization purpose.
 
