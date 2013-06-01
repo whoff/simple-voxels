@@ -7,22 +7,22 @@ When the [PalagyiKuba#Matching_Templates deletable conditions] proposed by Palag
 one finds that numerous spurious branches are generated
 along with object skeletons.
 This is especially the case when the object resolution is higher such as 512x512x1024, which is however typical in the recent medical imaging applications.
-The spurious branches are generated partly due to the skeleton preserving nature of the deletable conditions or the matching templates,
-which are designed to keep end points of curvilinear structures.
+The spurious branches are generated partly due to the skeleton preserving nature of the deletable conditions that are designed to keep end points of curvilinear structures.
 
 In order to address this issue, Raynal and Couprie proposed an isthmus based 6-subiteration thinning algorithm.
 In [Top#References [2]], the authors:
   # loosened Palagyi and Kuba's deletable conditions to further remove end points (see the figure below)
   # instead prohibited removal of _isthmus_ points
 
+[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-end-points.png]
+
 == Isthmus Points ==
-The isthmus points were defined as the points that satisfy:
+The isthmus points are defined as the points that fulfill:
   * The number of 26-connected foreground components >= 2
 The isthmus points are therefore the points that connect multiple foreground components. For example, the points on a curve line are all isthmus points except the two end points.
 
-It is expected that the spurious branches will be reduced by the removal of end points while the skeletal branches will remain by preserving isthmus points.
-
-[http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-end-points.png]
+It is expected that, while the spurious branches will be reduced by the removal of end points, the skeletal branches will remain
+by prohibiting the removal of the isthmus points.
 
 = Project Proposal =
 As for the implementation of the isthmus point detection,
@@ -37,8 +37,9 @@ I will propose a set of six matching templates for the isthmus detection.
 = Matching Templates for Deletable Points =
 In [Top#References [2]], the authors proposed a variant of Palagyi and Kuba's matching templates to additionally remove end points.
 
-The following is their base templates for the U direction
-translated into [Notations#Template_Mask Mask] structure.
+The following is their base templates for the U-direction
+translated into
+[http://code.google.com/p/simple-voxels/source/browse/trunk/Mask.h Mask] structure.
 {{{
 namespace NRaynal {
 
@@ -54,20 +55,21 @@ namespace NRaynal {
 }
 }}}
 
-Compared with [PalagyiKuba#Matching_Templates],
-  * M1 is loosened to M1' to include 6-adjacent end points.
-  * M5 is loosened to M5' to include 18-adjacent end points.
-  * M7' is added for 26-adjacent end points.
+Compared to the [PalagyiKuba#Matching_Templates Palagyi and Kuba's templates],
+  * M1 is loosened to M1' to include the 6-adjacent end points.
+  * M5 is loosened to M5' to include the 18-adjacent end points.
+  * M7' is added for the 26-adjacent end points.
   * Other templates are same.
 
-Here is the console dump of the above templates:
+Here are the console dump of the above templates on the left, 
+and that of Palagyi and Kuba's on the right:
 
-[http://simple-voxels.googlecode.com/svn/wiki/images/raynal-templates.png]
+||[http://simple-voxels.googlecode.com/svn/wiki/images/raynal-templates.png]||[http://simple-voxels.googlecode.com/svn/wiki/images/palagyi-templates.png]||
 
 == Implementation ==
 By enumerating all the symmetric configurations of each template within the NSWE plane (there are eight of them) and removing redundant ones,
-one can obtain the [http://code.google.com/p/simple-voxels/source/browse/trunk/Raynal_table.h list]
-of matching templates for the U direction:
+the [http://code.google.com/p/simple-voxels/source/browse/trunk/Raynal_table.h list]
+of matching templates for the U-direction can be obtained:
 {{{
 const Mask raynal_tables[][25] = {
     {// dir = 0
@@ -104,23 +106,15 @@ const Mask raynal_tables[][25] = {
         Mask( BV( BP(7,7,7), BP(7,7,7), BP(7,7,7) ), BV( BP(0,0,0), BP(0,2,0), BP(1,0,0) ) ),
         Mask( BV( BP(7,7,7), BP(7,7,7), BP(7,7,7) ), BV( BP(0,0,0), BP(0,2,0), BP(4,0,0) ) ),
     },
-    {// dir = 1
-        // M1
-        Mask( BV( BP(0,2,0), BP(0,2,0), BP(7,7,7) ), BV( BP(0,2,0), BP(0,2,0), BP(0,0,0) ) ),
-        // M2
-        Mask( BV( BP(0,2,0), BP(0,2,2), BP(7,7,0) ), BV( BP(0,2,0), BP(0,2,2), BP(0,0,0) ) ),
-        Mask( BV( BP(0,2,0), BP(0,6,0), BP(3,3,3) ), BV( BP(0,2,0), BP(0,6,0), BP(0,0,0) ) ),
-        Mask( BV( BP(0,2,0), BP(2,2,0), BP(0,7,7) ), BV( BP(0,2,0), BP(2,2,0), BP(0,0,0) ) ),
-        Mask( BV( BP(0,2,0), BP(0,3,0), BP(6,6,6) ), BV( BP(0,2,0), BP(0,3,0), BP(0,0,0) ) ),
 //...
 };
 }}}
 
-By using this list, one can check if a voxel is deletable by
+By using this list, the deletability of a voxel can be determined by
 {{{
-namespace NPalagyi {
+namespace NRaynal {
     bool IsDeletable( int bits, EFaceDir dir ) {
-        for each (const Mask& mask in palagyi_tables[(int)dir]) {
+        for each (const Mask& mask in raynal_tables[(int)dir]) {
             if (mask.Match( bits )) {
                 return true;
             }
@@ -132,7 +126,7 @@ namespace NPalagyi {
 This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Isthmus.cpp Isthmus.cpp].
 
 == Statistics ==
-The table below shows how many simple configurations can be deleted by the above templates for each of the six directions:
+The next table shows how many simple configurations can be deleted by the above templates for each of the six directions:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-stat.png]
 
@@ -150,7 +144,7 @@ Compared with [PalagyiKuba#Statistics],
   * As a whole, 9,916,952 - 9,916,926 = 26 configurations are further removed.
 These numbers clearly coincide with the number of end point configurations.
 
-In the console dump below, the configurations that are removable by Raynal and Couprie's but not by Palagyi and Kuba's are dumped for the U direction.
+In the console dump below, the configurations that are deletable by Raynal and Couprie's but not by Palagyi and Kuba's are printed for the U-direction.
 It is confirmed that they are all end points.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-palagyi.png]
