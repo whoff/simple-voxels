@@ -136,7 +136,7 @@ namespace NNemeth {
 }}}
 where idx is 0 (UNW) or 1 (DSE).
 
-This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Nemeth.cpp#79 Nemeth.cpp].
+This function is defined in [http://code.google.com/p/simple-voxels/source/browse/trunk/Nemeth.cpp#74 Nemeth.cpp].
 
 = Statistics =
 The next table shows how many simple configurations will be deleted by the above templates for the two indices:
