@@ -16,7 +16,7 @@ Some of those remaining branches ended with a specific configuration depicted in
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-not-removed.png]
 
 It turned out that this configuration is the one that Lohou and Bertrand illustrated in [Top#References [3]]
-as an example configuration that is not deleted by [PalagyiKuba Palagyi and Kuba]'s method whereas can be removed by their method.
+as an example configuration that is not deleted by [PalagyiKuba Palagyi and Kuba]'s method whereas can be removed by their method introduced and implemented here in this page.
 
 They derived in [Top#References [3]] a more-deleting deletable condition based on a powerful notion called _Px-simple_,
 which allows one to devise a new parallel thinning algorithm without verifying
