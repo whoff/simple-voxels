@@ -34,8 +34,8 @@ Here is the console dump of the above templates:
 
 = Implementation =
 By enumerating all the symmetric configurations of each template within the NSWE plane (there are eight of them) and removing redundant ones,
-one can obtain the [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi_table.h list]
-of matching templates for the U-direction:
+the [http://code.google.com/p/simple-voxels/source/browse/trunk/Palagyi_table.h list]
+of matching templates can be obtained for the U-direction:
 {{{
 const Mask palagyi_tables[][21] = {
     {// dir = 0
@@ -70,7 +70,7 @@ const Mask palagyi_tables[][21] = {
 };
 }}}
 
-By using this list, one can check if a voxel is deletable by
+By using this list, the deletability of a voxel can be determined by
 {{{
 namespace NPalagyi {
     bool IsDeletable( int bits, EFaceDir dir ) {
