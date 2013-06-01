@@ -11,7 +11,7 @@ the skeletal branches will also be removed resulting in _ultimate thinning_.
 An ultimately thinned object has no branches but instead is composed of circular curves or cocoon like shells.
 
 However, as far as I tested, there still remained some branches even when no isthmus points were preserved.
-Some of those remaining branches ended with a specific configuration depicted in the figure below.
+Some of these remaining branches ended with a specific configuration depicted in the figure below.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-not-removed.png]
 
