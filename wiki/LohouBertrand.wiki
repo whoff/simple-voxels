@@ -4,42 +4,41 @@
 
 = Introduction =
 By using [RaynalCouprie Raynal and Couprie]'s method,
-a considerable amount of spurious brances will be suppressed.
-In addition, as was suggested in [Top#References [2]],
-if the [RaynalCouprie#Isthmus_Points isthmus points] were not preserved but deleted,
-the skeletal branches would also be removed resulting in _ultimate thinning_,
-where no more points can be removed without breaking the object topology.
-An ultimately thinned object has no branches and is composed of circular curves or cocoon like shells only.
+a considerable amount of spurious branches can be suppressed.
+In addition, as is suggested in [Top#References [2]],
+if the [RaynalCouprie#Isthmus_Points isthmus points] are not preserved but deleted,
+the skeletal branches will also be removed resulting in _ultimate thinning_.
+An ultimately thinned object has no branches but instead is composed of circular curves or cocoon like shells.
 
 However, as far as I tested, there still remained some branches even when no isthmus points were preserved.
-Some of the remaining branches end with a specific configuration depicted in the figure below.
+Some of those remaining branches ended with a specific configuration depicted in the figure below.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-not-removed.png]
 
 It turned out that this configuration is the one that Lohou and Bertrand illustrated in [Top#References [3]]
-as an example configuration that is not removed by [PalagyiKuba Palagyi and Kuba]'s method whereas can be removed by their method.
+as an example configuration that is not deleted by [PalagyiKuba Palagyi and Kuba]'s method whereas can be removed by their method.
 
-They derived a more-deleting deletable condition based on a powerful notion called _Px-simple_,
+They derived in [Top#References [3]] a more-deleting deletable condition based on a powerful notion called _Px-simple_,
 which allows one to devise a new parallel thinning algorithm without verifying
-the consistency of the set of matching templates one-by-one that the parallel removal does not break the object topology.
+that the set of matching templates does not break the objct topology when applied in parallel.
 
 In the rest of this page, after their deletable condition is briefly explained,
-an implementation will be proposed using direct bit operations and supplemental template matching.
+an implementation will be proposed using both direct bit operations and supplemental template matching.
 
 = Deletable Condition based on P2x-simple Points =
-In the following, the description assumes the U-direction.
-For other directions, the condition will immediately follow
-by rotating the 3x3x3 neighborhood configuration.
+Throughout the following description, the U-direction is assumed for the sake of explanation.
+For other directions, the conditions will immediately follow
+by rotating the 3x3x3 neighborhood configuration to the desired direction.
 
 == P2-simple ==
 A point x is called P2-simple if:
-  # Its U-neighbor is white.
-  # If any of its N/S/W/E-neighbor is white, then the neighbor's U-neighbor is also white.
+  # Its U-neighbor is background.
+  # If any of its N/S/W/E-neighbor is background, then the neighbor's U-neighbor is also background.
 
-In the figure below, the black point denotes the point x.
-The first condition requires the point above x be white.
-The second condition says that if a yellow position is white,
-then its U-neighbor (the gray position above it) should be white, too.
+In the figure below, the black point denotes the point x, which is foreground.
+The first condition requires the point above x being background.
+The second condition says that if a yellow position is background,
+then its U-neighbor (the gray position above it) should be background, too.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-p2simple.png]
 
@@ -48,31 +47,36 @@ Given a center point x, its 26-neighborhood points are called P2x-simple
 if it is not denied that they are P2-simple within the 3x3x3 neighborhood of x.
 In other words, a 26-neighbor point of x is not P2x-simple if it disqualifies the P2-simple condition even in the 3x3x3 neighborhood of x.
 
-Based on the P2x-simple condition, black points in the 3x3x3 neighborhood of x are divided into the following two sets.
-  * Px : the set of black points that are P2x-simple
-  * Rx : the set of black points that are not P2x-simple
+Based on the P2x-simple condition, foreground points in the 3x3x3 neighborhood of x are divided into the following two sets.
+  * Px : the set of foreground points that are P2x-simple
+  * Rx : the set of foreground points that are not P2x-simple
 
-Note that any black point in the top plane is always P2x-simple because
-the points above it and its N/S/W/E-neighbors are outside the 3x3x3 neighborhood of x, the P2-simple condition for the black point may not be denied.
+Note that any foreground points in the top plane are always P2x-simple because
+the points above them and above their N/S/W/E-neighbors are all outside the 3x3x3 neighborhood of x,
+the P2-simple condition for these points cannot be denied.
 
 == Deletable Condition ==
 Now, a point x is deletable if the following conditions are fulfilled.
   * (P2) x is P2-simple
   * (C1) The number of 26-connected components in Rx is 1.
-  * (C2) The number of 6-connected white (background) components within the 18-neighborhood of x is 1.
+  * (C2) The number of 6-connected background components within the 18-neighborhood of x is 1.
   * (C3) For every point y in Px, there exists z in Rx such that z is 26-adjacent to both x and y.
-  * (C4) For every point y in Px that is 6-adjacent to x, there exist white points z and t such that {x, y, z, t} forms a unit square.
+  * (C4) For every point y in Px that is 6-adjacent to x, there exist background points z and t such that {x, y, z, t} forms a unit square.
 
-As is shown in the next section, with this deletable condition, 6,129,532 points are deletable for one direction whereas 2,124,292 points are deletable with the [PalagyiKuba Palagyi and Kuba]'s condition.
+As is shown in the next section, with this deletable condition,
+6,129,532 points are deletable for one direction
+whereas 2,124,292 points are deletable
+with the [PalagyiKuba Palagyi and Kuba]'s condition.
 When all the six directions are considered,
 23,722,000 points are deletable whereas 9,196,926 points are
 deletable with [PalagyiKuba Palagyi and Kuba]'s condition.
 
 = Proposed Method =
-In [Top#References [3]], the authors proposed the use of two binary decision diagrams (BDD) to detect deletable points.
-I was again interested in devising a set of matching templates, but failed to find one that implements the deletable condition as a whole.
+In [Top#References [3]], the authors proposed the use of two binary decision diagrams (BDD) to find deletable points.
+I was again interested in devising a set of matching templates,
+but failed to find one that implements the deletable condition as a whole.
 So, I started looking at each condition P2, C1/2/3/4 one by one.
-To begin with, the number of configurations that satisfy each condition was investigated.
+To begin with, the number of configurations that satisfy each condition was counted.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxcondition-stat.png]
 
@@ -86,12 +90,16 @@ where bit0 - bit5 denotes the following conditions:
 || bit5  || C4 ||
 
 == C4 : included by P2 ==
-From the co-occurrence table above, it can be seen that the C4 condition is always satisfied if P2 is satisfied.
+From the co-occurrence table above,
+it can be seen that the C4 condition is always fulfilled if P2 is fulfilled.
 The C4 condition can therefore be omitted.
 
 == P2 : x is P2-simple ==
-From the definition of P2-simple points, the P2 condition can be easily implemented by using matching templates or bit operations.
-Once the P2 condition is checked by any means, the failed configurations can be treated as _don't-care_ in the subsequent evaluation of C1, C2, and C3 conditions.
+From the definition of P2-simple points,
+the P2 condition can be easily implemented by using matching templates or bit operations.
+Once the P2 condition is checked by any means,
+the configurations that fail the P2 condition can be treated as _don't-care_
+in the subsequent evaluation of C1, C2, and C3 conditions.
 
 The existence of such don't-care configurations may make it easier to find matching templates for the remaining conditions.
 However, even with this technique, the matching templates for C1 and C3 were still hard to find probably because they were talking about Px and Rx situations whereas the matching templates were defined with respect to the 3x3x3 neighborhood of x.
@@ -101,7 +109,7 @@ In addition, the P2 condition will be computed as part of the calculation of P2x
 
 === P2x-simple Points ===
 Given a configuration as an 32-bit integer _bits_, the following code computes the Px points.
-Please see [Notations] for the bit assignment to 3x3x3 positions in _bits_.
+Please see [Notations] for the bit assignment to the 3x3x3 positions in _bits_.
 {{{
 enum {
     DX = 1,
@@ -123,13 +131,13 @@ int CalcP2x( int bits ) {
 }}}
 
 In the above, the Rx points are computed first.
-By negating the P2x-simple condition, a black point belongs to Rx when:
-  # Its U-neighbor is black.
-  # Or, any of its N/S/W/E-neighbors is white and the neighbor's U-neighbor is black.
+By negating the P2x-simple condition, a foreground point belongs to Rx when:
+  # Its U-neighbor is foreground.
+  # Or, any of its N/S/W/E-neighbors is background and the neighbor's U-neighbor is foreground.
 Accordingly, the above code works as follows:
   * _top_ holds the value of the U-neighbor of each position by shifting _bits_ by DZ = 9 bits, i.e. by one plane.
-  * _mid_ has '1' bits where the corresponding points are white (~bits) and (&) their U-neighbor is black (top).
-  * _rx_ then has '1' bits if the U-neighbor of the corresponding bits is black (top), or any of their N/S/W/E-neighbors are white and its U-neighbor is black (shifted mid).
+  * _mid_ has '1' bits where the corresponding points are background (~bits) and (&) their U-neighbor is foreground (top).
+  * _rx_ then has '1' bits if the U-neighbor of the corresponding bits is foreground (top), or any of their N/S/W/E-neighbors are background and its U-neighbor is foreground (shifted mid).
   * Finally, Px is obtained by negating rx (bits & ~rx).
 
 The P2 condition can be checked by looking at the center bit of Px.
@@ -159,44 +167,52 @@ enum {
 == C2: exactly one background component ==
 With the P2 condition fulfilled, namely if the center point x is P2-simple,
 the C2 condition empirically turned out to be reduced to the following two templates.
-Note that because x is P2-simple, its U-neighbor is white for both templates. Also, if its N/S/W/E-neighbor is white, the neighbor's U-neighbor is white, too. Both templates rely on this fact.
+Note that because x is P2-simple, its U-neighbor is known to be background for both templates.
+Also, if its N/S/W/E-neighbor is backgroud, the neighbor's U-neighbor is background, too.
+Both templates rely on this fact.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t6nx-masks.png]
 
-=== Case 1: bottom center is black (Left) ===
-When the bottom center point is black, the C2 condition will be always fulfilled as long as x is P2-simple.
-In fact, if any N/S/W/E-neighbor point of x is white, then its U-neighbor is also white since x is P2-simple, and thus it is 6-connected to the top center white point via the U-neighbor.
+=== Case 1: bottom center is foreground (Left) ===
+When the bottom center point is foreground, the C2 condition will be always fulfilled as long as x is P2-simple.
+In fact, if any N/S/W/E-neighbor point of x is background,
+then its U-neighbor is also background since x is P2-simple,
+and thus it is 6-connected to the top center background point via the U-neighbor.
 This ensures that there is exactly one background component.
 
-=== Case 2: bottom center is white (Right) ===
-On the other hand, when the bottom center point is white, it should be connected with the top center white point to have the C2 condition satisfied.
+=== Case 2: bottom center is background (Right) ===
+On the other hand, when the bottom center point is background,
+it should be connected with the top center background point to have the C2 condition fulfilled.
 Since the background component needs to be 6-connected,
-there should be a white column in any of N/S/W/E-neighborhood of x.
-Considering again that x is P2-simple, the right template is enough to ensure that there is exactly one background component in this case.
+there should be a column of background points in any of N/S/W/E-neighborhood of x.
+Considering again that x is P2-simple, the right template is enough to ensure
+that there is exactly one background component in this case.
 
 == C1 : exactly one 26-connected Rx component ==
 As is pointed out in [LohouBertrand#P2x-simple P2x-simple] section,
-any black point in the top plane is P2x-simple.
+any foreground point in the top plane is P2x-simple.
 The Rx points may accordingly exist in the middle or in the bottom plane only.
 
-=== Case 1: bottom center is black ===
-If the bottom center is a black point, the C1 condition is always fulfilled.
+=== Case 1: bottom center is foreground ===
+If the bottom center is a foreground point, the C1 condition is always fulfilled.
 Because the bottom center is not P2x-simple, it is a Rx point.
-If there are other Rx points, since they are in the middle or in the bottom plane, they are 26-adjacent to the bottom center Rx point. 
+If there are other Rx points, since they are in the middle or in the bottom plane,
+they are 26-adjacent to the bottom center Rx point. 
 
-=== Case 2: bottom center is white ===
+=== Case 2: bottom center is background ===
 In this case, I could figure out "mismatching" templates as below where Rx points are divided into at least two components.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/pxsimple-t26rx-masks.png]
 
-In the above, at least one blue point should be black, and similarly,
-at least one orange point should be black, too.
+In the above, at least one blue point should be foreground, and similarly,
+at least one orange point should be foreground, too.
 Also, as the center point is excluded from Rx components,
-it is depicted as a white point although it is actually a P2(x)-simple black point.
+it is depicted as a background point although it is actually a P2(x)-simple foreground point.
 
 The C1 condition will be fulfilled if the given configuration has at least one Rx point and if it does not match any of the above templates, 
 
-The following is the mismatching templates translated into [Notations#Template_Mask Mask] structure,
+The following is the mismatching templates translated into
+[http://code.google.com/p/simple-voxels/source/browse/trunk/Mask.h Mask] structure
 and their console dump.
 {{{
 namespace NPxSimple {// P2x-simple
@@ -298,39 +314,40 @@ It can be observed that
 
 In the original paper [Top#References [3]],
 curve ending points are not removed in the thinning process
-to preserve the object skeletons. Even when a center point is deletable,
-if there is only one black point in its 26-neighorhood,
-it will not be deleted.
+to preserve the object skeletons.
+Even when a center point is deletable,
+if there is only one foreground point in its 26-neighorhood, it will not be deleted.
 Therefore, the number of deletable configurations above is larger by 18 than that appeared in the paper 23,721,982.
 
 == Comparison ==
 Compared with [PalagyiKuba Palagyi and Kuba]'s method and [RaynalCouprie Raynal and Couprie]'s method,
-the above deletable condition allows for removal of more than twice number of simple voxels.
+the above deletable condition allows for the removal of more than twice number of simple voxels.
 However, there are several configurations that are deletable by [RaynalCouprie Raynal and Couprie]'s method, but not by this method.
 The following is the console dump of those points found by the program for the U-direction:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/raynal-pxsimple.png]
 
 As it can be seen, the diagonal end point that matches the following template is not deletable.
-Because the bottom diagonal black point is P2x-simple,
+Because the bottom diagonal foreground point is P2x-simple,
 there is no Rx point and thus the C1 condition fails with this configuration.
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-diag-end.png]
 
 = Proposal for Ultimate Thinning =
-If one wants to use this method for the [LohouBertrand#Introduction ultimate thinning] purpose, the diagonal end points needs to be deletable.
+If one wants to use this method for the [LohouBertrand#Introduction ultimate thinning] purpose, the diagonal end points need to be deletable.
 
 Suppose that the diagonal end points in the above are added to the deletable configurations for the U-direction.
-Then, if the bottom diagonal black point in the figure is not deletable during the U-direction subiteration,
+Then, if the bottom diagonal foreground point in the figure is not deletable during the U-direction subiteration,
 this extended deletable condition can still be used for parallel thinning.
 
-When the above configuration is viewed from the bottom diagonal black point, named y here, it looks like the next one:
+When the above configuration is viewed from the bottom diagonal foreground point, named y here, it looks like the next one:
 
 [http://simple-voxels.googlecode.com/svn/wiki/images/neighbor-diag-end-opp.png]
 
-The bottom diagonal black point y is now placed at the center,
+The bottom diagonal foreground point y is now placed at the center,
 and the original center point x is on the (opposite) top diagonal corner.
 
-In this configuration, because the top diagonal black point (x) is P2y-simple and because there is no Rt point in the 26-neighborhood of y, the C1 condition does not hold.
+In this configuration, because the top diagonal foreground point (x) is P2y-simple and
+because there is no Ry point in the 26-neighborhood of y, the C1 condition does not hold.
 
 Therefore the diagonal end points can be deleted safely in the same parallel thinning process.
