@@ -69,7 +69,7 @@ and that of Palagyi and Kuba's on the right:
 == Implementation ==
 By enumerating all the symmetric configurations of each template within the NSWE plane (there are eight of them) and removing redundant ones,
 the [http://code.google.com/p/simple-voxels/source/browse/trunk/Raynal_table.h list]
-of matching templates for the U-direction can be obtained:
+of matching templates can be obtained for the U-direction as follows:
 {{{
 const Mask raynal_tables[][25] = {
     {// dir = 0
